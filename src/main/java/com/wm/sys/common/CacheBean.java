@@ -9,7 +9,7 @@ public class CacheBean {
 	private Object value;
 	
 	public CacheBean() {
-		
+
 	}
 
 	public CacheBean(String key, Object value) {
