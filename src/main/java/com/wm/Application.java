@@ -6,10 +6,10 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
 @MapperScan(basePackages= {"com.wm.*.mapper"})
-public class JcglApplication {
+public class Application {
 
     public static void main(String[] args) {
-        SpringApplication.run(JcglApplication.class, args);
+        SpringApplication.run(Application.class, args);
     }
 
 }

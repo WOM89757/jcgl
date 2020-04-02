@@ -14,13 +14,13 @@ import java.util.Properties;
 
 /**
  * 文件上传下载工具类
- * @author LJH
+ * @author WOM
  *
  */
 public class AppFileUtils {
 
 	//文件上传的保存路径
-	public static  String UPLOAD_PATH="E:/upload/";//默认值
+	public static  String UPLOAD_PATH="D:/upload/";//默认值
 	
 	static {
 		//读取配置文件的存储地址

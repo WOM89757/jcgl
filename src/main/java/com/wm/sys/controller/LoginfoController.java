@@ -28,7 +28,7 @@ import java.util.Collection;
  * @since 2020-04-01
  */
 @RestController
-@RequestMapping("/sys/loginfo")
+@RequestMapping("/loginfo")
 public class LoginfoController {
 
     @Autowired

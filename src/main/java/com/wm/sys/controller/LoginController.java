@@ -22,7 +22,7 @@ import java.util.Date;
  * @author WOM
  */
 @RestController
-@RequestMapping("login")
+@RequestMapping("/login")
 public class LoginController {
 	
 	@Autowired
