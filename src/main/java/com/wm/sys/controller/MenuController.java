@@ -63,6 +63,7 @@ public class MenuController {
 			//根据角色ID查询权限
 			if(pids.size()>0) {
 				queryWrapper.in("id", pids);
+				queryWrapper.orderBy(true,true,"ordernum");
 				list=permissionService.list(queryWrapper);
 			}else {
 				list =new ArrayList<>();
@@ -119,7 +120,7 @@ public class MenuController {
 	
 	/**
 	 * 加载最大的排序码
-	 * @param permissionVo
+	 *
 	 * @return
 	 */
 	@RequestMapping("loadMenuMaxOrderNum")
