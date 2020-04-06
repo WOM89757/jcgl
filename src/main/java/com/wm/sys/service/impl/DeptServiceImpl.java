@@ -5,6 +5,7 @@ import com.wm.sys.mapper.DeptMapper;
 import com.wm.sys.service.DeptService;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.io.Serializable;
 
@@ -17,12 +18,12 @@ import java.io.Serializable;
  * @since 2020-04-01
  */
 @Service
+@Transactional
 public class DeptServiceImpl extends ServiceImpl<DeptMapper, Dept> implements DeptService {
 
 
     @Override
-    public Dept getById(Serializable id) {
-        return super.getById(id);
+    public Dept getById(Serializable id) { return super.getById(id);
     }
 
     @Override

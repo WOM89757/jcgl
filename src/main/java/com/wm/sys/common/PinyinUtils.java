@@ -10,7 +10,7 @@ import net.sourceforge.pinyin4j.format.exception.BadHanyuPinyinOutputFormatCombi
 /**
  * 拼音工具类
  * 
- * @author LJH
+ * @author WOM
  *
  */
 public class PinyinUtils {
