@@ -136,7 +136,6 @@
 			elem:'#endTime',
 			type:'datetime'
 		});
-		
 		//初始化富文本
 		var editIndex = layedit.build('content');
 		//加载 数据
@@ -207,6 +206,7 @@
 				title:'发布公告',
 				success:function(){
 					$("#dataFrm")[0].reset();
+					editIndex = layedit.build('content');
 					layedit.setContent(editIndex,"");	
 					url="/notice/addNotice";
 				}
@@ -224,6 +224,7 @@
 					$("#dataFrm")[0].reset();
 					//装载新的数据
 					form.val("dataFrm",data);
+					editIndex = layedit.build('content');
 					layedit.setContent(editIndex,data.content);	
 					url="/notice/updateNotice";
 				}

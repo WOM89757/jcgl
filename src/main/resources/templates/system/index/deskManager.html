@@ -16,9 +16,10 @@
 	<blockquote class="layui-elem-quote layui-bg-green">
 		<div id="nowTime"></div>
 	</blockquote>
+	<!--最新公告表格	开始 -->
 	<div class="layui-row layui-col-space10">
 		<div class="layui-col-lg6 layui-col-md12">
-			<blockquote class="layui-elem-quote title">最新文章 <i class="layui-icon layui-red">&#xe756;</i></blockquote>
+			<blockquote class="layui-elem-quote title">最新公告 <i class="layui-icon layui-red">&#xe756;</i></blockquote>
 			<table class="layui-table mag0" lay-skin="line">
 				<colgroup>
 					<col>
@@ -26,8 +27,26 @@
 				</colgroup>
 				<tbody class="hot_news"></tbody>
 			</table>
+			<div id="noticeRowBar" style="display: none;">
+				<button type="button" lay-event="show" class="layui-btn layui-btn-sm"><span class="layui-icon layui-icon-about"></span>查看</button>
+			</div>
 		</div>
 	</div>
+	<!--最新公告表格	结束 -->
+
+	<!--公告详情弹出层	开始-->
+	<div style="display: none;padding: 5px" id="showNoticeDiv">
+		<h2 id="show_title" align="center"></h2>
+		<div style="text-align: right;">
+			发布人:<span id="show_opername"></span>
+			发布时间:<span id="show_createtime"></span>
+		</div>
+		<hr>
+		<div id="show_content"></div>
+
+	</div>
+
+	<!--公告详情弹出层	结束-->
 
 	<script type="text/javascript" src="/resources/layui/layui.js"></script>
 	
@@ -77,17 +96,22 @@
 	        parent.addTab($(this));
 	    })
 	    //最新文章列表
-	    $.get("/resources/json/newsList.json",function(data){
+	    $.get("/notice/loadAllNotice",function(data){
 	        var hotNewsHtml = '';
-	        for(var i=0;i<5;i++){
+			data.count= (data.count>5) ? 5 : data.count;
+	        for(var i=0;i<data.count;i++){
 	            hotNewsHtml += '<tr>'
-	                +'<td align="left"><a href="javascript:;"> '+data.data[i].newsName+'</a></td>'
-	                +'<td>'+data.data[i].newsTime.substring(0,10)+'</td>'
+	                +'<td align="left"><a href="javascript:;"> '+data.data[i].title+'</a></td>'
+	                +'<td>'+data.data[i].createtime.substring(0,10)+'</td>'+'<td style="width: 1px;">'+'<button type="button" lay-event="show" class="layui-btn layui-btn-sm"><span class="layui-icon layui-icon-about"></span>查看</button>' +'</td>'
 	                +'</tr>';
 	        }
 	        $(".hot_news").html(hotNewsHtml);
 	        $(".userAll span").text(data.length);
 	    })
+
+
+
+
 	})
 
 	</script>
