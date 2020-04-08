@@ -1,6 +1,7 @@
 package com.wm.sys.vo;
 
 import com.wm.sys.entity.User;
+
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
