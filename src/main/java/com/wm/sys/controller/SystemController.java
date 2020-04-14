@@ -30,7 +30,15 @@ public class SystemController {
 	public String toDeskManager() {
 		return "system/index/deskManager";
 	}
-	
+
+	/**
+	 * 跳转到个人信息
+	 */
+	@RequestMapping("toUserInfo")
+	public String toUserInfo() {
+		return "system/user/userInfo";
+	}
+
 	/**
 	 * 跳转到日志管理
 	 * 

@@ -5,10 +5,7 @@ import cn.hutool.core.util.IdUtil;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import com.wm.sys.common.Constast;
-import com.wm.sys.common.DataGridView;
-import com.wm.sys.common.PinyinUtils;
-import com.wm.sys.common.ResultObj;
+import com.wm.sys.common.*;
 import com.wm.sys.entity.Dept;
 import com.wm.sys.entity.Role;
 import com.wm.sys.entity.User;
@@ -19,13 +16,16 @@ import com.wm.sys.vo.UserVo;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.shiro.crypto.hash.Md5Hash;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.PropertySource;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.io.File;
+import java.io.IOException;
+import java.util.*;
 
 /**
  * <p>
@@ -47,6 +47,44 @@ public class UserController {
 
     @Autowired
     private RoleService roleService;
+
+//    private String path="D:\\upload\\jcgl\\";
+    private String path="D:\\WOM\\Desktop\\bs\\bs_code\\project\\jcgl\\src\\main\\resources\\static\\resources\\images\\";
+
+    @ResponseBody//将即将返回的对象转成json字符串,再返回到浏览器
+    @RequestMapping("/upload")
+    public Map<String, Object> upload(MultipartFile file) {//保存文件到本地路径
+        if(!new File(path).exists()){
+            new File(path).mkdirs();
+        }
+        String randomName = UUID.randomUUID().toString();//绝对不会重复的随机数
+        String oldName = file.getOriginalFilename();//原始文件名
+        System.out.println(oldName);
+        String ext = oldName.substring(oldName.lastIndexOf("."));//从最后一个'.'开始截取扩展名
+        File longFile = new File(path + randomName + ext);//路径+随机数+扩展名
+        String newName = "/resources/images/"+randomName + ext;//新文件名
+        System.out.println(newName);
+        User user = new User();
+
+        user = (User)WebUtils.getSession().getAttribute("user");
+        user.setImgpath(newName);
+        userService.updateById(user);
+        Map<String, Object> map = new HashMap();
+        try {
+
+            file.transferTo(longFile);//保存文件
+            map.put("success", true);
+            map.put("src", newName);
+            map.put("msg", "文件上传成功!");
+        } catch (IOException e) {
+            e.printStackTrace();
+            map.put("success", false);
+            map.put("msg", "文件上传失败,请重试!");
+        }
+        System.out.println(longFile);
+
+        return map;
+    }
 
     /**
      * 用户全查询
@@ -157,6 +195,11 @@ public class UserController {
      */
     @RequestMapping("loadUserById")
     public DataGridView loadUserById(Integer id) {
+        if(id==null){
+            User user = (User) WebUtils.getSession().getAttribute("user");
+            id=user.getId();
+            return new DataGridView(this.userService.getById(id));
+        }
         return new DataGridView(this.userService.getById(id));
     }
 
@@ -166,6 +209,10 @@ public class UserController {
     @RequestMapping("updateUser")
     public ResultObj updateUser(UserVo userVo) {
         try {
+            if(userVo.getId()==null){
+                User user = (User) WebUtils.getSession().getAttribute("user");
+                userVo.setId(user.getId());
+            }
             this.userService.updateById(userVo);
             return ResultObj.UPDATE_SUCCESS;
         } catch (Exception e) {

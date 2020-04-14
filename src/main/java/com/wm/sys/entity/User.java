@@ -53,6 +53,8 @@ public class User implements Serializable {
 
     private Integer ordernum;
 
+    private String contactnum;
+
     /**
      * 用户类型[0超级管理员1，管理员，2普通用户]
      */
