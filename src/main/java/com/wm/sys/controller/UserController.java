@@ -23,6 +23,8 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
+
+import javax.servlet.http.HttpServletRequest;
 import java.io.File;
 import java.io.IOException;
 import java.util.*;
@@ -48,23 +50,29 @@ public class UserController {
     @Autowired
     private RoleService roleService;
 
-//    private String path="D:\\upload\\jcgl\\";
-    private String path="D:\\WOM\\Desktop\\bs\\bs_code\\project\\jcgl\\src\\main\\resources\\static\\resources\\images\\";
-
+    @Value("${local.src}")
+    private String path;
     @ResponseBody//将即将返回的对象转成json字符串,再返回到浏览器
     @RequestMapping("/upload")
     public Map<String, Object> upload(MultipartFile file) {//保存文件到本地路径
-        if(!new File(path).exists()){
-            new File(path).mkdirs();
+        File fileDir = new File(path);
+        if(!fileDir.exists()){
+            fileDir.mkdirs();
         }
+
         String randomName = UUID.randomUUID().toString();//绝对不会重复的随机数
         String oldName = file.getOriginalFilename();//原始文件名
-        System.out.println(oldName);
+
         String ext = oldName.substring(oldName.lastIndexOf("."));//从最后一个'.'开始截取扩展名
-        File longFile = new File(path + randomName + ext);//路径+随机数+扩展名
-        String newName = "/resources/images/"+randomName + ext;//新文件名
+        String filedirSrc=fileDir.getPath().substring(fileDir.getPath().indexOf(":")+1);
+
+        File longFile = new File(filedirSrc+File.separator+randomName + ext);//路径+随机数+扩展名
+
+
+
+        String newName = "/resources/images/upload/"+randomName + ext;//新文件名
         System.out.println(newName);
-        User user = new User();
+        User user;
 
         user = (User)WebUtils.getSession().getAttribute("user");
         user.setImgpath(newName);

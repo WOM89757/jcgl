@@ -148,7 +148,8 @@
 			<div class="layui-inline">
 				<div class="layui-upload">
 					<div class="layui-upload-list">
-						<img class="layui-upload-img" id="imgsrc" style="position: inherit; height: 74px;">
+						<input type="hidden" name="imgpath" id="imgpath">
+						<img class="layui-upload-img"  id="imgsrc" style="position: inherit; height: 74px;">
 						<p id="demoText"></p>
 						<button type="button" class="layui-btn" id="imgUpload">上传头像</button>
 					</div>
@@ -264,6 +265,8 @@ layui.extend({
 				}
 				//上传成功
 				$('#imgsrc').attr('src',res.src);
+				$("#imgpath").val("");
+				$("#imgpath").val(res.src);
 				return layer.msg('上传成功');
 
 			}
@@ -352,6 +355,8 @@ layui.extend({
    					dtree.setSelectValue("deptTree");
 
 					$("#imgsrc").attr('src',data.imgpath);
+					$("#imgpath").val(data.imgpath);
+
    					//选中领导部门
    					var leaderid=data.mgr;
    					$.get("/user/loadUserById",{id:leaderid},function(res){
