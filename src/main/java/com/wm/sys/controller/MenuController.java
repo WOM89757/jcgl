@@ -43,6 +43,7 @@ public class MenuController {
 		//设置只能查询菜单
 		queryWrapper.eq("type",Constast.TYPE_MNEU);
 		queryWrapper.eq("available", Constast.AVAILABLE_TRUE);
+		queryWrapper.orderByAsc("ordernum");
 		
 		User user = (User) WebUtils.getSession().getAttribute("user");
 		List<Permission> list=null;
