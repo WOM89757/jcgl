@@ -2,6 +2,7 @@ package com.wm.sys.common;
 
 import cn.hutool.core.io.FileUtil;
 import cn.hutool.core.util.IdUtil;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -24,7 +25,7 @@ public class AppFileUtils {
 	
 	static {
 		//读取配置文件的存储地址
-		InputStream stream = AppFileUtils.class.getClassLoader().getResourceAsStream("file.properties");
+		InputStream stream = AppFileUtils.class.getClassLoader().getResourceAsStream("application.properties");
 		Properties properties=new Properties();
 		try {
 			properties.load(stream);
@@ -80,12 +81,12 @@ public class AppFileUtils {
 
 	/**
 	 * 根据路径改名字 去掉_temp
-	 * @param goodsimg
+	 * @param imgName
 	 * @return
 	 */
-	public static String renameFile(String goodsimg) {
-		File file=new File(UPLOAD_PATH, goodsimg);
-		String replace = goodsimg.replace("_temp", "");
+	public static String renameFile(String imgName) {
+		File file=new File(UPLOAD_PATH, imgName);
+		String replace = imgName.replace("_temp", "");
 		if(file.exists()) {
 			file.renameTo(new File(UPLOAD_PATH, replace));
 		}
@@ -97,7 +98,7 @@ public class AppFileUtils {
 	 * @param oldPath
 	 */
 	public static void removeFileByPath(String oldPath) {
-		if(!oldPath.equals(Constast.IMAGES_DEFAULTGOODSIMG_PNG)) {
+		if(!oldPath.equals(Constast.IMAGES_DEFAULTUSERIMG_PNG)) {
 			File file=new File(UPLOAD_PATH, oldPath);
 			if(file.exists()) {
 				file.delete();

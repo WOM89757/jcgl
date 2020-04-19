@@ -45,6 +45,6 @@ public interface Constast {
 	/**
 	 * 商品默认图片
 	 */
-	public static final String IMAGES_DEFAULTGOODSIMG_PNG = "images/defaultgoodsimg.png";
+	public static final String IMAGES_DEFAULTUSERIMG_PNG = "images/defaultuserimg.png";
 
 }

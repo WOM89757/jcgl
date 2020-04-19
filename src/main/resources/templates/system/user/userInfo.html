@@ -21,9 +21,11 @@
 <form class="layui-form layui-row">
 	<div class="layui-col-md3 layui-col-xs12 user_right">
 		<div class="layui-upload-list">
-			<img class="layui-upload-img layui-circle userFaceBtn userAvatar" th:src="${session.user.imgpath}" style="height: 207px; margin-left: 66px;" id="userFace">
+			<input type="hidden" name="imgpath" id="imgpath" >
+			<img class="layui-upload-img thumbImg layui-circle userFaceBtn userAvatar" th:src="'/file/showImageByPath?path='+${session.user.imgpath}"  id="userFace" style="margin-left: 34px;">
 		</div>
 		<button type="button" class="layui-btn layui-btn-primary userFaceBtn" style="margin-left:100px;"><i class="layui-icon">&#xe67c;</i> 更换头像</button>
+
 
 	</div>
 	<div class="layui-col-md6 layui-col-xs12">
@@ -52,24 +54,7 @@
 				<input type="tel" value="" name="contactnum" placeholder="请输入手机号码" lay-verify="phone" class="layui-input userPhone">
 			</div>
 		</div>
-		<div class="layui-form-item userAddress">
-			<label class="layui-form-label">地址</label>
-			<div class="layui-input-inline">
-				<select name="province" lay-filter="province" class="province">
-					<option value="">请选择市</option>
-				</select>
-			</div>
-			<div class="layui-input-inline">
-				<select name="city" lay-filter="city" disabled>
-					<option value="">请选择市</option>
-				</select>
-			</div>
-			<div class="layui-input-inline">
-				<select name="area" lay-filter="area" disabled>
-					<option value="">请选择县/区</option>
-				</select>
-			</div>
-		</div>
+
 
 
 		<div class="layui-form-item">
@@ -88,19 +73,12 @@
 </form>
 <script type="text/javascript" src="/resources/layui/layui.js"></script>
 <script type="text/javascript" >
-	var form, $,areaData;
-	layui.config({
-		base : "/resources/js/"
-	}).extend({
-		"address" : "address"
-	});
-	layui.use(['form','layer','upload','laydate',"address"],function() {
+	layui.use(['form','layer','upload'],function() {
 		form = layui.form;
 		$ = layui.jquery;
 		var layer = parent.layer === undefined ? layui.layer : top.layer,
-				upload = layui.upload,
-				laydate = layui.laydate,
-				address = layui.address
+				upload = layui.upload
+
 		//提交个人资料
 		form.on("submit(changeUser)",function(data){
 			var index = layer.msg('提交中，请稍候',{icon: 16,time:false,shade:0.8});
@@ -121,56 +99,37 @@
 		//获取用户信息
 		function getUserInfo(){
 			$.post("/user/loadUserById",function(data) {
-						//获取省信息
-						address.provinces();
+
+
 						var userInfo = data.data;
-						var citys;
+						$('.userAvatar').attr('src','/file/showImageByPath?path='+userInfo.imgpath);
+						window.sessionStorage.setItem('userFace','/file/showImageByPath?path='+userInfo.imgpath);
 						$("#userName").val(userInfo.name); //用户名
 						$(".userSex input[value="+userInfo.sex+"]").attr("checked","checked"); //性别
 						$(".userPhone").val(userInfo.contactnum); //手机号
 
-
-						// $(".userAddress select[name='province']").val(userInfo.province); //省
-						// $(".userAddress select[name='city']").val(userInfo.city); //市
-						// $(".userAddress select[name='area']").val(userInfo.area); //区
 						form.render();
-						for(key in userInfo){
-							if(key.indexOf("like") != -1){
-								$(".userHobby input[name='"+key+"']").attr("checked","checked");
-							}
-						}
+
 						$(".myself").val(userInfo.remark); //自我评价
 						form.render();
 
 					});
 		}
 
-
-		//上传头像
 		upload.render({
 			elem: '.userFaceBtn',
-			url: '/user/upload',
-			method: "post",
-
-			done: function(res) {
-				//如果上传失败
-				if (!res.success) {
-					return layer.msg('上传失败');
-				}
-				//上传成功
-				$('#userFace').attr('src', res.src);
-				$(".userAvatar").attr("src", res.src);
-
-				return layer.msg('上传成功');
+			url: '/file/uploadFile',
+			acceptMime:'image/*',
+			field:'mf',
+			method : "post",
+			done: function(res, index, upload){
+				var path=res.path;
+				$("#imgpath").val(path);//给隐藏域赋值
+				$('#userFace').attr('src', '/file/showImageByPath?path='+path);
+				$('.userAvatar').attr('src','/file/showImageByPath?path='+path);
+				 layer.msg('上传成功');
 			}
-
-
 		});
-		//获取省信息
-		address.provinces();
-
-
-
 
 	})
 </script>

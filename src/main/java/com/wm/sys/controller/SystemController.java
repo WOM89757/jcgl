@@ -1,12 +1,34 @@
 package com.wm.sys.controller;
 
+import com.wm.sys.common.WebUtils;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 @Controller
 @RequestMapping("sys")
 public class SystemController {
-	
+
+	/**
+	 * 跳转到修改个人密码
+	 */
+	@RequestMapping("toChangePwd")
+	public String toChangePwd() {
+		return "system/user/changePwd";
+	}
+
+	/**
+	 * 注销当前用户，返回登录界面
+	 * @return
+	 */
+	@RequestMapping("loginout")
+	public String loginout() {
+
+		WebUtils.getSession().invalidate();
+		return "system/index/login";
+
+	}
+
+
 	/**
 	 * 跳转到登陆页面
 	 */
