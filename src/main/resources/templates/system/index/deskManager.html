@@ -20,13 +20,14 @@
 	<div class="layui-row layui-col-space10">
 		<div class="layui-col-lg6 layui-col-md12">
 			<blockquote class="layui-elem-quote title">最新公告 <i class="layui-icon layui-red">&#xe756;</i></blockquote>
-			<table class="layui-table mag0" lay-skin="line">
-				<colgroup>
-					<col>
-					<col width="110">
-				</colgroup>
-				<tbody class="hot_news"></tbody>
-			</table>
+<!--			<table class="layui-table mag0" lay-skin="line" lay-filter="noticeTable">-->
+<!--				<colgroup>-->
+<!--					<col>-->
+<!--					<col width="110">-->
+<!--				</colgroup>-->
+<!--				<tbody class="hot_news"></tbody>-->
+<!--			</table>-->
+			<table class="layui-hide" id="noticeTable" lay-filter="noticeTable" ></table>
 			<div id="noticeRowBar" style="display: none;">
 				<button type="button" lay-event="show" class="layui-btn layui-btn-sm"><span class="layui-icon layui-icon-about"></span>查看</button>
 			</div>
@@ -34,7 +35,7 @@
 	</div>
 	<!--最新公告表格	结束 -->
 
-	<!--公告详情弹出层	开始-->
+	<!-- 查看弹出层的开始 -->
 	<div style="display: none;padding: 5px" id="showNoticeDiv">
 		<h2 id="show_title" align="center"></h2>
 		<div style="text-align: right;">
@@ -45,11 +46,15 @@
 		<div id="show_content"></div>
 
 	</div>
+	<!-- 查看弹出层的结束-->
 
-	<!--公告详情弹出层	结束-->
+	<!-- 分配权限的弹出层 开始 -->
+	<div style="display: none;" id="selectRolePermissionDiv">
+		<ul id="permissionTree" class="dtree" data-id="0"></ul>
+	</div>
+	<!-- 分配权限的弹出层 结束-->
 
 	<script type="text/javascript" src="/resources/layui/layui.js"></script>
-	
 	<script type="text/javascript">
 	//得到当前的登陆人信息
 	var currentUserName='[[${session.user.name}]]'
@@ -75,15 +80,17 @@
 	    var second = dateObj.getSeconds(); //当前系统时间的秒钟值
 	    var timeValue = "" +((hour >= 12) ? (hour >= 18) ? "晚上" : "下午" : "上午" ); //当前时间属于上午、晚上还是下午
 	    newDate = dateFilter(year)+"年"+dateFilter(month)+"月"+dateFilter(date)+"日 "+" "+dateFilter(hour)+":"+dateFilter(minute)+":"+dateFilter(second);
-	    document.getElementById("nowTime").innerHTML = "亲爱的【"+currentUserName+"】，"+timeValue+"好！ 欢迎使用 仓库管理系统。当前时间为： "+newDate+"　"+week;
+	    document.getElementById("nowTime").innerHTML = "亲爱的【"+currentUserName+"】，"+timeValue+"好！ 欢迎使用中小学教材智能匹配系统系统。当前时间为： "+newDate+"　"+week;
 	    setTimeout("getLangDate()",1000);
 	}
 
-	layui.use(['form','element','layer','jquery'],function(){
-	    var form = layui.form,
-	        layer = parent.layer === undefined ? layui.layer : top.layer,
-	        element = layui.element;
+	layui.use(['form','element','layer','jquery','table'],function(){
+	    var form = layui.form;
+	        // layer = parent.layer === undefined ? layui.layer : top.layer,
+			var layer=layui.layer;
+	        var element = layui.element;
 	        $ = layui.jquery;
+		var table=layui.table;
 	    //上次登录时间【此处应该从接口获取，实际使用中请自行更换】
 	    $(".loginTime").html(newDate.split("日")[0]+"日</br>"+newDate.split("日")[1]);
 	    //icon动画
@@ -96,18 +103,72 @@
 	        parent.addTab($(this));
 	    })
 	    //最新文章列表
-	    $.get("/notice/loadAllNotice",function(data){
-	        var hotNewsHtml = '';
-			data.count= (data.count>5) ? 5 : data.count;
-	        for(var i=0;i<data.count;i++){
-	            hotNewsHtml += '<tr>'
-	                +'<td align="left"><a href="javascript:;"> '+data.data[i].title+'</a></td>'
-	                +'<td>'+data.data[i].createtime.substring(0,10)+'</td>'+'<td style="width: 1px;">'+'<button type="button" lay-event="show" class="layui-btn layui-btn-sm"><span class="layui-icon layui-icon-about"></span>查看</button>' +'</td>'
-	                +'</tr>';
-	        }
-	        $(".hot_news").html(hotNewsHtml);
-	        $(".userAll span").text(data.length);
-	    })
+	    // $.get("/notice/loadAllNotice",function(data){
+	    //     var hotNewsHtml = '';
+		// 	data.count= (data.count>5) ? 5 : data.count;
+	    //     for(var i=0;i<data.count;i++){
+	    //         hotNewsHtml += '<tr>'
+	    //             +'<td align="left"><a id="withExport"  href="javascript:;" > '+data.data[i].title+'</a></td>'
+	    //             +'<td>'+data.data[i].createtime.substring(0,10)+'</td>'+'<td style="width: 1px;">'+'<button type="button"  lay-event="show" class="layui-btn layui-btn-sm"><span class="layui-icon layui-icon-about"></span>查看</button>' +'</td>'
+	    //             +'</tr>';
+	    //     }
+	    //     $(".hot_news").html(hotNewsHtml);
+	    //     $(".userAll span").text(data.length);
+	    // })
+		//加载 数据
+		var tableIns=table.render({
+			 elem: '#noticeTable'
+			,skin: 'nob' //行边框风格
+			,url:'/notice/loadAllNotice'
+			,limit: 5 //每页默认显示的数量
+			,cols: [ [
+				{field:'title', title:'标题',align:'center',width:'47%'}
+				,{field:'createtime', title:'发布时间',align:'center',width:'25%'}
+				,{field:'opername', title:'发布人',align:'center',width:'16%'}
+				,{ title:'操作', toolbar: '#noticeRowBar',align:'center',width:'12%'}
+			] ],
+			done(){
+				$('.layui-table .layui-table-cell > span').css({'font-weight': 'bold'});//表头字体样式
+				/*$('th').css({'background-color': '#5792c6', 'color': '#fff','font-weight':'bold'}) 表头的样式 */
+				$('th').hide();//表头隐藏的样式
+				$('.layui-table-page').css('margin-top','40px');//页码部分的高度调整
+			}
+		});
+
+		//监听行工具条的事件
+		table.on("tool(noticeTable)",function(obj){
+			var data = obj.data; //获得当前行数据
+			if (obj.event === 'show') {
+				showNotice(data);
+
+			};
+		});
+		var mainIndex;
+		//打开分配角色的页面
+		function showNotice(data){
+			mainIndex=layer.open({
+				type:1,
+				content:$("#showNoticeDiv"),
+				area:['800px','600px'],
+				title:'查看公告',
+				shade: 0.3,
+				shadeClose:true
+				,btn: ['我知道了', '关闭']
+				,yes: function(){
+					layer.close(mainIndex)
+				}
+				,btn2: function(){
+					layer.close(mainIndex)
+				},
+				success:function(){
+					$("#show_title").html(data.title);
+					$("#show_opername").html(data.opername);
+					$("#show_createtime").html(data.createtime);
+					$("#show_content").html(data.content);
+				}
+
+			});
+		}
 
 
 

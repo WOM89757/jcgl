@@ -36,6 +36,13 @@ public class NoticeController {
     @Autowired
     private NoticeService noticeService;
 
+    /**
+     * 根据公告ID查询一条公告
+     */
+    @RequestMapping("loadNoticeById")
+    public DataGridView loadNoticeById(Integer id) {
+        return new DataGridView(this.noticeService.getById(id));
+    }
 
     /**
      * 查询

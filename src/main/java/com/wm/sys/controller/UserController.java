@@ -117,7 +117,10 @@ public class UserController {
                 user.setDeptname(one.getTitle());
             }
             Integer mgr = user.getMgr();
-            if(mgr!=null) {
+            if(mgr==null){
+                mgr=0;
+            }
+            if(mgr!=0) {
                 User one = this.userService.getById(mgr);
                 user.setLeadername(one.getName());
             }

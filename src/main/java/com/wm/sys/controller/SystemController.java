@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 @RequestMapping("sys")
 public class SystemController {
 
+
 	/**
 	 * 跳转到修改个人密码
 	 */

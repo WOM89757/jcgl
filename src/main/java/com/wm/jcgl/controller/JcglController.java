@@ -35,11 +35,11 @@ public class JcglController {
         return "business/provider/providerManager";
     }
     /**
-     * 跳转到商品管理
+     * 跳转到自编书目管理
      */
-    @RequestMapping("toGoodsManager")
-    public String toGoodsManager() {
-        return "business/goods/goodsManager";
+    @RequestMapping("toBooksManager")
+    public String toBooksManager() {
+        return "business/books/booksManager";
     }
     /**
      * 跳转到进货管理
