@@ -1,8 +1,7 @@
 package com.wm.jcgl.mapper;
 
-
+import com.wm.jcgl.entity.Order;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
-import com.wm.jcgl.entity.Border;
 
 /**
  * <p>
@@ -10,8 +9,8 @@ import com.wm.jcgl.entity.Border;
  * </p>
  *
  * @author WOM
- * @since 2020-04-17
+ * @since 2020-04-21
  */
-public interface BorderMapper extends BaseMapper<Border> {
+public interface OrderMapper extends BaseMapper<Order> {
 
 }

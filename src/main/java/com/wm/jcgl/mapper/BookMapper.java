@@ -1,7 +1,8 @@
 package com.wm.jcgl.mapper;
 
-import com.wm.jcgl.entity.Book;
+
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import com.wm.jcgl.entity.Book;
 
 /**
  * <p>
@@ -9,7 +10,7 @@ import com.baomidou.mybatisplus.core.mapper.BaseMapper;
  * </p>
  *
  * @author WOM
- * @since 2020-04-17
+ * @since 2020-04-21
  */
 public interface BookMapper extends BaseMapper<Book> {
 

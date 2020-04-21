@@ -4,12 +4,14 @@ package com.wm.jcgl.controller;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import com.wm.jcgl.entity.Border;
-import com.wm.jcgl.service.BorderService;
-import com.wm.jcgl.vo.BorderVo;
+import com.wm.jcgl.entity.Order;
+import com.wm.jcgl.service.OrderService;
+import com.wm.jcgl.vo.OrderVo;
 import com.wm.sys.common.Constast;
 import com.wm.sys.common.DataGridView;
 import com.wm.sys.common.ResultObj;
+import com.wm.sys.common.WebUtils;
+import com.wm.sys.entity.User;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -19,6 +21,7 @@ import org.springframework.web.bind.annotation.RestController;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -27,36 +30,43 @@ import java.util.List;
  * </p>
  *
  * @author WOM
- * @since 2020-04-17
+ * @since 2020-04-21
  */
 @RestController
-@RequestMapping("/border")
-public class BorderController {
+@RequestMapping("order")
+public class OrderController {
 
     @Autowired
-    private BorderService borderService;
+    private OrderService orderService;
 
     /**
      * 查询
      */
-    @RequestMapping("loadAllBorder")
-    public DataGridView loadAllBorder(BorderVo orderVo) {
-        IPage<Border> page = new Page<>(orderVo.getPage(), orderVo.getLimit());
-        QueryWrapper<Border> queryWrapper = new QueryWrapper<>();
-        queryWrapper.like(null!=orderVo.getOrderDnumber(), "order_dnumber",orderVo.getOrderDnumber());
-       // queryWrapper.like(orderVo.getOrderYear()!=null, "orderYear", orderVo.getOrderYear());
+    @RequestMapping("loadAllOrder")
+    public DataGridView loadAllOrder(OrderVo orderVo) {
+        IPage<Order> page = new Page<>(orderVo.getPage(), orderVo.getLimit());
+        QueryWrapper<Order> queryWrapper = new QueryWrapper<>();
+        queryWrapper.like(null!=orderVo.getId(), "id",orderVo.getId());
+        queryWrapper.like(orderVo.getYear()!=null, "year", orderVo.getYear());
         queryWrapper.like(StringUtils.isNotBlank(orderVo.getOpername()), "opername",orderVo.getOpername());
-        this.borderService.page(page, queryWrapper);
+        queryWrapper.like(orderVo.getQihao()!=null, "qihao", orderVo.getQihao());
+        queryWrapper.ge(orderVo.getStartTime()!=null, "createtime", orderVo.getStartTime());
+        queryWrapper.le(orderVo.getEndTime()!=null, "createtime", orderVo.getEndTime());
+        queryWrapper.orderByDesc("createtime");
+        this.orderService.page(page, queryWrapper);
         return new DataGridView(page.getTotal(), page.getRecords());
     }
 
     /**
      * 添加
      */
-    @RequestMapping("addBorder")
-    public ResultObj addBorder(BorderVo orderVo) {
+    @RequestMapping("addOrder")
+    public ResultObj addOrder(OrderVo orderVo) {
         try {
-            this.borderService.save(orderVo);
+            orderVo.setCreatetime(new Date());
+            User user = (User) WebUtils.getSession().getAttribute("user");
+            orderVo.setOpername(user.getName());
+            this.orderService.save(orderVo);
             return ResultObj.ADD_SUCCESS;
         } catch (Exception e) {
             e.printStackTrace();
@@ -67,10 +77,10 @@ public class BorderController {
     /**
      * 修改
      */
-    @RequestMapping("updateBorder")
-    public ResultObj updateBorder(BorderVo orderVo) {
+    @RequestMapping("updateOrder")
+    public ResultObj updateOrder(OrderVo orderVo) {
         try {
-            this.borderService.updateById(orderVo);
+            this.orderService.updateById(orderVo);
             return ResultObj.UPDATE_SUCCESS;
         } catch (Exception e) {
             e.printStackTrace();
@@ -81,10 +91,10 @@ public class BorderController {
     /**
      * 删除
      */
-    @RequestMapping("deleteBorder")
-    public ResultObj deleteBorder(Integer id) {
+    @RequestMapping("deleteOrder")
+    public ResultObj deleteOrder(Integer id) {
         try {
-            this.borderService.removeById(id);
+            this.orderService.removeById(id);
             return ResultObj.DELETE_SUCCESS;
         } catch (Exception e) {
             e.printStackTrace();
@@ -95,14 +105,14 @@ public class BorderController {
     /**
      * 批量删除
      */
-    @RequestMapping("batchDeleteBorder")
-    public ResultObj batchDeleteBorder(BorderVo orderVo) {
+    @RequestMapping("batchDeleteOrder")
+    public ResultObj batchDeleteOrder(OrderVo orderVo) {
         try {
             Collection<Serializable> idList = new ArrayList<Serializable>();
             for (Integer id : orderVo.getIds()) {
                 idList.add(id);
             }
-            this.borderService.removeByIds(idList);
+            this.orderService.removeByIds(idList);
             return ResultObj.DELETE_SUCCESS;
         } catch (Exception e) {
             e.printStackTrace();
@@ -114,11 +124,11 @@ public class BorderController {
     /**
      * 加载所有可用的供应商
      */
-    @RequestMapping("loadAllBorderForSelect")
-    public DataGridView loadAllBorderForSelect() {
-        QueryWrapper<Border> queryWrapper=new QueryWrapper<>();
+    @RequestMapping("loadAllOrderForSelect")
+    public DataGridView loadAllOrderForSelect() {
+        QueryWrapper<Order> queryWrapper=new QueryWrapper<>();
         queryWrapper.eq("available", Constast.AVAILABLE_TRUE);
-        List<Border> list = this.borderService.list(queryWrapper);
+        List<Order> list = this.orderService.list(queryWrapper);
         return new DataGridView(list);
     }
 

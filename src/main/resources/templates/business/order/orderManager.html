@@ -26,14 +26,14 @@
 		    <div class="layui-inline">
 		      <label class="layui-form-label">征订期号</label>
 		      <div class="layui-input-inline">
-		        <input type="text" name="orderDnumber"  autocomplete="off" class="layui-input">
+		        <input type="text" name="id"  autocomplete="off" class="layui-input">
 		      </div>
 		    </div>
 		    <div class="layui-inline">
 		      <label class="layui-form-label">年份</label>
 
 				<div class="layui-input-inline">
-					<input type="tel" name="orderYear" id="orderYear" readonly="readonly" placeholder="yyyy-MM-dd HH:mm:ss" class="layui-input">
+					<input type="tel" name="year" id="orderYear" readonly="readonly"  class="layui-input">
 				</div>
 		    </div>
 		    <div class="layui-inline">
@@ -43,8 +43,28 @@
 		      </div>
 		    </div>
 		  </div>
+		<div class="layui-form-item">
+			<div class="layui-inline">
+				<label class="layui-form-label">卷期号</label>
+				<div class="layui-input-inline">
+					<input type="text" name="qihao"  autocomplete="off" class="layui-input">
+				</div>
+			</div>
+			<div class="layui-inline">
+				<label class="layui-form-label">开始时间</label>
+				<div class="layui-input-inline">
+					<input type="tel" name="startTime" id="startTime" readonly="readonly" placeholder="yyyy-MM-dd HH:mm:ss" class="layui-input">
+				</div>
+			</div>
+			<div class="layui-inline">
+				<label class="layui-form-label">结束时间</label>
+				<div class="layui-input-inline">
+					<input type="tel" name="endTime"  id="endTime"  readonly="readonly" placeholder="yyyy-MM-dd HH:mm:ss" class="layui-input">
+				</div>
+			</div>
+		</div>
 		  <div class="layui-form-item">
-		  	 <div class="layui-input-block" style="text-align: center;">
+		  	 <div class="layui-input-block" style="text-align: center;margin-left: auto;">
 		       	<button type="button" class="layui-btn" lay-submit="" lay-filter="doSearch"><span class="layui-icon layui-icon-search"></span>查询</button>
       			<button type="reset" class="layui-btn layui-btn-warm"><span class="layui-icon layui-icon-refresh-1"></span>重置</button>
 		      </div>
@@ -56,13 +76,13 @@
 
 <!-- 数据表格开始 -->
 <div>
-	<table class="layui-hide" id="borderTable" lay-filter="borderTable"></table>
-	<div id="borderToolBar" style="display: none;">
+	<table class="layui-hide" id="orderTable" lay-filter="orderTable"></table>
+	<div id="orderToolBar" style="display: none;">
 		<button type="button" lay-event="add" class="layui-btn layui-btn-sm"><span class="layui-icon layui-icon-add-1"></span>添加期号</button>
 		<button type="button" lay-event="batchDelete" class="layui-btn layui-btn-sm layui-btn-danger"><span class="layui-icon layui-icon-delete"></span>批量删除</button>
 	</div>
 	
-	<div id="borderRowBar" style="display: none;">
+	<div id="orderRowBar" style="display: none;">
 		<button type="button" lay-event="update" class="layui-btn layui-btn-sm"><span class="layui-icon layui-icon-edit"></span>更新</button>
 		<button type="button" lay-event="delete" class="layui-btn layui-btn-sm layui-btn-danger"><span class="layui-icon layui-icon-delete"></span>删除</button>
 	</div>
@@ -75,88 +95,59 @@
 	<form action="" method="post" class="layui-form layui-form-pane" id="dataFrm" lay-filter="dataFrm">
 		<div class="layui-form-item">
 			<div class="layui-inline">
-			    <label class="layui-form-label">期号名称</label>
+			    <label class="layui-form-label">征订期号</label>
 			    <div class="layui-input-inline">
-			      <input type="hidden" name="id">
-			      <input type="text" name="orderDnumber" lay-verify="required" autocomplete="off" placeholder="请输入期号名称" class="layui-input">
+			      <input type="text" name="id"  autocomplete="off" disabled class="layui-input ">
 			    </div>
 		    </div>
 			<div class="layui-inline">
-			    <label class="layui-form-label">期号</label>
-			    <div class="layui-input-inline">
-			      <input type="hidden" name="id">
-			      <input type="text" name="telephone" lay-verify="required" autocomplete="off" placeholder="请输入期号电话" class="layui-input">
-			    </div>
-		    </div>
-			<div class="layui-inline">
-			    <label class="layui-form-label">邮编</label>
-			    <div class="layui-input-inline">
-			      <input type="hidden" name="id">
-			      <input type="text" name="zip"  autocomplete="off" placeholder="请输入期号邮编" class="layui-input">
-			    </div>
-		    </div>
+				<label class="layui-form-label">备注</label>
+				<div class="layui-input-inline">
+					<input type="text" name="comment" lay-verify="required" autocomplete="off" placeholder="请输入备注信息" class="layui-input">
+				</div>
+			</div>
  	   </div>
- 	   <div class="layui-form-item">
-		    <label class="layui-form-label">期号地址</label>
-		    <div class="layui-input-block">
-		      <input type="text" name="address" autocomplete="off" placeholder="请输入期号地址" class="layui-input">
-		    </div>
- 	   </div>
- 	   <div class="layui-form-item">
+		<div class="layui-form-item">
 			<div class="layui-inline">
-			    <label class="layui-form-label">联系人</label>
-			    <div class="layui-input-inline">
-			      <input type="hidden" name="id">
-			      <input type="text" name="connectionperson" lay-verify="required" autocomplete="off" placeholder="请输入联系人" class="layui-input">
-			    </div>
-		    </div>
+				<label class="layui-form-label">年份</label>
+				<div class="layui-input-inline">
+					<input type="text" name="year"  autocomplete="off" placeholder="请输入期号年份" class="layui-input">
+				</div>
+			</div>
 			<div class="layui-inline">
-			    <label class="layui-form-label">联系人电话</label>
-			    <div class="layui-input-inline">
-			      <input type="hidden" name="id">
-			      <input type="text" name="phone" lay-verify="required" autocomplete="off" placeholder="请输入联系人电话" class="layui-input">
-			    </div>
-		    </div>
-			<div class="layui-inline">
-			    <label class="layui-form-label">邮箱</label>
-			    <div class="layui-input-inline">
-			      <input type="hidden" name="id">
-			      <input type="text" name="email" lay-verify="required" autocomplete="off" placeholder="请输入期号邮箱" class="layui-input">
-			    </div>
-		    </div>
- 	   </div>
+				<label class="layui-form-label">卷期号</label>
+				<div class="layui-input-inline">
+					<input type="text" name="qihao"  autocomplete="off" placeholder="请输入卷期号" class="layui-input">
+				</div>
+			</div>
+		</div>
+
+
  	   <div class="layui-form-item">
 			<div class="layui-inline">
-			    <label class="layui-form-label">开户银行</label>
+			    <label class="layui-form-label">教材类型</label>
 			    <div class="layui-input-inline">
-			      <input type="hidden" name="id">
-			      <input type="text" name="bank" lay-verify="required" autocomplete="off" placeholder="请输入开户银行" class="layui-input">
+					<select name="jctype" id="JCtype">
+						<option value="0">教材类型</option>
+						<option value="春课">春课</option>
+						<option value="秋课">秋课</option>
+						<option valu	e="春辅">春辅</option>
+						<option value="秋辅">秋辅</option>
+					</select>
 			    </div>
 		    </div>
 			<div class="layui-inline">
-			    <label class="layui-form-label">帐号</label>
+			    <label class="layui-form-label">业务类型</label>
 			    <div class="layui-input-inline">
-			      <input type="hidden" name="id">
-			      <input type="text" name="account" lay-verify="required" autocomplete="off" placeholder="请输入期号帐号" class="layui-input">
-			    </div>
+					<select name="ywtpye" id="YWtpye">
+						<option value="0">业务类型</option>
+						<option value="教材">教材</option>
+						<option value="教辅">教辅</option>
+					</select>
+				</div>
 		    </div>
-			<div class="layui-inline">
-			    <label class="layui-form-label">传真</label>
-			    <div class="layui-input-inline">
-			      <input type="hidden" name="id">
-			      <input type="text" name="fax" lay-verify="required" autocomplete="off" placeholder="请输入期号传真" class="layui-input">
-			    </div>
-		    </div>
+
  	   </div>
-	  <div class="layui-form-item">
-	    <div class="layui-inline">
-	      <label class="layui-form-label">是否可用</label>
-	      <div class="layui-input-inline">
-	        <input type="radio" name="available" value="1" title="可用" checked="">
-	        <input type="radio" name="available" value="0" title="不可用" >
-	      </div>
-	    </div>
-	  </div>
  	   <div class="layui-form-item">
 		    <div class="layui-input-block" style="text-align: center;">
 		      	<button type="button" class="layui-btn" lay-submit="" lay-filter="doSubmit" id="doSubmit" ><span class="layui-icon layui-icon-add-1"></span>提交</button>
@@ -180,24 +171,24 @@ layui.use(['jquery','form','table','layer','laydate'],function(){
 		var laydate=layui.laydate;
 		//加载 数据
 		 tableIns=table.render({
-			 elem: '#borderTable'
-		    ,url:'/border/loadAllBorder'
-		    ,toolbar: '#borderToolBar' //开启头部工具栏，并为其绑定左侧模板
+			 elem: '#orderTable'
+		    ,url:'/order/loadAllOrder'
+		    ,toolbar: '#orderToolBar' //开启头部工具栏，并为其绑定左侧模板
 		    ,title: '期号数据表'
 		    ,height:'full-220'
 		    ,page: true
 		    ,cols: [ [
 		      {type:'checkbox',align:'center'}
-		      ,{field:'orderId', title:'ID',align:'center' ,width:'80'}
-		      ,{field:'orderDnumber', title:'征订期号',align:'center',width:'120'}
-		      ,{field:'orderYear', title:'年份',align:'center',width:'120'}
-		      ,{field:'orderQihao', title:'卷期号',align:'center',width:'150'}
-		      ,{field:'orderJstype', title:'结算类型',align:'center',width:'150'}
-		      ,{field:'orderYwtpye', title:'业务类型',align:'center',width:'120'}
-		      ,{field:'orderComment', title:'备注',align:'center',width:'150'}
+		      ,{field:'id', title:'征订期号',align:'center',width:'120'}
+		      ,{field:'comment', title:'备注',align:'center',width:'150'}
+		      ,{field:'year', title:'年份',align:'center',width:'120'}
+		      ,{field:'qihao', title:'卷期号',align:'center',width:'150'}
+		      ,{field:'jctype', title:'教材类型',align:'center',width:'150'}
+		      ,{field:'ywtpye', title:'业务类型',align:'center',width:'120'}
+
 		      ,{field:'createtime', title:'创建时间',align:'center',width:'120'}
 		      ,{field:'opername', title:'操作员',align:'center',width:'180'}
-		      ,{fixed: 'right', title:'操作', toolbar: '#borderRowBar',align:'center',width:'200'},
+		      ,{fixed: 'right', title:'操作', toolbar: '#orderRowBar',align:'center',width:'200'},
 		    ] ]
 		      ,done: function(res, curr, count){ //处理删除某一页最后一条数据的BUG
 			        if(res.data.length==0&&curr!=1){
@@ -211,7 +202,12 @@ layui.use(['jquery','form','table','layer','laydate'],function(){
 		});
 	//初始化时间选择器
 	laydate.render({
-		elem:'#orderYear',
+		elem:'#startTime',
+		type:'datetime'
+	});
+
+	laydate.render({
+		elem:'#endTime',
 		type:'datetime'
 	});
 		
@@ -228,7 +224,7 @@ layui.use(['jquery','form','table','layer','laydate'],function(){
 		});
 		
 		//监听工具条的事件
-		table.on("toolbar(borderTable)",function(obj){
+		table.on("toolbar(orderTable)",function(obj){
 			 switch(obj.event){
 			    case 'add':
 			     openAddLayer();
@@ -240,14 +236,14 @@ layui.use(['jquery','form','table','layer','laydate'],function(){
 		});
 		
 		//监听行工具条的事件
-		table.on("tool(borderTable)",function(obj){
+		table.on("tool(orderTable)",function(obj){
 			  var data = obj.data; //获得当前行数据
 			 switch(obj.event){
 			    case 'update':
-			   		openUpdateBorderLayer(data);
+			   		openUpdateOrderLayer(data);
 			    break;
 			    case 'delete':
-			   		deleteBorder(data);
+			   		deleteOrder(data);
 			    break;
 			  };
 		});
@@ -259,17 +255,17 @@ layui.use(['jquery','form','table','layer','laydate'],function(){
 			mainIndex=layer.open({
 				type:1,
 				content:$("#addOrUpdateDiv"),
-				area:['800px','600px'],
+				area:['800px','420px'],
 				title:'添加期号',
 				success:function(){
 					$("#dataFrm")[0].reset();
-					url="/border/addBorder";
+					url="/order/addOrder";
 				}
 			});
 		}
 		
 		//打开修改的弹出层
-		function openUpdateBorderLayer(data){
+		function openUpdateOrderLayer(data){
 			mainIndex=layer.open({
 				type:1,
 				content:$("#addOrUpdateDiv"),
@@ -279,7 +275,10 @@ layui.use(['jquery','form','table','layer','laydate'],function(){
 					$("#dataFrm")[0].reset();
 					//装载新的数据
 					form.val("dataFrm",data);
-					url="/border/updateBorder";
+					// var dom_JCtype=$("#JCtype");
+					// //选中一个
+					// dom_JCtype.val(data);
+					url="/order/updateOrder";
 				}
 			});
 		}
@@ -295,9 +294,9 @@ layui.use(['jquery','form','table','layer','laydate'],function(){
 			return false;
 		});
 		//删除
-		function deleteBorder(data){
-			layer.confirm('你确定要删除【'+data.ordername+'】这个期号吗?', {icon: 3, title:'提示'}, function(index){
-				$.post("/border/deleteBorder",{id:data.id},function(res){
+		function deleteOrder(data){
+			layer.confirm('你确定要删除【'+data.comment+'】这个期号吗?', {icon: 3, title:'提示'}, function(index){
+				$.post("/order/deleteOrder",{id:data.id},function(res){
 					if(res.code==200){
 						tableIns.reload();
 					}
@@ -309,7 +308,7 @@ layui.use(['jquery','form','table','layer','laydate'],function(){
 		//批量删除
 		function  batchDelete(){
 			//得到选中行
-			var checkStatus = table.checkStatus('borderTable');
+			var checkStatus = table.checkStatus('orderTable');
 			var dataLength=checkStatus.data.length;
 			if(dataLength>0){
 				layer.confirm('你确定要删除这些期号数据吗?', {icon: 3, title:'提示'}, function(index){
@@ -322,7 +321,7 @@ layui.use(['jquery','form','table','layer','laydate'],function(){
 								ids+="&ids="+item.id;
 							}
 						})
-						$.post("/border/batchDeleteBorder",ids,function(res){
+						$.post("/order/batchDeleteOrder",ids,function(res){
 							if(res.code==200){
 								tableIns.reload();
 							}

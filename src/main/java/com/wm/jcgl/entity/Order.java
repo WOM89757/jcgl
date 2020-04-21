@@ -1,8 +1,9 @@
 package com.wm.jcgl.entity;
 
+import com.baomidou.mybatisplus.annotation.TableName;
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableId;
-
+import java.time.LocalDateTime;
 import com.baomidou.mybatisplus.annotation.TableField;
 import java.io.Serializable;
 import java.util.Date;
@@ -10,7 +11,6 @@ import java.util.Date;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.experimental.Accessors;
-import org.springframework.format.annotation.DateTimeFormat;
 
 /**
  * <p>
@@ -18,53 +18,49 @@ import org.springframework.format.annotation.DateTimeFormat;
  * </p>
  *
  * @author WOM
- * @since 2020-04-17
+ * @since 2020-04-21
  */
 @Data
 @EqualsAndHashCode(callSuper = false)
 @Accessors(chain = true)
-public class Border implements Serializable {
+@TableName("b_order")
+public class Order implements Serializable {
 
     private static final long serialVersionUID=1L;
 
     /**
-     * 征订编号
+     * 00120101 01:课本 20:年份 1/2:春/秋 01:编号
      */
-    @TableId(value = "order_id", type = IdType.AUTO)
-    private Integer orderId;
+    @TableId(value = "id", type = IdType.AUTO)
+    private Integer id;
 
-    /**
-     * 征订期号
-     */
-    private Integer orderDnumber;
 
     /**
      * 年份
      */
-    @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
-    private Date orderYear;
+    private Integer year;
 
     /**
      * 卷期号
      */
-    private Integer orderQihao;
+    private Integer qihao;
 
     /**
-     * 结算类型
+     * 春课、秋课、春辅、秋辅
      */
-    @TableField("order_JStype")
-    private String orderJstype;
+    @TableField("JCtype")
+    private String jctype;
 
     /**
-     * 业务类型
+     * 教材、教辅
      */
-    @TableField("order_YWtpye")
-    private String orderYwtpye;
+    @TableField("YWtpye")
+    private String ywtpye;
 
     /**
      * 备注
      */
-    private String orderComment;
+    private String comment;
 
     /**
      * 创建时间
@@ -76,7 +72,7 @@ public class Border implements Serializable {
      */
     private String opername;
 
-    @TableField(exist=false)
-    private int[] ids;
+
+
 
 }

@@ -1,10 +1,8 @@
 package com.wm.jcgl.entity;
 
-import java.math.BigDecimal;
 import com.baomidou.mybatisplus.annotation.TableName;
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableId;
-import java.time.LocalDateTime;
 import com.baomidou.mybatisplus.annotation.TableField;
 import java.io.Serializable;
 import lombok.Data;
@@ -13,7 +11,7 @@ import lombok.experimental.Accessors;
 
 /**
  * <p>
- * 在此期号内建立、修改、删除和向省店上报书目信息
+ * 供货商信息
  * </p>
  *
  * @author WOM
@@ -22,67 +20,72 @@ import lombok.experimental.Accessors;
 @Data
 @EqualsAndHashCode(callSuper = false)
 @Accessors(chain = true)
-@TableName("b_book")
-public class Book implements Serializable {
+@TableName("b_provider")
+public class Provider implements Serializable {
 
     private static final long serialVersionUID=1L;
 
     /**
-     * 自编书目编号
+     * 供应商编号
      */
     @TableId(value = "id", type = IdType.AUTO)
     private Integer id;
 
     /**
-     * 供应商编号
+     * 供应商全称
      */
-    private Integer orderId;
+    @TableField("providerName")
+    private String providerName;
 
     /**
-     * 书名
+     * 供应商邮编
      */
-    private String name;
+    private String zip;
 
     /**
-     * 年级
+     * 公司地址
      */
-    private String grade;
+    private String address;
 
     /**
-     * 定价
+     * 公司电话
      */
-    private BigDecimal price;
+    private String telephone;
 
     /**
-     * 书号
+     * 联系人
      */
-    @TableField("bookNum")
-    private String bookNum;
+    private String connectionperson;
 
     /**
-     * 版别
+     * 联系人电话
      */
-    private String edition;
+    private String phone;
 
     /**
-     * 免费标记
+     * 开户银行
      */
-    private String free;
+    private String bank;
 
     /**
-     * 分类
+     * 银行账号
      */
-    private String variety;
+    private String account;
 
     /**
-     * 操作员
+     * 联系人邮箱
      */
-    private String opername;
+    private String email;
 
     /**
-     * 创建时间
+     * 公司传真
      */
-    private LocalDateTime createtime;
+    private String fax;
+
+    /**
+     * 【0不可用1可用】
+     */
+    private Integer available;
 
 
 }

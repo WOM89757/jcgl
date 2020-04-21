@@ -1,6 +1,6 @@
 package com.wm.jcgl.service;
 
-import com.wm.jcgl.entity.Border;
+import com.wm.jcgl.entity.Order;
 import com.baomidou.mybatisplus.extension.service.IService;
 
 /**
@@ -9,8 +9,8 @@ import com.baomidou.mybatisplus.extension.service.IService;
  * </p>
  *
  * @author WOM
- * @since 2020-04-17
+ * @since 2020-04-21
  */
-public interface BorderService extends IService<Border> {
+public interface OrderService extends IService<Order> {
 
 }
