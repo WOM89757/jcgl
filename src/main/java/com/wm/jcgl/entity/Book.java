@@ -7,6 +7,8 @@ import com.baomidou.mybatisplus.annotation.TableId;
 import java.time.LocalDateTime;
 import com.baomidou.mybatisplus.annotation.TableField;
 import java.io.Serializable;
+import java.util.Date;
+
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.experimental.Accessors;
@@ -36,7 +38,8 @@ public class Book implements Serializable {
     /**
      * 供应商编号
      */
-    private Integer orderId;
+    @TableField("provider_id")
+    private Integer providerId;
 
     /**
      * 书名
@@ -67,7 +70,7 @@ public class Book implements Serializable {
     /**
      * 免费标记
      */
-    private String free;
+    private Integer free;
 
     /**
      * 分类
@@ -80,9 +83,15 @@ public class Book implements Serializable {
     private String opername;
 
     /**
+     * 库存量
+     */
+    private Integer inportnumber;
+
+    /**
      * 创建时间
      */
-    private LocalDateTime createtime;
+    private Date createtime;
 
-
+    @TableField(exist=false)
+    private String providername;
 }

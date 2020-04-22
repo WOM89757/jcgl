@@ -2,7 +2,7 @@
 <html>
 <head>
 <meta charset="UTF-8">
-<title>商品管理</title>
+<title>自编书目管理</title>
 <meta name="renderer" content="webkit">
 <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
 <meta http-equiv="Access-Control-Allow-Origin" content="*">
@@ -26,43 +26,46 @@
 		   <div class="layui-inline">
 		       <label class="layui-form-label">供应商</label>
 		       <div class="layui-input-inline">
-		         <select name="providerid" id="search_providerid">
+		         <select name="providerId" id="search_providerid">
 		         	<option value="0">请选择供应商</option>
 		         </select>
 		      </div>
 		    </div>
 		    <div class="layui-inline">
-		      <label class="layui-form-label">商品名称</label>
+		      <label class="layui-form-label">书名</label>
 		      <div class="layui-input-inline">
-		        <input type="text" name="goodsname"  autocomplete="off" class="layui-input">
+		        <input type="text" name="name"  autocomplete="off" class="layui-input">
 		      </div>
 		    </div>
 		    <div class="layui-inline">
-		      <label class="layui-form-label">生产批号</label>
+		      <label class="layui-form-label">年级</label>
 		      <div class="layui-input-inline">
-		        <input type="text" name="productcode"  autocomplete="off" class="layui-input">
+		        <input type="text" name="grade"  autocomplete="off" class="layui-input">
 		      </div>
 		    </div>
 		  </div>
 		  <div class="layui-form-item">
 		   <div class="layui-inline">
-		       <label class="layui-form-label">批准文号</label>
+		       <label class="layui-form-label">书号</label>
 		       <div class="layui-input-inline">
-		          <input type="text" name="promitcode"  autocomplete="off" class="layui-input">
+		          <input type="text" name="bookNum"  autocomplete="off" class="layui-input">
 		      </div>
 		    </div>
-		    <div class="layui-inline">
-		      <label class="layui-form-label">商品描述</label>
-		      <div class="layui-input-inline">
-		        <input type="text" name="description"  autocomplete="off" class="layui-input">
-		      </div>
-		    </div>
-		    <div class="layui-inline">
-		      <label class="layui-form-label">商品规格</label>
-		      <div class="layui-input-inline">
-		        <input type="text" name="size"  autocomplete="off" class="layui-input">
-		      </div>
-		    </div>
+			  <div class="layui-inline">
+				  <label class="layui-form-label">是否免费</label>
+				  <div class="layui-input-inline">
+					  <select name="free" >
+						  <option value="0">免费</option>
+						  <option value="1">不免费</option>
+				 	  </select>
+				  </div>
+			  </div>
+			  <div class="layui-inline">
+				<label class="layui-form-label">操作员</label>
+				<div class="layui-input-inline">
+				  <input type="text" name="opername"  autocomplete="off" class="layui-input">
+			  </div>
+			</div>
 		  </div>
 		  <div class="layui-form-item">
 		  	 <div class="layui-input-block" style="text-align: center;">
@@ -77,12 +80,14 @@
 
 <!-- 数据表格开始 -->
 <div>
-	<table class="layui-hide" id="goodsTable" lay-filter="goodsTable"></table>
-	<div id="goodsToolBar" style="display: none;">
-		<button type="button" lay-event="add" class="layui-btn layui-btn-sm"><span class="layui-icon layui-icon-add-1"></span>添加商品</button>
+	<table class="layui-hide" id="bookTable" lay-filter="bookTable"></table>
+	<div id="bookToolBar" style="display: none;">
+		<button type="button" lay-event="add" class="layui-btn layui-btn-sm"><span class="layui-icon layui-icon-add-1"></span>添加自编书目</button>
+		<button type="button" lay-event="batchDelete" class="layui-btn layui-btn-sm layui-btn-danger"><span class="layui-icon layui-icon-delete"></span>批量删除</button>
+
 	</div>
 	
-	<div id="goodsRowBar" style="display: none;">
+	<div id="bookRowBar" style="display: none;">
 		<button type="button" lay-event="update" class="layui-btn layui-btn-sm"><span class="layui-icon layui-icon-edit"></span>更新</button>
 		<button type="button" lay-event="delete" class="layui-btn layui-btn-sm layui-btn-danger"><span class="layui-icon layui-icon-delete"></span>删除</button>
 	</div>
@@ -95,92 +100,71 @@
 	<form action="" method="post" class="layui-form layui-form-pane" id="dataFrm" lay-filter="dataFrm">
 		<div class="layui-col-md12 layui-col-xs12">
 			<div class="layui-row layui-col-space10">
-				<div class="layui-col-md9 layui-col-xs7">
+				<div class="layui-col-md12 layui-col-xs12">
 					<div class="layui-form-item magt3">
 						<label class="layui-form-label">供应商</label>
 						<div class="layui-input-block">
-							 <select name="providerid" id="providerid">
+							 <select name="providerId" id="providerid">
 			         			<option value="0">请选择供应商</option>
 			         		</select>
 						</div>
 					</div>
 					<div class="layui-form-item">
-						<label class="layui-form-label">商品名称</label>
+						<label class="layui-form-label">书名</label>
 						<div class="layui-input-block">
 							 <input type="hidden" name="id">
-							<input type="text" class="layui-input" name="goodsname" lay-verify="required" placeholder="请输入商品名称">
+							<input type="text" class="layui-input" name="name" lay-verify="required" placeholder="请输入书名">
 						</div>
 					</div>
 					<div class="layui-form-item">
-						<label class="layui-form-label">商品描述</label>
+						<label class="layui-form-label">年级</label>
 						<div class="layui-input-block">
-							<input type="text" class="layui-input" name="description" lay-verify="required" placeholder="请输入商品描述">
+							<input type="text" class="layui-input" name="grade" lay-verify="required" placeholder="请输入年级">
 						</div>
 					</div>
 				</div>
-				<div class="layui-col-md3 layui-col-xs5">
-					<div class="layui-upload-list thumbBox mag0 magt3">
-						<input type="hidden" name="goodsimg" id="goodsimg" value="images/defaultgoodsimg.png">
-						<img class="layui-upload-img thumbImg" src="/file/showImageByPath?path=images/defaultgoodsimg.png">
-					</div>
-				</div>
+
 			</div>
 			<div class="layui-form-item magb0">
 				<div class="layui-inline">
-				    <label class="layui-form-label">产地</label>
+				    <label class="layui-form-label">定价</label>
 					<div class="layui-input-inline">
-						<input type="text" class="layui-input" name="produceplace" lay-verify="" placeholder="请输入商品产地">
+						<input type="text" class="layui-input" name="price" lay-verify="" placeholder="请输入定价">
 				   </div>
 				</div>
 				<div class="layui-inline">
-				    <label class="layui-form-label">包装</label>
+				    <label class="layui-form-label">书号</label>
 					<div class="layui-input-inline">
-						<input type="text" class="layui-input" name="goodspackage" lay-verify="" placeholder="请输入商品包装">
+						<input type="text" class="layui-input" name="bookNum" lay-verify="" placeholder="请输入书号">
 				   </div>
 				</div>
 				<div class="layui-inline">
-				    <label class="layui-form-label">规格</label>
+				    <label class="layui-form-label">版别</label>
 					<div class="layui-input-inline">
-						<input type="text" class="layui-input" name="size" lay-verify="" placeholder="请输入商品规格">
+						<input type="text" class="layui-input" name="edition" lay-verify="" placeholder="请输入版别">
 				   </div>
 				</div>
 				<div class="layui-inline">
-				    <label class="layui-form-label">生产批号</label>
+					<label class="layui-form-label">是否免费</label>
 					<div class="layui-input-inline">
-						<input type="text" class="layui-input" name="productcode" lay-verify="" placeholder="请输入商品生产批号">
-				   </div>
+						<input type="radio" name="free" value="0" title="免费" checked="">
+						<input type="radio" name="free" value="1" title="不免费" >
+					</div>
 				</div>
 				<div class="layui-inline">
-				    <label class="layui-form-label">批准文号</label>
+				    <label class="layui-form-label">分类</label>
 					<div class="layui-input-inline">
-						<input type="text" class="layui-input" name="promitcode" lay-verify="" placeholder="请输入商品批准文号">
+						<input type="text" class="layui-input" name="variety" lay-verify="" placeholder="请输入分类号">
 				   </div>
 				</div>
-				<div class="layui-inline">
-				    <label class="layui-form-label">销售价格</label>
-					<div class="layui-input-inline">
-						<input type="text" class="layui-input" name="price" lay-verify="" placeholder="请输入商品销售价格">
-				   </div>
-				</div>
+
 				<div class="layui-inline">
 				    <label class="layui-form-label">库存量</label>
 					<div class="layui-input-inline">
-						<input type="text" class="layui-input" name="number" lay-verify="" placeholder="请输入商品库存量">
+						<input type="text" class="layui-input" name="inportnumber" lay-verify="" placeholder="请输入自编书目库存量">
 				   </div>
 				</div>
-				<div class="layui-inline">
-				    <label class="layui-form-label">预警值</label>
-					<div class="layui-input-inline">
-						<input type="text" class="layui-input" name="dangernum" lay-verify="" placeholder="请输入商品预警值">
-				   </div>
-				</div>
-				<div class="layui-inline">
-			      <label class="layui-form-label">是否可用</label>
-			      <div class="layui-input-inline">
-			        <input type="radio" name="available" value="1" title="可用" checked="">
-			        <input type="radio" name="available" value="0" title="不可用" >
-			      </div>
-		    	</div>
+
 			</div>
 			<div class="layui-form-item">
 			    <div class="layui-input-block" style="text-align: center;">
@@ -206,32 +190,30 @@ layui.use(['jquery','form','table','layer','upload'],function(){
 		var upload=layui.upload;
 		//加载 数据
 		 tableIns=table.render({
-			 elem: '#goodsTable'
-		    ,url:'/goods/loadAllGoods'
-		    ,toolbar: '#goodsToolBar' //开启头部工具栏，并为其绑定左侧模板
-		    ,title: '商品数据表'
+			 elem: '#bookTable'
+		    ,url:'/book/loadAllBook'
+		    ,toolbar: '#bookToolBar' //开启头部工具栏，并为其绑定左侧模板
+		    ,title: '自编书目数据表'
 		    ,height:'full-280'
 		    ,page: true
 		    ,cols: [ [
-		      {field:'id', title:'ID',align:'center' ,width:'80'}
-		      ,{field:'goodsname', title:'商品名称',align:'center',width:'150'}
-		      ,{field:'providername', title:'供应商',align:'center',width:'120'}
-		      ,{field:'produceplace', title:'产地',align:'center',width:'120'}
-		      ,{field:'size', title:'商品规格',align:'center',width:'120'}
-		      ,{field:'goodspackage', title:'商品包装',align:'center',width:'120'}
-		      ,{field:'productcode', title:'生产批号',align:'center',width:'100'}
-		      ,{field:'promitcode', title:'批准文号',align:'center',width:'100'}
-		      ,{field:'description', title:'商品描述',align:'center',width:'120'}
-		      ,{field:'price', title:'商品价格',align:'center',width:'100'}
-		      ,{field:'number', title:'库存量',align:'center',width:'100'}
-		      ,{field:'dangernum', title:'预警库存',align:'center',width:'100'}
-		      ,{field:'goodsimg', title:'商品图片',align:'center',width:'100', templet:function(d){
-		    	  return '<img width=40 height=40 src=/file/showImageByPath?path='+d.goodsimg+ ' />';
-		      }}
-		      ,{field:'available', title:'是否可用',align:'center',width:'100',templet:function(d){
-		    	  return d.available==1?'<font color=blue>可用</font>':'<font color=red>不可用</font>';
-		      }}
-		      ,{fixed: 'right', title:'操作', toolbar: '#goodsRowBar',align:'center',width:'200'}
+		    		{type:'checkbox',align:'center'}
+				  ,{field:'id', title:'ID',align:'center' ,width:'80'}
+				  ,{field:'name', title:'书名',align:'center',width:'150'}
+				  ,{field:'providername', title:'供应商',align:'center',width:'120'}
+				  ,{field:'grade', title:'年级',align:'center',width:'120'}
+				  ,{field:'price', title:'定价',align:'center',width:'120'}
+				  ,{field:'bookNum', title:'书号',align:'center',width:'120'}
+				  ,{field:'edition', title:'版别',align:'center',width:'100'}
+				  ,{field:'variety', title:'分类',align:'center',width:'120'}
+				  ,{field:'opername', title:'操作员',align:'center',width:'100'}
+				  ,{field:'inportnumber', title:'库存量',align:'center',width:'100'}
+				  ,{field:'createtime', title:'创建时间',align:'center',width:'100'}
+
+				  ,{field:'free', title:'是否免费',align:'center',width:'100',templet:function(d){
+					  return d.free==0?'<font color=blue>免费</font>':'<font color=red>不免费</font>';
+				  }}
+				  ,{fixed: 'right', title:'操作', toolbar: '#bookRowBar',align:'center',width:'200'}
 		    ] ]
 		      ,done: function(res, curr, count){ //处理删除某一页最后一条数据的BUG
 			        if(res.data.length==0&&curr!=1){
@@ -250,7 +232,7 @@ layui.use(['jquery','form','table','layer','upload'],function(){
 			var dom=$("#search_providerid");
 			var html='<option value="0">请选择供应商</option>'
 			$.each(data,function(index,item){
-				html+='<option value="'+item.id+'">'+item.providername+'</option>'
+				html+='<option value="'+item.id+'">'+item.providerName+'</option>'
 			});
 			dom.html(html);
 			form.render("select");
@@ -268,7 +250,7 @@ layui.use(['jquery','form','table','layer','upload'],function(){
 		});
 		
 		//监听工具条的事件
-		table.on("toolbar(goodsTable)",function(obj){
+		table.on("toolbar(bookTable)",function(obj){
 			 switch(obj.event){
 			    case 'add':
 			     openAddLayer();
@@ -280,14 +262,14 @@ layui.use(['jquery','form','table','layer','upload'],function(){
 		});
 		
 		//监听行工具条的事件
-		table.on("tool(goodsTable)",function(obj){
+		table.on("tool(bookTable)",function(obj){
 			  var data = obj.data; //获得当前行数据
 			 switch(obj.event){
 			    case 'update':
-			   		openUpdateGoodsLayer(data);
+			   		openUpdateBookLayer(data);
 			    break;
 			    case 'delete':
-			   		deleteGoods(data);
+			   		deleteBook(data);
 			    break;
 			  };
 		});
@@ -300,54 +282,51 @@ layui.use(['jquery','form','table','layer','upload'],function(){
 				type:1,
 				content:$("#addOrUpdateDiv"),
 				area:['800px','600px'],
-				title:'添加商品',
+				title:'添加自编书目',
 				success:function(){
 					$("#dataFrm")[0].reset();
-					url="/goods/addGoods";
+					url="/book/addBook";
 					$.get("/provider/loadAllProviderForSelect",function(res){
 						var data=res.data;
 						var dom=$("#providerid");
 						var html='<option value="0">请选择供应商</option>'
 						$.each(data,function(index,item){
-							html+='<option value="'+item.id+'">'+item.providername+'</option>'
+							html+='<option value="'+item.id+'">'+item.providerName+'</option>'
 						});
 						dom.html(html);
 						form.render("select");
 					});
-					//设置默认图片
-					$(".thumbImg").attr("src",'/file/showImageByPath?path=images/defaultgoodsimg.png');
-					$("#goodsimg").val('images/defaultgoodsimg.png');
+
 				}
 			});
 		}
 		
 		//打开修改的弹出层
-		function openUpdateGoodsLayer(data){
+		function openUpdateBookLayer(data){
 			mainIndex=layer.open({
 				type:1,
 				content:$("#addOrUpdateDiv"),
 				area:['800px','600px'],
-				title:'修改商品',
+				title:'修改自编书目',
 				success:function(){
 					$("#dataFrm")[0].reset();
 					//装载新的数据
 					form.val("dataFrm",data);
-					url="/goods/updateGoods";
+					url="/book/updateBook";
 					$.get("/provider/loadAllProviderForSelect",function(res){
 						var redata=res.data;
 						var dom=$("#providerid");
 						var html='<option value="0">请选择供应商</option>'
 						$.each(redata,function(index,item){
-							if(data.providerid===item.id){
-								html+='<option value="'+item.id+'" selected>'+item.providername+'</option>'
+							if(data.providerId===item.id){
+								html+='<option value="'+item.id+'" selected>'+item.providerName+'</option>'
 							}else{
-								html+='<option value="'+item.id+'">'+item.providername+'</option>'
+								html+='<option value="'+item.id+'">'+item.providerName+'</option>'
 							}
 						});
 						dom.html(html);
 						form.render("select");
 					});
-					$(".thumbImg").attr("src",'/file/showImageByPath?path='+data.goodsimg);
 				}
 			});
 		}
@@ -363,25 +342,12 @@ layui.use(['jquery','form','table','layer','upload'],function(){
 			return false;
 		});
 		
-		//文件上传
-	    upload.render({
-	        elem: '.thumbBox',
-	        url: '/file/uploadFile',
-	        acceptMime:'image/*',
-	        field:'mf',
-	        method : "post",  //此处是为了演示之用，实际使用中请将此删除，默认用post方式提交
-	        done: function(res, index, upload){
-	        	var path=res.path;
-	            $('.thumbImg').attr('src','/file/showImageByPath?path='+path);
-	            $('.thumbBox').css("background","#fff");
-	            $("#goodsimg").val(path);//给隐藏域赋值
-	        }
-	    });
+
 		
 		//删除
-		function deleteGoods(data){
-			layer.confirm('你确定要删除【'+data.goodsname+'】这个商品吗?', {icon: 3, title:'提示'}, function(index){
-				$.post("/goods/deleteGoods",{id:data.id,goodsimg:data.goodsimg},function(res){
+		function deleteBook(data){
+			layer.confirm('你确定要删除【'+data.name+'】这个自编书目吗?', {icon: 3, title:'提示'}, function(index){
+				$.post("/book/deleteBook",{id:data.id},function(res){
 					if(res.code==200){
 						tableIns.reload();
 					}
@@ -389,6 +355,35 @@ layui.use(['jquery','form','table','layer','upload'],function(){
 				})	
 			   layer.close(index);
 			});
+		}
+		//批量删除
+		function  batchDelete(){
+			//得到选中行
+			var checkStatus = table.checkStatus('bookTable');
+			var dataLength=checkStatus.data.length;
+			if(dataLength>0){
+				layer.confirm('你确定要删除这些书目信息吗?', {icon: 3, title:'提示'}, function(index){
+					var data=checkStatus.data; //获取选中行的数据
+					var ids="";
+					$.each(data,function(index,item){
+						if(index==0){
+							ids+="ids="+item.id;
+						}else{
+							ids+="&ids="+item.id;
+						}
+					})
+					$.post("/book/batchDeleteProvider",ids,function(res){
+						if(res.code==200){
+							tableIns.reload();
+						}
+						layer.msg(res.msg);
+					})
+					layer.close(index);
+				});
+
+			}else{
+				layer.msg("请选中操作行")
+			}
 		}
 	});
 </script>

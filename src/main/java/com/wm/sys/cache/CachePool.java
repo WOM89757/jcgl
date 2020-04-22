@@ -2,6 +2,10 @@ package com.wm.sys.cache;
 
 
 
+import com.wm.jcgl.entity.Book;
+import com.wm.jcgl.entity.Provider;
+import com.wm.jcgl.mapper.BookMapper;
+import com.wm.jcgl.mapper.ProviderMapper;
 import com.wm.sys.common.SpringUtil;
 import com.wm.sys.entity.Dept;
 import com.wm.sys.entity.User;
@@ -57,24 +61,18 @@ public class CachePool {
 		for (User user : userList) {
 			CACHE_CONTAINER.put("user:"+user.getId(), user);
 		}
-//		//同步客户数据
-//		CustomerMapper customerMapper = SpringUtil.getBean(CustomerMapper.class);
-//		List<Customer> customerList = customerMapper.selectList(null);
-//		for (Customer customer : customerList) {
-//			CACHE_CONTAINER.put("customer:"+customer.getId(), customer);
-//		}
-//		//同步供应商数据
-//		ProviderMapper providerMapper = SpringUtil.getBean(ProviderMapper.class);
-//		List<Provider> providerList = providerMapper.selectList(null);
-//		for (Provider provider : providerList) {
-//			CACHE_CONTAINER.put("customer:"+provider.getId(), provider);
-//		}
-//		//同步商品数据
-//		GoodsMapper goodsMapper=SpringUtil.getBean(GoodsMapper.class);
-//		List<Goods> goodsList = goodsMapper.selectList(null);
-//		for (Goods goods : goodsList) {
-//			CACHE_CONTAINER.put("goods:"+goods.getId(), goods);
-//		}
+		//同步供应商数据
+		ProviderMapper providerMapper = SpringUtil.getBean(ProviderMapper.class);
+		List<Provider> providerList = providerMapper.selectList(null);
+		for (Provider provider : providerList) {
+			CACHE_CONTAINER.put("provider:"+provider.getId(), provider);
+		}
+		//同步自编书目数据
+		BookMapper goodsMapper=SpringUtil.getBean(BookMapper.class);
+		List<Book> goodsList = goodsMapper.selectList(null);
+		for (Book book : goodsList) {
+			CACHE_CONTAINER.put("book:"+book.getId(), book);
+		}
 	}
 	
 }
