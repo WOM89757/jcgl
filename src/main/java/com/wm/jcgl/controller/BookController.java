@@ -9,16 +9,17 @@ import com.wm.jcgl.entity.Provider;
 import com.wm.jcgl.service.BookService;
 import com.wm.jcgl.service.ProviderService;
 import com.wm.jcgl.vo.BookVo;
-import com.wm.jcgl.vo.ProviderVo;
 import com.wm.sys.common.*;
 import com.wm.sys.entity.User;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.ibatis.annotations.Param;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import org.springframework.web.bind.annotation.RestController;
 
 import java.io.Serializable;
+import java.sql.SQLIntegrityConstraintViolationException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
@@ -33,7 +34,7 @@ import java.util.List;
  * @since 2020-04-21
  */
 @RestController
-@RequestMapping("/book")
+@RequestMapping("book")
 public class BookController {
 
     @Autowired
@@ -43,7 +44,7 @@ public class BookController {
     private ProviderService providerService;
 
     /**
-     * 查询
+     * 书目查询
      */
     @RequestMapping("loadAllBook")
     public DataGridView loadAllBook(BookVo bookVo) {
@@ -58,14 +59,51 @@ public class BookController {
         this.bookService.page(page, queryWrapper);
         List<Book> records = page.getRecords();
         for (Book book : records) {
-            Provider provider = this.providerService.getById(book.getProviderId());
-            if(null!=provider) {
-                book.setProvidername(provider.getProviderName());
+            if(null!=book.getProviderId()){
+                Provider provider = this.providerService.getById(book.getProviderId());
+                if(null!=provider) {
+                    book.setProvidername(provider.getProviderName());
+                }
             }
         }
         return new DataGridView(page.getTotal(), records);
     }
 
+    /**
+     * 自编书目查询
+     */
+    @RequestMapping("loadAllBookByOrderId")
+    public DataGridView loadAllBookByOrderId(BookVo bookVo) {
+        IPage<Book> page = new Page<>(bookVo.getPage(), bookVo.getLimit());
+        List<Book> records = null;
+        if(bookVo.getOrderid()!=null){
+            List<Integer> booksIds = this.bookService.queryOrderBookIdsByOrder(bookVo.getOrderid());
+            if(booksIds.size()>0){
+                QueryWrapper<Book> queryWrapper = new QueryWrapper<>();
+                queryWrapper.in("id",booksIds);
+                queryWrapper.eq(bookVo.getProviderId()!=null&&bookVo.getProviderId()!=0,"provider_id",bookVo.getProviderId());
+                queryWrapper.like(StringUtils.isNotBlank(bookVo.getName()), "name", bookVo.getName());
+                queryWrapper.like(StringUtils.isNotBlank(bookVo.getEdition()), "edition", bookVo.getEdition());
+                queryWrapper.like(bookVo.getId()!=null, "id", bookVo.getId());
+                queryWrapper.like(StringUtils.isNotBlank(bookVo.getGrade()), "grade", bookVo.getGrade());
+                queryWrapper.like(StringUtils.isNotBlank(bookVo.getBookNum()), "bookNum", bookVo.getBookNum());
+                queryWrapper.eq(bookVo.getFree()!=null, "free", bookVo.getFree());
+                queryWrapper.like(StringUtils.isNotBlank(bookVo.getOpername()), "opername", bookVo.getOpername());
+                this.bookService.page(page, queryWrapper);
+                records = page.getRecords();
+                for (Book book : records) {
+                    book.setOrderid(bookVo.getOrderid());
+                    if(null!=book.getProviderId()){
+                        Provider provider = this.providerService.getById(book.getProviderId());
+                        if(null!=provider) {
+                            book.setProvidername(provider.getProviderName());
+                        }
+                    }
+                }
+            }
+        }
+        return new DataGridView(page.getTotal(), records);
+    }
     /**
      * 添加
      */
@@ -76,12 +114,21 @@ public class BookController {
             User user = (User) WebUtils.getSession().getAttribute("user");
             bookVo.setOpername(user.getName());
             this.bookService.save(bookVo);
+            if(bookVo.getOrderid()!=null){
+                //保存单个期号ID与自编书目ID之间的关系
+                Integer[] ids = new Integer[1];
+                ids[0]=bookVo.getId();
+                this.bookService.saveBookOrder(bookVo.getOrderid(),ids);
+            }
+
             return ResultObj.ADD_SUCCESS;
         } catch (Exception e) {
             e.printStackTrace();
             return ResultObj.ADD_ERROR;
         }
     }
+
+
 
     /**
      * 修改
@@ -105,6 +152,19 @@ public class BookController {
         try {
             this.bookService.removeById(id);
             return ResultObj.DELETE_SUCCESS;
+        }catch (Exception e) {
+            e.printStackTrace();
+            return ResultObj.OPERATE_ERROR_DELETE;
+        }
+    }
+    /**
+     * 删除征订期号与自编书目联系
+     */
+    @RequestMapping("deleteRelationBookWithOrderId")
+    public ResultObj deleteBookWithOrderId(@Param("orderid") Integer orderid,@Param("bookid") Integer bookid) {
+        try {
+            this.bookService.deleteBookOrderByOidAndBid(orderid,bookid);
+            return ResultObj.DELETE_SUCCESS;
         } catch (Exception e) {
             e.printStackTrace();
             return ResultObj.DELETE_ERROR;
@@ -113,21 +173,39 @@ public class BookController {
     /**
      * 批量删除
      */
-    @RequestMapping("batchDeleteProvider")
-    public ResultObj batchDeleteProvider(ProviderVo providerVo) {
+    @RequestMapping("batchDeleteBook")
+    public ResultObj batchDeleteBook(BookVo bookVo) {
         try {
             Collection<Serializable> idList = new ArrayList<Serializable>();
-            for (Integer id : providerVo.getIds()) {
+            for (Integer id : bookVo.getIds()) {
                 idList.add(id);
             }
             this.bookService.removeByIds(idList);
             return ResultObj.DELETE_SUCCESS;
         } catch (Exception e) {
             e.printStackTrace();
-            return ResultObj.DELETE_ERROR;
+            return ResultObj.OPERATE_ERROR_DELETE;
         }
     }
-
+    /**
+     * 批量删除征订期号与自编书目联系
+     */
+    @RequestMapping("batchDeleteRelationBookWithOrderId")
+    public ResultObj batchDeleteRelationBookWithOrderId(BookVo bookVo) {
+        try {
+//            Collection<Serializable> idList = new ArrayList<Serializable>();
+//            for (Integer id : bookVo.getIds()) {
+//                idList.add(id);
+//            }
+            for (Integer bookid : bookVo.getIds()) {
+                this.bookService.deleteBookOrderByOidAndBid(bookVo.getOrderid(),bookid);
+            }
+            return ResultObj.DELETE_SUCCESS;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResultObj.OPERATE_ERROR_DELETE;
+        }
+    }
     /**
      * 加载所有可用的供应商
      */
@@ -145,8 +223,25 @@ public class BookController {
         return new DataGridView(list);
     }
 
+//    /**
+//     *根据期号ID查询书目信息
+//     */
+//    @RequestMapping("loadBookByOrderId")
+//    public DataGridView loadBookByOrderId(Integer orderid) {
+//        QueryWrapper<Book> queryWrapper=new QueryWrapper<>();
+//        queryWrapper.eq("available", Constast.AVAILABLE_TRUE);
+//        queryWrapper.eq(orderid!=null, "order_id", orderid);
+//        List<Book> list = this.bookService.listBYOrderId(queryWrapper);
+//        for (Book book : list) {
+//            Provider provider = this.providerService.getById(book.getProviderId());
+//            if(null!=provider) {
+//                book.setProvidername(provider.getProviderName());
+//            }
+//        }
+//        return new DataGridView(list);
+//    }
     /**
-     *根据供应商ID查询商品信息
+     *根据供应商ID查询书目信息
      */
     @RequestMapping("loadBookByProviderId")
     public DataGridView loadBookByProviderId(Integer providerid) {

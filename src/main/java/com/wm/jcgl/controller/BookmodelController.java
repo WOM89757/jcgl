@@ -4,9 +4,9 @@ package com.wm.jcgl.controller;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import com.wm.jcgl.entity.Order;
-import com.wm.jcgl.service.OrderService;
-import com.wm.jcgl.vo.OrderVo;
+import com.wm.jcgl.entity.Bookmodel;
+import com.wm.jcgl.service.BookmodelService;
+import com.wm.jcgl.vo.BookmodelVo;
 import com.wm.sys.common.Constast;
 import com.wm.sys.common.DataGridView;
 import com.wm.sys.common.ResultObj;
@@ -26,47 +26,43 @@ import java.util.List;
 
 /**
  * <p>
- * 征订期号信息 前端控制器
+ * 年级套订信息 前端控制器
  * </p>
  *
  * @author WOM
- * @since 2020-04-21
+ * @since 2020-04-23
  */
 @RestController
-@RequestMapping("order")
-public class OrderController {
+@RequestMapping("bookmodel")
+public class BookmodelController {
 
     @Autowired
-    private OrderService orderService;
+    private BookmodelService bookmodelService;
 
     /**
      * 查询
      */
-    @RequestMapping("loadAllOrder")
-    public DataGridView loadAllOrder(OrderVo orderVo) {
-        IPage<Order> page = new Page<>(orderVo.getPage(), orderVo.getLimit());
-        QueryWrapper<Order> queryWrapper = new QueryWrapper<>();
-        queryWrapper.like(null!=orderVo.getId(), "id",orderVo.getId());
-        queryWrapper.like(orderVo.getYear()!=null, "year", orderVo.getYear());
-        queryWrapper.like(StringUtils.isNotBlank(orderVo.getOpername()), "opername",orderVo.getOpername());
-        queryWrapper.like(orderVo.getQihao()!=null, "qihao", orderVo.getQihao());
-        queryWrapper.ge(orderVo.getStartTime()!=null, "createtime", orderVo.getStartTime());
-        queryWrapper.le(orderVo.getEndTime()!=null, "createtime", orderVo.getEndTime());
-        queryWrapper.orderByDesc("createtime");
-        this.orderService.page(page, queryWrapper);
+    @RequestMapping("loadAllBookmodel")
+    public DataGridView loadAllBookmodel(BookmodelVo bookmodelVo) {
+        IPage<Bookmodel> page = new Page<>(bookmodelVo.getPage(), bookmodelVo.getLimit());
+        QueryWrapper<Bookmodel> queryWrapper = new QueryWrapper<>();
+        queryWrapper.like(bookmodelVo.getId()!=null, "id",bookmodelVo.getId());
+        queryWrapper.like(StringUtils.isNotBlank(bookmodelVo.getName()), "name", bookmodelVo.getName());
+        queryWrapper.like(StringUtils.isNotBlank(bookmodelVo.getOpername()), "opername",bookmodelVo.getOpername());
+        this.bookmodelService.page(page, queryWrapper);
         return new DataGridView(page.getTotal(), page.getRecords());
     }
 
     /**
      * 添加
      */
-    @RequestMapping("addOrder")
-    public ResultObj addOrder(OrderVo orderVo) {
+    @RequestMapping("addBookmodel")
+    public ResultObj addBookmodel(BookmodelVo bookmodelVo) {
         try {
-            orderVo.setCreatetime(new Date());
+            bookmodelVo.setCreatetime(new Date());
             User user = (User) WebUtils.getSession().getAttribute("user");
-            orderVo.setOpername(user.getName());
-            this.orderService.save(orderVo);
+            bookmodelVo.setOpername(user.getName());
+            this.bookmodelService.save(bookmodelVo);
             return ResultObj.ADD_SUCCESS;
         } catch (Exception e) {
             e.printStackTrace();
@@ -77,10 +73,10 @@ public class OrderController {
     /**
      * 修改
      */
-    @RequestMapping("updateOrder")
-    public ResultObj updateOrder(OrderVo orderVo) {
+    @RequestMapping("updateBookmodel")
+    public ResultObj updateBookmodel(BookmodelVo bookmodelVo) {
         try {
-            this.orderService.updateById(orderVo);
+            this.bookmodelService.updateById(bookmodelVo);
             return ResultObj.UPDATE_SUCCESS;
         } catch (Exception e) {
             e.printStackTrace();
@@ -91,10 +87,10 @@ public class OrderController {
     /**
      * 删除
      */
-    @RequestMapping("deleteOrder")
-    public ResultObj deleteOrder(Integer id) {
+    @RequestMapping("deleteBookmodel")
+    public ResultObj deleteBookmodel(Integer id) {
         try {
-            this.orderService.removeById(id);
+            this.bookmodelService.removeById(id);
             return ResultObj.DELETE_SUCCESS;
         } catch (Exception e) {
             e.printStackTrace();
@@ -105,14 +101,14 @@ public class OrderController {
     /**
      * 批量删除
      */
-    @RequestMapping("batchDeleteOrder")
-    public ResultObj batchDeleteOrder(OrderVo orderVo) {
+    @RequestMapping("batchDeleteBookmodel")
+    public ResultObj batchDeleteBookmodel(BookmodelVo bookmodelVo) {
         try {
             Collection<Serializable> idList = new ArrayList<Serializable>();
-            for (Integer id : orderVo.getIds()) {
+            for (Integer id : bookmodelVo.getIds()) {
                 idList.add(id);
             }
-            this.orderService.removeByIds(idList);
+            this.bookmodelService.removeByIds(idList);
             return ResultObj.DELETE_SUCCESS;
         } catch (Exception e) {
             e.printStackTrace();
@@ -122,12 +118,13 @@ public class OrderController {
 
 
     /**
-     * 加载所有征订期号
+     * 加载所有可用的供应商
      */
-    @RequestMapping("loadAllOrderForSelect")
-    public DataGridView loadAllOrderForSelect() {
-        QueryWrapper<Order> queryWrapper=new QueryWrapper<>();
-        List<Order> list = this.orderService.list(queryWrapper);
+    @RequestMapping("loadAllBookmodelForSelect")
+    public DataGridView loadAllBookmodelForSelect() {
+        QueryWrapper<Bookmodel> queryWrapper=new QueryWrapper<>();
+        queryWrapper.eq("available", Constast.AVAILABLE_TRUE);
+        List<Bookmodel> list = this.bookmodelService.list(queryWrapper);
         return new DataGridView(list);
     }
 

@@ -2,7 +2,7 @@
 <html>
 <head>
 <meta charset="UTF-8">
-<title>书目管理</title>
+<title>自编书目管理</title>
 <meta name="renderer" content="webkit">
 <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
 <meta http-equiv="Access-Control-Allow-Origin" content="*">
@@ -23,6 +23,15 @@
 <blockquote class="layui-elem-quote">
 	<form action="" method="post" id="searchFrm" lay-filter="searchFrm" class="layui-form layui-form-pane">
 		<div class="layui-form-item">
+
+			<div class="layui-form-item ">
+				<label class="layui-form-label">征订期号</label>
+				<div class="layui-input-block">
+					<select name="orderid" id="search_orderid"  lay-verify="required">
+						<option value="">请选择征订期号</option>
+					</select>
+				</div>
+			</div>
 		   <div class="layui-inline">
 		       <label class="layui-form-label">供应商</label>
 		       <div class="layui-input-inline">
@@ -43,8 +52,20 @@
 		        <input type="text" name="grade"  autocomplete="off" class="layui-input">
 		      </div>
 		    </div>
+			<div class="layui-inline">
+				<label class="layui-form-label">版别</label>
+				<div class="layui-input-inline">
+					<input type="text" name="edition"  autocomplete="off" class="layui-input">
+				</div>
+			</div>
 		  </div>
 		  <div class="layui-form-item">
+			  <div class="layui-inline">
+				  <label class="layui-form-label">ID</label>
+				  <div class="layui-input-inline">
+					  <input type="text" name="id"  autocomplete="off" class="layui-input">
+				  </div>
+			  </div>
 		   <div class="layui-inline">
 		       <label class="layui-form-label">书号</label>
 		       <div class="layui-input-inline">
@@ -102,10 +123,10 @@
 			<div class="layui-row layui-col-space10">
 				<div class="layui-col-md12 layui-col-xs12">
 					<div class="layui-form-item magt3">
-						<label class="layui-form-label">供应商</label>
+						<label class="layui-form-label">征订期号</label>
 						<div class="layui-input-block">
-							 <select name="providerId" id="providerid">
-			         			<option value="0">请选择供应商</option>
+							 <select name="orderid" id="orderid"  lay-verify="required">
+			         			<option value="">请选择征订期号</option>
 			         		</select>
 						</div>
 					</div>
@@ -164,6 +185,14 @@
 						<input type="text" class="layui-input" name="inportnumber" lay-verify="" placeholder="请输入自编书目库存量">
 				   </div>
 				</div>
+				<div class="layui-form-item magt3">
+					<label class="layui-form-label">供应商</label>
+					<div class="layui-input-block">
+						<select name="providerId" id="providerid"  lay-verify="required">
+							<option value="">请选择供应商</option>
+						</select>
+					</div>
+				</div>
 
 			</div>
 			<div class="layui-form-item">
@@ -191,13 +220,14 @@ layui.use(['jquery','form','table','layer','upload'],function(){
 		//加载 数据
 		 tableIns=table.render({
 			 elem: '#bookTable'
-		    ,url:'/book/loadAllBook'
+		    ,url:'/book/loadAllBookByOrderId'
 		    ,toolbar: '#bookToolBar' //开启头部工具栏，并为其绑定左侧模板
-		    ,title: '书目数据表'
+		    ,title: '自编书目数据表'
 		    ,height:'full-280'
 		    ,page: true
 		    ,cols: [ [
 		    		{type:'checkbox',align:'center'}
+				  ,{field:'orderid', title:'征订期号',align:'center' ,width:'100'}
 				  ,{field:'id', title:'ID',align:'center' ,width:'80'}
 				  ,{field:'name', title:'书名',align:'center',width:'150'}
 				  ,{field:'providername', title:'供应商',align:'center',width:'120'}
@@ -237,6 +267,18 @@ layui.use(['jquery','form','table','layer','upload'],function(){
 			dom.html(html);
 			form.render("select");
 		})
+		//加载查询条件征订期号的下拉列表
+		$.get("/order/loadAllOrderForSelect",function(res){
+			var data=res.data;
+			var dom=$("#search_orderid");
+			var html='<option value="">请选择所要查询的征订期号信息</option>'
+			$.each(data,function(index,item){
+				html+='<option value="'+item.id+'">'+item.id+'-'+item.comment+'</option>'
+			});
+			dom.html(html);
+			form.render("select");
+		})
+
 		
 		//模糊查询
 		form.on("submit(doSearch)",function(data){
@@ -282,18 +324,28 @@ layui.use(['jquery','form','table','layer','upload'],function(){
 				type:1,
 				content:$("#addOrUpdateDiv"),
 				area:['800px','600px'],
-				title:'添加书目',
+				title:'添加自编书目',
 				success:function(){
 					$("#dataFrm")[0].reset();
 					url="/book/addBook";
 					$.get("/provider/loadAllProviderForSelect",function(res){
 						var data=res.data;
 						var dom=$("#providerid");
-						var html='<option value="0">请选择供应商</option>'
+						var html='<option value="">请选择供应商</option>'
 						$.each(data,function(index,item){
 							html+='<option value="'+item.id+'">'+item.providerName+'</option>'
 						});
 						dom.html(html);
+						form.render("select");
+					});
+					$.get("/order/loadAllOrderForSelect",function(res){
+						var data=res.data;
+						var domorder=$("#orderid");
+						var html='<option value="">请选择征订期号</option>'
+						$.each(data,function(index,item){
+							html+='<option value="'+item.id+'">'+item.comment+'</option>'
+						});
+						domorder.html(html);
 						form.render("select");
 					});
 
@@ -307,7 +359,7 @@ layui.use(['jquery','form','table','layer','upload'],function(){
 				type:1,
 				content:$("#addOrUpdateDiv"),
 				area:['800px','600px'],
-				title:'修改书目',
+				title:'修改自编书目',
 				success:function(){
 					$("#dataFrm")[0].reset();
 					//装载新的数据
@@ -316,7 +368,7 @@ layui.use(['jquery','form','table','layer','upload'],function(){
 					$.get("/provider/loadAllProviderForSelect",function(res){
 						var redata=res.data;
 						var dom=$("#providerid");
-						var html='<option value="0">请选择供应商</option>'
+						var html='<option value="">请选择供应商</option>'
 						$.each(redata,function(index,item){
 							if(data.providerId===item.id){
 								html+='<option value="'+item.id+'" selected>'+item.providerName+'</option>'
@@ -346,8 +398,8 @@ layui.use(['jquery','form','table','layer','upload'],function(){
 		
 		//删除
 		function deleteBook(data){
-			layer.confirm('你确定要删除【'+data.name+'】这个书目吗?', {icon: 3, title:'提示'}, function(index){
-				$.post("/book/deleteBook",{id:data.id},function(res){
+			layer.confirm('你确定要删除【'+data.name+'】这个自编书目吗?', {icon: 3, title:'提示'}, function(index){
+				$.post("/book/deleteRelationBookWithOrderId",{orderid:data.orderid,bookid:data.id},function(res){
 					if(res.code==200){
 						tableIns.reload();
 					}
@@ -365,14 +417,16 @@ layui.use(['jquery','form','table','layer','upload'],function(){
 				layer.confirm('你确定要删除这些书目信息吗?', {icon: 3, title:'提示'}, function(index){
 					var data=checkStatus.data; //获取选中行的数据
 					var ids="";
+					var orderid;
 					$.each(data,function(index,item){
 						if(index==0){
 							ids+="ids="+item.id;
+							ids+="&orderid="+item.orderid;
 						}else{
 							ids+="&ids="+item.id;
 						}
 					})
-					$.post("/book/batchDeleteBook",ids,function(res){
+					$.post("/book/batchDeleteRelationBookWithOrderId",ids,function(res){
 						if(res.code==200){
 							tableIns.reload();
 						}

@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
  *
  */
 @Controller
-@RequestMapping("/bus")
+@RequestMapping("bus")
 public class JcglController {
 
     /**
@@ -21,13 +21,6 @@ public class JcglController {
     }
 
     /**
-     * 跳转到客户管理
-     */
-    @RequestMapping("toCustomerManager")
-    public String toCustomerManager() {
-        return "business/customer/customerManager";
-    }
-    /**
      * 跳转到供应商管理
      */
     @RequestMapping("toProviderManager")
@@ -35,11 +28,25 @@ public class JcglController {
         return "business/provider/providerManager";
     }
     /**
-     * 跳转到自编书目管理
+     * 跳转到书目管理
      */
     @RequestMapping("toBooksManager")
     public String toBooksManager() {
         return "business/books/booksManager";
+    }
+    /**
+     * 跳转到自编书目管理
+     */
+    @RequestMapping("toOrderBooksManager")
+    public String toOrderBooksManager() {
+        return "business/books/orderBooksManager";
+    }
+    /**
+     * 跳转到年级套订模型
+     */
+    @RequestMapping("toBookModelManager")
+    public String toBookModelManager() {
+        return "business/bookModel/bookModelManager";
     }
     /**
      * 跳转到进货管理

@@ -94,4 +94,6 @@ public class Book implements Serializable {
 
     @TableField(exist=false)
     private String providername;
+    @TableField(exist=false)
+    private Integer orderid;
 }

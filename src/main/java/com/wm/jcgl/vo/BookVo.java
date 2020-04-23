@@ -20,7 +20,8 @@ public class BookVo extends Book {
 
 	private Integer page = 1;
 	private Integer limit = 10;
-	private int[] ids;
+	private Integer[] ids;
+
 
 	@DateTimeFormat(pattern="yyyy-MM-dd HH:mm:ss")
 	private Date startTime;
