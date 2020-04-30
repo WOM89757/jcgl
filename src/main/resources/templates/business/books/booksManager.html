@@ -82,7 +82,7 @@
 <div>
 	<table class="layui-hide" id="bookTable" lay-filter="bookTable"></table>
 	<div id="bookToolBar" style="display: none;">
-		<button type="button" lay-event="add" class="layui-btn layui-btn-sm"><span class="layui-icon layui-icon-add-1"></span>添加自编书目</button>
+		<button type="button" lay-event="add" class="layui-btn layui-btn-sm"><span class="layui-icon layui-icon-add-1"></span>添加书目</button>
 		<button type="button" lay-event="batchDelete" class="layui-btn layui-btn-sm layui-btn-danger"><span class="layui-icon layui-icon-delete"></span>批量删除</button>
 
 	</div>
@@ -104,8 +104,8 @@
 					<div class="layui-form-item magt3">
 						<label class="layui-form-label">供应商</label>
 						<div class="layui-input-block">
-							 <select name="providerId" id="providerid">
-			         			<option value="0">请选择供应商</option>
+							 <select name="providerId" id="providerid" lay-verify="required" >
+			         			<option value="">请选择供应商</option>
 			         		</select>
 						</div>
 					</div>
@@ -161,7 +161,7 @@
 				<div class="layui-inline">
 				    <label class="layui-form-label">库存量</label>
 					<div class="layui-input-inline">
-						<input type="text" class="layui-input" name="inportnumber" lay-verify="" placeholder="请输入自编书目库存量">
+						<input type="text" class="layui-input" name="inportnumber" lay-verify="" disabled placeholder="已有库存量">
 				   </div>
 				</div>
 
@@ -203,6 +203,7 @@ layui.use(['jquery','form','table','layer','upload'],function(){
 				  ,{field:'providername', title:'供应商',align:'center',width:'120'}
 				  ,{field:'grade', title:'年级',align:'center',width:'120'}
 				  ,{field:'price', title:'定价',align:'center',width:'120'}
+				 ,{field:'discount', title:'折扣',align:'center',width:'120'}
 				  ,{field:'bookNum', title:'书号',align:'center',width:'120'}
 				  ,{field:'edition', title:'版别',align:'center',width:'100'}
 				  ,{field:'variety', title:'分类',align:'center',width:'120'}
@@ -230,7 +231,7 @@ layui.use(['jquery','form','table','layer','upload'],function(){
 		$.get("/provider/loadAllProviderForSelect",function(res){
 			var data=res.data;
 			var dom=$("#search_providerid");
-			var html='<option value="0">请选择供应商</option>'
+			var html='<option value="">请选择供应商</option>'
 			$.each(data,function(index,item){
 				html+='<option value="'+item.id+'">'+item.providerName+'</option>'
 			});
@@ -289,7 +290,7 @@ layui.use(['jquery','form','table','layer','upload'],function(){
 					$.get("/provider/loadAllProviderForSelect",function(res){
 						var data=res.data;
 						var dom=$("#providerid");
-						var html='<option value="0">请选择供应商</option>'
+						var html='<option value="">请选择供应商</option>'
 						$.each(data,function(index,item){
 							html+='<option value="'+item.id+'">'+item.providerName+'</option>'
 						});
@@ -316,7 +317,7 @@ layui.use(['jquery','form','table','layer','upload'],function(){
 					$.get("/provider/loadAllProviderForSelect",function(res){
 						var redata=res.data;
 						var dom=$("#providerid");
-						var html='<option value="0">请选择供应商</option>'
+						var html='<option value="">请选择供应商</option>'
 						$.each(redata,function(index,item){
 							if(data.providerId===item.id){
 								html+='<option value="'+item.id+'" selected>'+item.providerName+'</option>'

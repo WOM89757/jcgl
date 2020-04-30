@@ -111,13 +111,13 @@
 			<div class="layui-inline">
 				<label class="layui-form-label">年份</label>
 				<div class="layui-input-inline">
-					<input type="text" name="year"  autocomplete="off" placeholder="请输入期号年份" class="layui-input">
+					<input type="text" name="year"  autocomplete="off" placeholder="请输入期号年份" lay-verify="required" class="layui-input">
 				</div>
 			</div>
 			<div class="layui-inline">
 				<label class="layui-form-label">卷期号</label>
 				<div class="layui-input-inline">
-					<input type="text" name="qihao"  autocomplete="off" placeholder="请输入卷期号" class="layui-input">
+					<input type="text" name="qihao"  autocomplete="off" placeholder="请输入卷期号" lay-verify="required" class="layui-input">
 				</div>
 			</div>
 		</div>
@@ -127,11 +127,11 @@
 			<div class="layui-inline">
 			    <label class="layui-form-label">教材类型</label>
 			    <div class="layui-input-inline">
-					<select name="jctype" id="JCtype">
-						<option value="0">教材类型</option>
+					<select name="jctype" id="JCtype" lay-verify="required">
+						<option value="">请选择教材类型</option>
 						<option value="春课">春课</option>
 						<option value="秋课">秋课</option>
-						<option valu	e="春辅">春辅</option>
+						<option value="春辅">春辅</option>
 						<option value="秋辅">秋辅</option>
 					</select>
 			    </div>
@@ -139,8 +139,8 @@
 			<div class="layui-inline">
 			    <label class="layui-form-label">业务类型</label>
 			    <div class="layui-input-inline">
-					<select name="ywtpye" id="YWtpye">
-						<option value="0">业务类型</option>
+					<select name="ywtpye" id="YWtpye" lay-verify="required">
+						<option value="">请选择业务类型</option>
 						<option value="教材">教材</option>
 						<option value="教辅">教辅</option>
 					</select>

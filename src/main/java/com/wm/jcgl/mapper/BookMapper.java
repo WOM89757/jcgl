@@ -29,6 +29,7 @@ public interface BookMapper extends BaseMapper<Book> {
      * @param book_id
      */
     void saveBookOrder(@Param("order_id")Integer order_id, @Param("book_id")Integer book_id);
+
     /**
      * 根据期号ID删除book_order
      * @param id
@@ -42,4 +43,29 @@ public interface BookMapper extends BaseMapper<Book> {
      */
     void deleteBookOrderByOidAndBid(@Param("order_id")Integer order_id, @Param("book_id")Integer book_id);
 
+    /**
+     * 保存自编书目ID与年级模型ID之间的关系
+     * @param bmodelid
+     * @param bookid
+     */
+    void saveBookModel(@Param("bmodel_id")Integer bmodelid, @Param("book_id")Integer bookid);
+
+    /**
+     * 根据年级模型ID查询所有的自编书目ID
+     * @param bmodelid
+     * @return
+     */
+    List<Integer> queryModelBookIdsByModel(Integer bmodelid);
+    /**
+     * 根据年级模型ID删除所有
+     * @param id
+     */
+    void deleteBookModelByMid(Serializable id);
+
+    /**
+     * 根据自编书目ID与年级模型ID删除一条 book_order
+     * @param bmodel_id
+     * @param book_id
+     */
+    void deleteBookModelByMidAndBid(@Param("bmodel_id")Integer bmodel_id, @Param("book_id")Integer book_id);
 }

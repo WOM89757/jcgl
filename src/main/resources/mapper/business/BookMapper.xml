@@ -9,13 +9,30 @@
     <insert id="saveBookOrder">
 		insert into book_order(book_id,order_id) values(#{book_id},#{order_id})
 	</insert>
-    <!-- 根据期号ID删除book_order -->
+    <!-- 根据期号ID删除所有 book_order -->
     <delete id="deleteBookOrderByOid">
 		delete from book_order where order_id=#{value}
 	</delete>
-	<!-- 根据期号ID与自编书目id 删除book_order -->
+	<!-- 根据期号ID与自编书目id删除一条 book_order -->
     <delete id="deleteBookOrderByOidAndBid">
 		delete from book_order where book_id=#{book_id} AND order_id=#{order_id}
+	</delete>
+
+	<!--根据年级模型ID查询所有的自编书目ID -->
+	<select id="queryModelBookIdsByModel" resultType="java.lang.Integer">
+		select book_id from book_bookmodel where bmodel_id=#{value}
+	</select>
+	<!-- 保存自编书目ID与年级模型ID之间的关系 -->
+	<insert id="saveBookModel">
+		insert into book_bookmodel(bmodel_id,book_id) values(#{bmodel_id},#{book_id})
+	</insert>
+	<!-- 根据年级模型ID删除所有 book_bookmodel -->
+	<delete id="deleteBookModelByMid">
+		delete from book_bookmodel where bmodel_id=#{value}
+	</delete>
+	<!-- 根据自编书目ID与年级模型ID删除一条 book_bookmodel -->
+	<delete id="deleteBookModelByMidAndBid">
+		delete from book_bookmodel where book_id=#{book_id} AND bmodel_id=#{bmodel_id}
 	</delete>
 
 

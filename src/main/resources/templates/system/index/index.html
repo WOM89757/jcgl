@@ -182,12 +182,24 @@
 
 		//清除缓存
 		$(".clearCache").click(function(){
-			window.sessionStorage.clear();
-	        window.localStorage.clear();
-	        var index = layer.msg('清除缓存中，请稍候',{icon: 16,time:false,shade:0.8});
+			var indexClear;
+			layer.confirm('你确定要清空所有缓存数据吗?', {icon: 3, title:'提示'}, function(index){
+				window.sessionStorage.clear();
+				window.localStorage.clear();
+				indexClear = layer.msg('清除缓存中，请稍候',{icon: 16,time:false,shade:0.8});
+				$.post("/cache/removeAllCache",function(res){
+					if(res.code==200){
+
+						layer.msg("缓存清除成功！");
+					}
+					layer.close(indexClear);
+					//layer.msg(res.msg);
+				})
+				layer.close(index);
+			});
+
 	        setTimeout(function(){
-	            layer.close(index);
-	            layer.msg("缓存清除成功！");
+
 	        },1000);
 	    })
 

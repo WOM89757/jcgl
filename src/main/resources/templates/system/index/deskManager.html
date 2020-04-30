@@ -28,9 +28,6 @@
 <!--				<tbody class="hot_news"></tbody>-->
 <!--			</table>-->
 			<table class="layui-hide" id="noticeTable" lay-filter="noticeTable" ></table>
-			<div id="noticeRowBar" style="display: none;">
-				<button type="button" lay-event="show" class="layui-btn layui-btn-sm"><span class="layui-icon layui-icon-about"></span>查看</button>
-			</div>
 		</div>
 	</div>
 	<!--最新公告表格	结束 -->
@@ -102,19 +99,6 @@
 	    $(".panel a").click(function(){
 	        parent.addTab($(this));
 	    })
-	    //最新文章列表
-	    // $.get("/notice/loadAllNotice",function(data){
-	    //     var hotNewsHtml = '';
-		// 	data.count= (data.count>5) ? 5 : data.count;
-	    //     for(var i=0;i<data.count;i++){
-	    //         hotNewsHtml += '<tr>'
-	    //             +'<td align="left"><a id="withExport"  href="javascript:;" > '+data.data[i].title+'</a></td>'
-	    //             +'<td>'+data.data[i].createtime.substring(0,10)+'</td>'+'<td style="width: 1px;">'+'<button type="button"  lay-event="show" class="layui-btn layui-btn-sm"><span class="layui-icon layui-icon-about"></span>查看</button>' +'</td>'
-	    //             +'</tr>';
-	    //     }
-	    //     $(".hot_news").html(hotNewsHtml);
-	    //     $(".userAll span").text(data.length);
-	    // })
 		//加载 数据
 		var tableIns=table.render({
 			 elem: '#noticeTable'
@@ -122,10 +106,9 @@
 			,url:'/notice/loadAllNotice'
 			,limit: 5 //每页默认显示的数量
 			,cols: [ [
-				{field:'title', title:'标题',align:'center',width:'47%'}
-				,{field:'createtime', title:'发布时间',align:'center',width:'25%'}
-				,{field:'opername', title:'发布人',align:'center',width:'16%'}
-				,{ title:'操作', toolbar: '#noticeRowBar',align:'center',width:'12%'}
+				{field:'title', title:'标题',align:'center',width:'50%'}
+				,{field:'createtime', title:'发布时间',align:'center',width:'30%'}
+				,{field:'opername', title:'发布人',align:'center',width:'20%'}
 			] ],
 			done(){
 				$('.layui-table .layui-table-cell > span').css({'font-weight': 'bold'});//表头字体样式
@@ -135,13 +118,15 @@
 			}
 		});
 
-		//监听行工具条的事件
-		table.on("tool(noticeTable)",function(obj){
-			var data = obj.data; //获得当前行数据
-			if (obj.event === 'show') {
-				showNotice(data);
 
-			};
+		//监听行单击事件
+		table.on('row(noticeTable)', function(obj){
+			var data = obj.data;
+			showNotice(data);
+
+
+			//标注选中样式
+			obj.tr.addClass('layui-table-click').siblings().removeClass('layui-table-click');
 		});
 		var mainIndex;
 		//打开分配角色的页面

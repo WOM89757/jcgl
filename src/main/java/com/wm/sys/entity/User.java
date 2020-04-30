@@ -42,7 +42,7 @@ public class User implements Serializable {
     private String remark;
 
     private String pwd;
-
+    @TableField(value = "dept_id")
     private Integer deptid;
 
     private Date hiredate;

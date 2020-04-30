@@ -245,7 +245,7 @@ layui.extend({
 			    yes: function(index, layero){
 			    	//得到树选中的所有节点
 			    	var permissionData = dtree.getCheckbarNodesParam("permissionTree");
-			    	console.log(params);
+			    	console.log(permissionData);
 			    	var params="rid="+data.id;
 			    	$.each(permissionData,function(index,item){
 			    		params+="&ids="+item.nodeId;

@@ -57,6 +57,11 @@ public class Book implements Serializable {
     private BigDecimal price;
 
     /**
+     * 销售折扣
+     */
+    private BigDecimal discount;
+
+    /**
      * 书号
      */
     @TableField("bookNum")
@@ -73,7 +78,7 @@ public class Book implements Serializable {
     private Integer free;
 
     /**
-     * 分类
+     * 分类 小学 初中 高中
      */
     private String variety;
 
@@ -85,6 +90,7 @@ public class Book implements Serializable {
     /**
      * 库存量
      */
+    @TableField(value = "inportNum")
     private Integer inportnumber;
 
     /**
@@ -96,4 +102,6 @@ public class Book implements Serializable {
     private String providername;
     @TableField(exist=false)
     private Integer orderid;
+    @TableField(value = "bmodel_id",exist=false)
+    private Integer bmodelid;
 }

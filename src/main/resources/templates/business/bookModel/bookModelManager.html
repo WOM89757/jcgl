@@ -54,18 +54,35 @@
 
 
 <!-- 数据表格开始 -->
-<div>
-	<table class="layui-hide" id="bookmodelTable" lay-filter="bookmodelTable"></table>
-	<div id="bookmodelToolBar" style="display: none;">
-		<button type="button" lay-event="add" class="layui-btn layui-btn-sm"><span class="layui-icon layui-icon-add-1"></span>添加模型</button>
-		<button type="button" lay-event="batchDelete" class="layui-btn layui-btn-sm layui-btn-danger"><span class="layui-icon layui-icon-delete"></span>批量删除</button>
+<div class="layui-row layui-col-space10">
+	<div class="layui-col-md6">
+		<table class="layui-hide" id="bookmodelTable" lay-filter="bookmodelTable"></table>
+		<div id="bookmodelToolBar" style="display: none;">
+			<button type="button" lay-event="add" class="layui-btn layui-btn-sm"><span class="layui-icon layui-icon-add-1"></span>添加模型</button>
+			<button type="button" lay-event="batchDelete" class="layui-btn layui-btn-sm layui-btn-danger"><span class="layui-icon layui-icon-delete"></span>批量删除</button>
+		</div>
+
+		<div id="bookmodelRowBar" style="display: none;">
+			<button type="button" lay-event="update" class="layui-btn layui-btn-sm"><span class="layui-icon layui-icon-edit"></span>更新</button>
+			<button type="button" lay-event="updatebook" class="layui-btn layui-btn-sm"><span class="layui-icon layui-icon-edit"></span>添加书目</button>
+			<button type="button" lay-event="delete" class="layui-btn layui-btn-sm layui-btn-danger"><span class="layui-icon layui-icon-delete"></span>删除</button>
+		</div>
+
 	</div>
-	
-	<div id="bookmodelRowBar" style="display: none;">
-		<button type="button" lay-event="update" class="layui-btn layui-btn-sm"><span class="layui-icon layui-icon-edit"></span>更新</button>
-		<button type="button" lay-event="delete" class="layui-btn layui-btn-sm layui-btn-danger"><span class="layui-icon layui-icon-delete"></span>删除</button>
+	<div class="layui-col-md6">
+		<input type="hidden" name="bmodelid" id="bmodelidRtable">
+		<table class="layui-hide" id="bookTable" lay-filter="bookTable"></table>
+		<div id="bookToolBar" style="display: none;">
+			<button type="button" lay-event="batchDelete" class="layui-btn layui-btn-sm "><span class="layui-icon layui-icon-delete"></span>批量删除</button>
+
+		</div>
+
+		<div id="bookRowBar" style="display: none;">
+			<button type="button" lay-event="delete" class="layui-btn layui-btn-sm layui-btn-danger"><span class="layui-icon layui-icon-delete"></span>删除</button>
+		</div>
 	</div>
 </div>
+
 
 <!-- 数据表格结束 -->
 
@@ -93,6 +110,66 @@
 </div>
 <!-- 添加和修改的弹出层结束 -->
 
+<!-- 模型添加书目的弹出层开始 -->
+<div style="display: none;padding: 5px" id="addBookDiv">
+		<!-- 查询条件开始 -->
+		<fieldset class="layui-elem-field layui-field-title" style="margin-top: 5px;">
+			<legend>查询条件</legend>
+		</fieldset>
+		<blockquote class="layui-elem-quote"  >
+			<form action="" method="post" id="searchFrm" lay-filter="searchFrm" class="layui-form layui-form-pane">
+				<div class="layui-form-item">
+					<div class="layui-inline">
+						<label class="layui-form-label">书名</label>
+						<div class="layui-input-inline">
+							<input type="text" name="name"  autocomplete="off" class="layui-input">
+						</div>
+					</div>
+					<div class="layui-inline">
+						<label class="layui-form-label">年级</label>
+						<div class="layui-input-inline">
+							<input type="text" name="grade"  autocomplete="off" class="layui-input">
+						</div>
+					</div>
+					<div class="layui-inline">
+						<label class="layui-form-label">是否免费</label>
+						<div class="layui-input-inline">
+							<select name="free" >
+								<option value="0">免费</option>
+								<option value="1">不免费</option>
+							</select>
+						</div>
+					</div>
+				</div>
+				<div class="layui-form-item">
+					<div class="layui-input-block" style="text-align: center;">
+						<button type="button" class="layui-btn" lay-submit="" lay-filter="dobookSearch"><span class="layui-icon layui-icon-search"></span>查询</button>
+						<button type="reset" class="layui-btn layui-btn-warm"><span class="layui-icon layui-icon-refresh-1"></span>重置</button>
+					</div>
+				</div>
+			</form>
+		</blockquote>
+		<!-- 查询条件结束-->
+
+
+		<!-- 数据表格开始 -->
+		<div>
+			<form action="" method="post" id="bookaddFrm" lay-filter="bookaddFrm" class="layui-form layui-form-pane" >
+				<input type="hidden" name="bmodelid" id="bmodelid">
+				<div id="qbookToolBar" style="display: none;">
+					<button type="button" lay-event="batchAdd" class="layui-btn layui-btn-sm " lay-filter="dobookadd"><span class="layui-icon "></span>添加所选书目</button>
+
+				</div>
+			</form>
+
+			<table class="layui-hide" id="qbookTable" lay-filter="qbookTable"></table>
+
+		</div>
+
+		<!-- 数据表格结束 -->
+</div>
+<!-- 模型添加书目的弹出层结束 -->
+
 
 
 <script type="text/javascript" src="/resources/layui/layui.js"></script>
@@ -103,7 +180,212 @@ layui.use(['jquery','form','table','layer'],function(){
 		var form=layui.form;
 		var table=layui.table;
 		var layer=layui.layer;
-		//加载 数据
+
+		//加载 模型所要添加数据
+		qbooktableIns=table.render({
+			elem: '#qbookTable'
+			,url:'/book/loadAllBook'
+			,toolbar: '#qbookToolBar' //开启头部工具栏，并为其绑定左侧模板
+			,title: '书目数据表'
+			,height:'full-280'
+			,page: true
+			,cols: [ [
+				{type:'checkbox',align:'center'}
+				,{field:'id', title:'ID',align:'center' ,width:'80'}
+				,{field:'name', title:'书名',align:'center',width:'150'}
+				,{field:'providername', title:'供应商',align:'center',width:'120'}
+				,{field:'grade', title:'年级',align:'center',width:'120'}
+				,{field:'price', title:'定价',align:'center',width:'120'}
+				,{field:'discount', title:'折扣',align:'center',width:'120'}
+				,{field:'bookNum', title:'书号',align:'center',width:'120'}
+				,{field:'edition', title:'版别',align:'center',width:'100'}
+				,{field:'variety', title:'分类',align:'center',width:'120'}
+				,{field:'opername', title:'操作员',align:'center',width:'100'}
+				,{field:'inportnumber', title:'库存量',align:'center',width:'100'}
+				,{field:'createtime', title:'创建时间',align:'center',width:'100'}
+
+				,{field:'free', title:'是否免费',align:'center',width:'100',templet:function(d){
+						return d.free==0?'<font color=blue>免费</font>':'<font color=red>不免费</font>';
+					}}
+			] ]
+		});
+
+
+		//模糊查询
+		form.on("submit(dobookSearch)",function(data){
+			qbooktableIns.reload({
+				where:data.field,
+				page:{
+					curr:1
+				}
+			});
+			return false;
+		});
+		form.on("submit(dobookadd)",function(data){
+			console.log(data.field);
+			$.post(url,data.field,function(res){
+				if(res.code==200){
+					tableIns.reload();
+				}
+				layer.msg(res.msg);
+				layer.close(mainIndex);
+			});
+			return false;
+		});
+
+		//监听工具条的事件
+		table.on("toolbar(qbookTable)",function(obj){
+			switch(obj.event){
+				case 'batchAdd':
+					batchAdd();
+					break;
+			};
+		});
+
+
+
+		//批量添加
+		function  batchAdd(){
+			//得到选中行
+			var checkStatus = table.checkStatus('qbookTable');
+			var dataLength=checkStatus.data.length;
+			if(dataLength>0){
+				layer.confirm('你确定要给模型中添加这些书目吗?', {icon: 3, title:'提示'}, function(index){
+					var data=checkStatus.data; //获取选中行的数据
+					var ids="";
+					var bmodelid=$("#bmodelid").val();
+					console.log(bmodelid);
+					$.each(data,function(index,item){
+						if(index==0){
+							ids+="ids="+item.id;
+							ids+="&bmodelid="+bmodelid;
+						}else{
+							ids+="&ids="+item.id;
+						}
+					})
+					$.post("/book/addBookModel",ids,function(res){
+						if(res.code==200){
+							layer.close(mainIndex);
+							BookTableIns.reload({
+								where:{bmodelid:bmodelid}
+							});
+						}
+						layer.msg(res.msg);
+					})
+					layer.close(index);
+
+				});
+
+			}else{
+				layer.msg("请选中操作行")
+			}
+		}
+
+	//加载 书目表数据
+	BookTableIns=table.render({
+		elem: '#bookTable'
+		,url:'/book/loadAllBookByModelId'
+		,toolbar: '#bookToolBar' //开启头部工具栏，并为其绑定左侧模板
+		,title: '书目数据表'
+		,height:'full-220'
+		,page: true
+		,cols: [ [
+			{type:'checkbox',align:'center'}
+			,{field:'id', title:'ID',align:'center' ,width:'80'}
+			,{field:'name', title:'书名',align:'center',width:'150'}
+			,{field:'providername', title:'供应商',align:'center',width:'120'}
+			,{field:'grade', title:'年级',align:'center',width:'120'}
+			,{field:'price', title:'定价',align:'center',width:'120'}
+			,{field:'discount', title:'折扣',align:'center',width:'120'}
+			,{field:'bookNum', title:'书号',align:'center',width:'120'}
+			,{field:'edition', title:'版别',align:'center',width:'100'}
+			,{field:'variety', title:'分类',align:'center',width:'120'}
+			,{field:'opername', title:'操作员',align:'center',width:'100'}
+			,{field:'inportnumber', title:'库存量',align:'center',width:'100'}
+			,{field:'createtime', title:'创建时间',align:'center',width:'100'}
+
+			,{field:'free', title:'是否免费',align:'center',width:'100',templet:function(d){
+					return d.free==0?'<font color=blue>免费</font>':'<font color=red>不免费</font>';
+				}}
+			,{fixed: 'right', title:'操作', toolbar: '#bookRowBar',align:'center',width:'100'}
+		] ]
+		,done: function(res, curr, count){ //处理删除某一页最后一条数据的BUG
+			if(res.data.length==0&&curr!=1){
+				BookTableIns.reload({
+					page:{
+						curr:(curr-1)
+					}
+				});
+			}
+		}
+	});
+	//监听工具条的事件
+	table.on("toolbar(bookTable)",function(obj){
+		switch(obj.event){
+			case 'batchDelete':
+				batchDeletebook();
+				break;
+		};
+	});
+
+	//监听行工具条的事件
+	table.on("tool(bookTable)",function(obj){
+		var data = obj.data; //获得当前行数据
+		switch(obj.event){
+			case 'delete':
+				deleteBook(data);
+				break;
+		};
+	});
+	//删除
+	function deleteBook(data){
+		layer.confirm('你确定要从当前年级模型中移除【'+data.name+'】这个书目吗?', {icon: 3, title:'提示'}, function(index){
+			var bmodelid = $("#bmodelidRtable").val();
+			$.post("/book/deleteRelationBookWithModelId",{bookid:data.id,bmodelid:bmodelid},function(res){
+				if(res.code==200){
+					BookTableIns.reload({
+						where:{bmodelid:bmodelid}
+					});
+				}
+				layer.msg(res.msg);
+			})
+			layer.close(index);
+		});
+	}
+	//批量删除
+	function  batchDeletebook(){
+		//得到选中行
+		var checkStatus = table.checkStatus('bookTable');
+		var dataLength=checkStatus.data.length;
+		if(dataLength>0){
+			layer.confirm('你确定要从当前年级模型删除这些书目信息吗?', {icon: 3, title:'提示'}, function(index){
+				var data=checkStatus.data; //获取选中行的数据
+				var ids="";
+				var bmodelid = $("#bmodelidRtable").val();
+				$.each(data,function(index,item){
+					if(index==0){
+						ids+="ids="+item.id;
+						ids+="&bmodelid="+bmodelid;
+					}else{
+						ids+="&ids="+item.id;
+					}
+				})
+				$.post("/book/batchDeleteRelationBookWithModelId",ids,function(res){
+					if(res.code==200){
+						BookTableIns.reload({
+							where:{bmodelid:bmodelid}
+						});
+					}
+					layer.msg(res.msg);
+				})
+				layer.close(index);
+			});
+
+		}else{
+			layer.msg("请选中操作行")
+		}
+	}
+		//加载 年级模型表数据
 		 tableIns=table.render({
 			 elem: '#bookmodelTable'
 		    ,url:'/bookmodel/loadAllBookmodel'
@@ -117,7 +399,7 @@ layui.use(['jquery','form','table','layer'],function(){
 		      ,{field:'name', title:'模型名称',align:'center',width:'120'}
 		      ,{field:'opername', title:'操作人',align:'center',width:'120'}
 		      ,{field:'createtime', title:'创建时间',align:'center',width:'150'}
-		      ,{fixed: 'right', title:'操作', toolbar: '#bookmodelRowBar',align:'center',width:'200'}
+		      ,{fixed: 'right', title:'操作', toolbar: '#bookmodelRowBar',align:'center',width:'271'}
 		    ] ]
 		      ,done: function(res, curr, count){ //处理删除某一页最后一条数据的BUG
 			        if(res.data.length==0&&curr!=1){
@@ -152,6 +434,17 @@ layui.use(['jquery','form','table','layer'],function(){
 			    break;
 			  };
 		});
+		//监听行双击事件
+		table.on('rowDouble(bookmodelTable)', function(obj){
+			var data = obj.data;
+			BookTableIns.reload({
+				where:{bmodelid:data.id}
+			});
+			$("#bmodelidRtable").val("")
+			$("#bmodelidRtable").val(data.id)
+			//标注选中样式
+			obj.tr.addClass('layui-table-click').siblings().removeClass('layui-table-click');
+		});
 		
 		//监听行工具条的事件
 		table.on("tool(bookmodelTable)",function(obj){
@@ -160,6 +453,9 @@ layui.use(['jquery','form','table','layer'],function(){
 			    case 'update':
 			   		openUpdateBookmodelLayer(data);
 			    break;
+			    case 'updatebook':
+					openAddBookmodelLayer(data);
+				 break;
 			    case 'delete':
 			   		deleteBookmodel(data);
 			    break;
@@ -183,20 +479,35 @@ layui.use(['jquery','form','table','layer'],function(){
 		}
 		
 		//打开修改的弹出层
-		function openUpdateBookmodelLayer(data){
-			mainIndex=layer.open({
-				type:1,
-				content:$("#addOrUpdateDiv"),
-				area:['800px','600px'],
-				title:'修改模型',
-				success:function(){
-					$("#dataFrm")[0].reset();
-					//装载新的数据
-					form.val("dataFrm",data);
-					url="/bookmodel/updateBookmodel";
-				}
-			});
-		}
+	function openUpdateBookmodelLayer(data){
+		mainIndex=layer.open({
+			type:1,
+			content:$("#addOrUpdateDiv"),
+			area:['400px','180px'],
+			title:'修改模型',
+			success:function(){
+				$("#dataFrm")[0].reset();
+				//装载新的数据
+				form.val("dataFrm",data);
+				url="/bookmodel/updateBookmodel";
+			}
+		});
+	}
+	//打开添加书目的弹出层
+	function openAddBookmodelLayer(data){
+		mainIndex=layer.open({
+			type:1,
+			content:$("#addBookDiv"),
+			area:['1000px','650px'],
+			title:'添加书目',
+			success:function(){
+				$("#bmodelid").val("");
+				$("#bmodelid").val(data.id);
+				qbooktableIns.reload();
+				url="/book/addBookModel";
+			}
+		});
+	}
 		
 		form.on("submit(doSubmit)",function(data){
 			  $.post(url,data.field,function(res){

@@ -105,6 +105,31 @@ public class BookController {
         return new DataGridView(page.getTotal(), records);
     }
     /**
+     * 年级模型自编书目查询
+     */
+    @RequestMapping("loadAllBookByModelId")
+    public DataGridView loadAllBookByModelId(BookVo bookVo) {
+        IPage<Book> page = new Page<>(bookVo.getPage(), bookVo.getLimit());
+        List<Integer> booksIds = this.bookService.queryModelBookIdsByModel(bookVo.getBmodelid());
+        if(booksIds.size()>0){
+            QueryWrapper<Book> queryWrapper = new QueryWrapper<>();
+            queryWrapper.in("id",booksIds);
+            this.bookService.page(page, queryWrapper);
+            List<Book> records = page.getRecords();
+            for (Book book : records) {
+                book.setOrderid(bookVo.getOrderid());
+                if(null!=book.getProviderId()){
+                    Provider provider = this.providerService.getById(book.getProviderId());
+                    if(null!=provider) {
+                        book.setProvidername(provider.getProviderName());
+                    }
+                }
+            }
+            return new DataGridView(page.getTotal(), records);
+        }
+        return new DataGridView(page.getTotal(), null);
+    }
+    /**
      * 添加
      */
     @RequestMapping("addBook")
@@ -121,6 +146,20 @@ public class BookController {
                 this.bookService.saveBookOrder(bookVo.getOrderid(),ids);
             }
 
+            return ResultObj.ADD_SUCCESS;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResultObj.ADD_ERROR;
+        }
+    }
+    /**
+     * 添加自编书目与年级模型关系
+     */
+    @RequestMapping("addBookModel")
+    public ResultObj addBookModel(BookVo bookVo) {
+        try {
+            //保存自编书目ID与年级模型ID之间的关系
+            this.bookService.saveBookModel(bookVo.getBmodelid(),bookVo.getIds());
             return ResultObj.ADD_SUCCESS;
         } catch (Exception e) {
             e.printStackTrace();
@@ -161,9 +200,22 @@ public class BookController {
      * 删除征订期号与自编书目联系
      */
     @RequestMapping("deleteRelationBookWithOrderId")
-    public ResultObj deleteBookWithOrderId(@Param("orderid") Integer orderid,@Param("bookid") Integer bookid) {
+    public ResultObj deleteRelationBookWithOrderId(@Param("orderid") Integer orderid,@Param("bookid") Integer bookid) {
         try {
             this.bookService.deleteBookOrderByOidAndBid(orderid,bookid);
+            return ResultObj.DELETE_SUCCESS;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResultObj.DELETE_ERROR;
+        }
+    }
+    /**
+     * 删除年级模型与自编书目联系
+     */
+    @RequestMapping("deleteRelationBookWithModelId")
+    public ResultObj deleteRelationBookWithModelId(@Param("bmodelid") Integer bmodelid,@Param("bookid") Integer bookid) {
+        try {
+            this.bookService.deleteBookModelByMidAndBid(bmodelid,bookid);
             return ResultObj.DELETE_SUCCESS;
         } catch (Exception e) {
             e.printStackTrace();
@@ -193,12 +245,25 @@ public class BookController {
     @RequestMapping("batchDeleteRelationBookWithOrderId")
     public ResultObj batchDeleteRelationBookWithOrderId(BookVo bookVo) {
         try {
-//            Collection<Serializable> idList = new ArrayList<Serializable>();
-//            for (Integer id : bookVo.getIds()) {
-//                idList.add(id);
-//            }
+
             for (Integer bookid : bookVo.getIds()) {
                 this.bookService.deleteBookOrderByOidAndBid(bookVo.getOrderid(),bookid);
+            }
+            return ResultObj.DELETE_SUCCESS;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResultObj.OPERATE_ERROR_DELETE;
+        }
+    }
+    /**
+     * 批量删除年级模型与自编书目联系
+     */
+    @RequestMapping("batchDeleteRelationBookWithModelId")
+    public ResultObj batchDeleteRelationBookWithModelId(BookVo bookVo) {
+        try {
+
+            for (Integer bookid : bookVo.getIds()) {
+                this.bookService.deleteBookModelByMidAndBid(bookVo.getBmodelid(),bookid);
             }
             return ResultObj.DELETE_SUCCESS;
         } catch (Exception e) {
