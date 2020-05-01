@@ -310,7 +310,10 @@ layui.use(['jquery','form','table','layer'],function(){
 			,{fixed: 'right', title:'操作', toolbar: '#bookRowBar',align:'center',width:'100'}
 		] ]
 		,done: function(res, curr, count){ //处理删除某一页最后一条数据的BUG
-			if(res.data.length==0&&curr!=1){
+			if(res.data==null){
+				curr=1;
+			}
+			if(curr!=1&&res.data.length==0){
 				BookTableIns.reload({
 					page:{
 						curr:(curr-1)
@@ -318,6 +321,7 @@ layui.use(['jquery','form','table','layer'],function(){
 				});
 			}
 		}
+
 	});
 	//监听工具条的事件
 	table.on("toolbar(bookTable)",function(obj){

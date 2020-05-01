@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.RestController;
  * @since 2020-04-27
  */
 @RestController
-@RequestMapping("/jcgl/booksubmit")
+@RequestMapping("/booksubmit")
 public class BooksubmitController {
 
 }

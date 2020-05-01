@@ -118,14 +118,11 @@ public class BookmodelController {
 
 
     /**
-     * 加载所有可用的供应商
+     * 加载所有可用的年级模型
      */
     @RequestMapping("loadAllBookmodelForSelect")
     public DataGridView loadAllBookmodelForSelect() {
-        QueryWrapper<Bookmodel> queryWrapper=new QueryWrapper<>();
-        queryWrapper.eq("available", Constast.AVAILABLE_TRUE);
-        List<Bookmodel> list = this.bookmodelService.list(queryWrapper);
-        return new DataGridView(list);
+        return new DataGridView(this.bookmodelService.list(null));
     }
 
 }

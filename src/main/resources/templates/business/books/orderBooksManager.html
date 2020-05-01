@@ -105,6 +105,7 @@
 	<div id="bookToolBar" style="display: none;">
 		<button type="button" lay-event="add" class="layui-btn layui-btn-sm"><span class="layui-icon layui-icon-add-1"></span>添加自编书目</button>
 		<button type="button" lay-event="batchDelete" class="layui-btn layui-btn-sm layui-btn-danger"><span class="layui-icon layui-icon-delete"></span>批量删除</button>
+		<button type="button" lay-event="addmodel" class="layui-btn layui-btn-sm"><span class="layui-icon layui-icon-add-1"></span>根据年级套订模型添加</button>
 
 	</div>
 	
@@ -206,7 +207,40 @@
 </div>
 <!-- 添加和修改的弹出层结束 -->
 
+<!-- 根据模型添加书目的弹出层开始 -->
+<div style="display: none;padding: 5px" id="addmodelDiv">
 
+		<div class="layui-form layui-row" lay-filter="modelFrm" >
+			<div class="layui-form-item magt3">
+				<label class="layui-form-label">征订期号</label>
+				<div class="layui-input-block">
+					<select name="orderid" id="morderid"  lay-verify="required">
+						<option value="">请选择征订期号</option>
+					</select>
+				</div>
+			</div>
+			<div class="layui-form-item">
+				<label class="layui-form-label">年级模型：</label>
+				<div class="layui-input-block">
+					<select  multiple name="ids"  id="bmodelid" lay-verify="required">
+						<option value="">请选择所需年级模型</option>
+					</select>
+				</div>
+			</div>
+
+			<div class="layui-form-item">
+				<div class="layui-input-block">
+					<button class="layui-btn" lay-submit="" lay-filter="doAddmodel">添加</button>
+					<button type="reset" class="layui-btn layui-btn-primary">重置</button>
+				</div>
+			</div>
+		</div>
+
+
+
+</div>
+
+<!-- 根据模型添加书目的弹出层结束 -->
 
 <script type="text/javascript" src="/resources/layui/layui.js"></script>
 <script type="text/javascript">
@@ -246,7 +280,10 @@ layui.use(['jquery','form','table','layer','upload'],function(){
 				  ,{fixed: 'right', title:'操作', toolbar: '#bookRowBar',align:'center',width:'200'}
 		    ] ]
 		      ,done: function(res, curr, count){ //处理删除某一页最后一条数据的BUG
-			        if(res.data.length==0&&curr!=1){
+				 if(res.data==null){
+					 curr=1;
+				 }
+				 if(curr!=1&&res.data.length==0){
 			        	tableIns.reload({
 			        		page:{
 			        			curr:(curr-1)
@@ -295,7 +332,10 @@ layui.use(['jquery','form','table','layer','upload'],function(){
 		table.on("toolbar(bookTable)",function(obj){
 			 switch(obj.event){
 			    case 'add':
-			     openAddLayer();
+			    	 openAddLayer();
+			    break;
+			    case 'addmodel':
+					 openAddmodelLayer();
 			    break;
 			    case 'batchDelete':
 			    	batchDelete();
@@ -352,6 +392,66 @@ layui.use(['jquery','form','table','layer','upload'],function(){
 				}
 			});
 		}
+	//打开根据年级套订模型添加的弹出层
+	function openAddmodelLayer(){
+		mainIndex=layer.open({
+			type:1,
+			content:$("#addmodelDiv"),
+			area:['800px','600px'],
+			title:'根据年级套订模型添加自编书目',
+			success:function(){
+				//$("#modelFrm")[0].reset();
+				url="/book/addBookOrder";
+				$.get("/order/loadAllOrderForSelect",function(res){
+					var data=res.data;
+					var domorder=$("#morderid");
+					var html='<option value="">请选择征订期号</option>'
+					$.each(data,function(index,item){
+						html+='<option value="'+item.id+'">'+item.comment+'</option>'
+					});
+					domorder.html(html);
+					form.render("select");
+				});
+				$.get("/bookmodel/loadAllBookmodelForSelect",function(res){
+					var data=res.data;
+					var dom=$("#bmodelid");
+					var html='<option value="">请选择所需年级模型</option>'
+					$.each(data,function(index,item){
+						html+='<option value="'+item.id+'">'+item.name+'</option>'
+					});
+					dom.html(html);
+					form.render("select");
+					form.render('checkbox');
+				});
+				form.render();
+
+			}
+		});
+	}
+
+	form.on("submit(doAddmodel)",function(data){
+		ids=data.field.ids;
+		orderid=data.field.orderid;
+		bookVo="ids="+ids+"&orderid="+orderid;
+		if(null==ids){
+			layer.msg('请选择所需年级模型', {
+				time: 1000, //1s后自动关闭
+
+			});
+			return false;
+		}
+
+		$.post(url,bookVo,function(res){
+			if(res.code==200){
+				tableIns.reload({
+					where:{orderid:data.field.orderid}
+				});
+			}
+			layer.msg(res.msg);
+			layer.close(mainIndex);
+		})
+		return false;
+	});
 		
 		//打开修改的弹出层
 		function openUpdateBookLayer(data){

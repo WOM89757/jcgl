@@ -111,6 +111,18 @@
 		      ,{field:'logintime', title:'登陆时间',align:'center'}
 		      ,{fixed: 'right', title:'操作', toolbar: '#loginfoRowBar',align:'center'}
 		    ] ]
+			,done: function(res, curr, count){ //处理删除某一页最后一条数据的BUG
+				if(res.data==null){
+					curr=1;
+				}
+				if(curr!=1&&res.data.length==0){
+					tableIns.reload({
+						page:{
+							curr:(curr-1)
+						}
+					});
+				}
+			}
 		});
 		
 		//模糊查询

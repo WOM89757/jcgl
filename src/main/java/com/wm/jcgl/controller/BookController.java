@@ -130,7 +130,7 @@ public class BookController {
         return new DataGridView(page.getTotal(), null);
     }
     /**
-     * 添加
+     * 添加书目及添加单个征订期号与书目id
      */
     @RequestMapping("addBook")
     public ResultObj addBook(BookVo bookVo) {
@@ -149,6 +149,33 @@ public class BookController {
             return ResultObj.ADD_SUCCESS;
         } catch (Exception e) {
             e.printStackTrace();
+            return ResultObj.ADD_ERROR;
+        }
+    }
+    /**
+     * 根据年级套订模型添加征订期号与自编书目
+     */
+    @RequestMapping("addBookOrder")
+    public ResultObj addBookOrder(BookVo bookVo) {
+
+        try {
+
+            if(bookVo.getOrderid()!=null){
+                List<Integer> bookids=new ArrayList<Integer>();
+                for ( Integer bmodelid : bookVo.getIds()) {
+                    List<Integer> integers = this.bookService.queryModelBookIdsByModel(bmodelid);
+                    if(null!=integers){
+                        bookids.addAll(integers);
+                    }
+                }
+                Integer ids[]=bookids.toArray(new Integer[bookids.size()]);;
+                this.bookService.saveBookOrder(bookVo.getOrderid(),ids);
+            }
+
+            return ResultObj.ADD_SUCCESS;
+        } catch (Exception e) {
+            e.printStackTrace();
+
             return ResultObj.ADD_ERROR;
         }
     }
