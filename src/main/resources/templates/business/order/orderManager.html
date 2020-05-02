@@ -83,6 +83,7 @@
 	</div>
 	
 	<div id="orderRowBar" style="display: none;">
+		<button type="button" lay-event="push" class="layui-btn layui-btn-sm"><span class="layui-icon layui-icon-edit"></span>发布</button>
 		<button type="button" lay-event="update" class="layui-btn layui-btn-sm"><span class="layui-icon layui-icon-edit"></span>更新</button>
 		<button type="button" lay-event="delete" class="layui-btn layui-btn-sm layui-btn-danger"><span class="layui-icon layui-icon-delete"></span>删除</button>
 	</div>
@@ -157,6 +158,29 @@
 	</form>
 </div>
 <!-- 添加和修改的弹出层结束 -->
+<!-- 发布征订信息的弹出层开始 -->
+<div style="display: none;padding: 5px" id="PushDiv">
+	<div class="layui-form layui-row" lay-filter="pushFrm" >
+		<input type="hidden" name="id" id="orderid">
+
+		<div class="layui-form-item">
+			<label class="layui-form-label">发布对象：</label>
+			<div class="layui-input-block">
+				<select  multiple name="ids"  id="schoolid" lay-verify="required">
+					<option value="">请指定征订信息所需发布的学校</option>
+				</select>
+			</div>
+		</div>
+		<div class="layui-form-item layui-center ">
+
+				<button class="layui-btn" lay-submit="" lay-filter="doPush"><i class="layui-icon">&#xe608;</i>添加</button>
+
+				<button type="reset" class="layui-btn layui-btn-warm "><span class="layui-icon layui-icon-refresh-1"></span>重置</button>
+
+		</div>
+	</div>
+</div>
+<!-- 发布征订信息的弹出层结束 -->
 
 
 
@@ -188,7 +212,7 @@ layui.use(['jquery','form','table','layer','laydate'],function(){
 
 		      ,{field:'createtime', title:'创建时间',align:'center',width:'120'}
 		      ,{field:'opername', title:'操作员',align:'center',width:'180'}
-		      ,{fixed: 'right', title:'操作', toolbar: '#orderRowBar',align:'center',width:'200'},
+		      ,{fixed: 'right', title:'操作', toolbar: '#orderRowBar',align:'center',width:'250'},
 		    ] ]
 		      ,done: function(res, curr, count){ //处理删除某一页最后一条数据的BUG
 			        if(res.data.length==0&&curr!=1){
@@ -239,6 +263,9 @@ layui.use(['jquery','form','table','layer','laydate'],function(){
 		table.on("tool(orderTable)",function(obj){
 			  var data = obj.data; //获得当前行数据
 			 switch(obj.event){
+				 case 'push':
+					 pushOrderLayer(data);
+					 break;
 			    case 'update':
 			   		openUpdateOrderLayer(data);
 			    break;
@@ -263,6 +290,55 @@ layui.use(['jquery','form','table','layer','laydate'],function(){
 				}
 			});
 		}
+		//打开发布征订信息的弹出层
+		function pushOrderLayer(data){
+			mainIndex=layer.open({
+				type:1,
+				content:$("#PushDiv"),
+				area:['800px','600px'],
+				title:'发布征订信息',
+				success:function(){
+
+					//装载新的数据
+					form.val("pushFrm",data);
+					// var dom_JCtype=$("#JCtype");
+					// //选中一个
+					// dom_JCtype.val(data);
+					$.get("/dept/loadAllSchoolForSelect",function(res){
+						var data=res.data;
+						var dom=$("#schoolid");
+						var html='<option value="">请指定征订信息所需发布的学校</option>'
+						$.each(data,function(index,item){
+							html+='<option value="'+item.id+'">'+item.title+'</option>'
+						});
+						dom.html(html);
+						form.render("select");
+						form.render('checkbox');
+					});
+					form.render();
+					url="/order/pushOrder";
+				}
+			});
+		}
+		form.on("submit(doPush)",function(data){
+			ids=data.field.ids;
+			id=data.field.id;
+			orderVo="ids="+ids+"&id="+id;
+			if(null==ids){
+				layer.msg('请选择征订信息所需发布的学校', {
+					time: 1000, //1s后自动关闭
+
+				});
+				return false;
+			}
+
+			$.post(url,orderVo,function(res){
+
+				layer.msg(res.msg);
+				layer.close(mainIndex);
+			})
+			return false;
+		});
 		
 		//打开修改的弹出层
 		function openUpdateOrderLayer(data){

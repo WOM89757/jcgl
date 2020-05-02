@@ -1,9 +1,13 @@
 package com.wm.jcgl.entity;
 
+import com.baomidou.mybatisplus.annotation.IdType;
+import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
-import java.time.LocalDateTime;
 import com.baomidou.mybatisplus.annotation.TableField;
 import java.io.Serializable;
+import java.util.Date;
+
+
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.experimental.Accessors;
@@ -27,16 +31,19 @@ public class Subscription implements Serializable {
     /**
      * 教材征订编号
      */
+    @TableId(value = "id", type = IdType.AUTO)
     private Integer id;
 
     /**
      * 00120101 01:课本 20:年份 1/2:春/秋 01:编号
      */
+
     private Integer orderId;
 
     /**
      * 自编书目编号
      */
+
     private Integer bookId;
 
     /**
@@ -71,7 +78,7 @@ public class Subscription implements Serializable {
      * 创建时间
      */
     @TableField("createTime")
-    private LocalDateTime createTime;
+    private Date createTime;
 
 
 }

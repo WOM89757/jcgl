@@ -50,49 +50,6 @@ public class UserController {
     @Autowired
     private RoleService roleService;
 
-//    @Value("${local.src}")
-//    private String path;
-//    @ResponseBody//将即将返回的对象转成json字符串,再返回到浏览器
-//    @RequestMapping("/upload")
-//    public Map<String, Object> upload(MultipartFile file) {//保存文件到本地路径
-//        File fileDir = new File(path);
-//        if(!fileDir.exists()){
-//            fileDir.mkdirs();
-//        }
-//
-//        String randomName = UUID.randomUUID().toString();//绝对不会重复的随机数
-//        String oldName = file.getOriginalFilename();//原始文件名
-//
-//        String ext = oldName.substring(oldName.lastIndexOf("."));//从最后一个'.'开始截取扩展名
-//        String filedirSrc=fileDir.getPath().substring(fileDir.getPath().indexOf(":")+1);
-//
-//        File longFile = new File(filedirSrc+File.separator+randomName + ext);//路径+随机数+扩展名
-//
-//
-//
-//        String newName = "/resources/images/upload/"+randomName + ext;//新文件名
-//        System.out.println(newName);
-//        User user;
-//
-//        user = (User)WebUtils.getSession().getAttribute("user");
-//        user.setImgpath(newName);
-//        userService.updateById(user);
-//        Map<String, Object> map = new HashMap();
-//        try {
-//
-//            file.transferTo(longFile);//保存文件
-//            map.put("success", true);
-//            map.put("src", newName);
-//            map.put("msg", "文件上传成功!");
-//        } catch (IOException e) {
-//            e.printStackTrace();
-//            map.put("success", false);
-//            map.put("msg", "文件上传失败,请重试!");
-//        }
-//        System.out.println(longFile);
-//
-//        return map;
-//    }
 
     /**
      * 用户全查询
@@ -159,7 +116,7 @@ public class UserController {
     @RequestMapping("loadUsersByDeptId")
     public DataGridView loadUsersByDeptId(Integer deptid) {
         QueryWrapper<User> queryWrapper=new QueryWrapper<>();
-        queryWrapper.eq(deptid!=null, "deptid", deptid);
+        queryWrapper.eq(deptid!=null, "dept_id", deptid);
         queryWrapper.eq("available", Constast.AVAILABLE_TRUE);
         queryWrapper.eq("type", Constast.USER_TYPE_NORMAL);
         List<User> list = this.userService.list(queryWrapper);

@@ -49,6 +49,13 @@ public class JcglController {
         return "business/bookModel/bookModelManager";
     }
     /**
+     * 跳转到征订教材
+     */
+    @RequestMapping("toSubcriptionManager")
+    public String toSubcriptionManager() {
+        return "business/subscription/subscriptionManager";
+    }
+    /**
      * 跳转到进货管理
      */
     @RequestMapping("toInportManager")

@@ -4,6 +4,7 @@ package com.wm.sys.controller;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.wm.jcgl.entity.Order;
 import com.wm.sys.common.DataGridView;
 import com.wm.sys.common.ResultObj;
 import com.wm.sys.common.TreeNode;
@@ -64,6 +65,16 @@ public class DeptController {
         this.deptService.page(page, queryWrapper);
         return new DataGridView(page.getTotal(), page.getRecords());
     }
+    /**
+     * 查询所有学校信息
+     */
+    @RequestMapping("loadAllSchoolForSelect")
+    public DataGridView loadAllSchoolForSelect(DeptVo deptVo) {
+        QueryWrapper<Dept> queryWrapper=new QueryWrapper<>();
+        queryWrapper.ne( "id", '1');
+        return new DataGridView(this.deptService.list(queryWrapper));
+    }
+
 
     /**
      * 加载最大的排序码

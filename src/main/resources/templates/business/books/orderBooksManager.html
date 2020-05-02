@@ -400,7 +400,6 @@ layui.use(['jquery','form','table','layer','upload'],function(){
 			area:['800px','600px'],
 			title:'根据年级套订模型添加自编书目',
 			success:function(){
-				//$("#modelFrm")[0].reset();
 				url="/book/addBookOrder";
 				$.get("/order/loadAllOrderForSelect",function(res){
 					var data=res.data;

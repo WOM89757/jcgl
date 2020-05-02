@@ -253,6 +253,7 @@ layui.extend({
 			    	$.post("/role/saveRolePermission",params,function(res){
 			    		layer.msg(res.msg);
 			    	})
+					layer.close(mainIndex);
 			    },
 			    btn2: function(index, layero){
 			    //return false 开启该代码可禁止点击该按钮关闭
