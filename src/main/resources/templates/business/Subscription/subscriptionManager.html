@@ -24,21 +24,27 @@
 	<form action="" method="post" id="searchFrm" lay-filter="searchFrm" class="layui-form layui-form-pane">
 		<div class="layui-form-item">
 		    <div class="layui-inline">
-		      <label class="layui-form-label">征订教材名称</label>
+		      <label class="layui-form-label">期号名称</label>
 		      <div class="layui-input-inline">
-		        <input type="text" name="subscriptionName"  autocomplete="off" class="layui-input">
+		        <input type="text" name="ordername"  autocomplete="off" class="layui-input">
 		      </div>
 		    </div>
 		    <div class="layui-inline">
-		      <label class="layui-form-label">征订教材电话</label>
+		      <label class="layui-form-label">学校名称</label>
 		      <div class="layui-input-inline">
-		        <input type="text" name="phone"  autocomplete="off" class="layui-input">
+		        <input type="text" name="schoolname"  autocomplete="off" class="layui-input">
 		      </div>
 		    </div>
 		    <div class="layui-inline">
-		       <label class="layui-form-label">联系人</label>
+		       <label class="layui-form-label">书名</label>
 		       <div class="layui-input-inline">
-		        <input type="text" name="connectionperson"  autocomplete="off" class="layui-input">
+		        <input type="text" name="bookname"  autocomplete="off" class="layui-input">
+		      </div>
+		    </div>
+			<div class="layui-inline">
+		       <label class="layui-form-label">年级</label>
+		       <div class="layui-input-inline">
+		        <input type="text" name="grade"  autocomplete="off" class="layui-input">
 		      </div>
 		    </div>
 		  </div>
@@ -72,90 +78,48 @@
 <!-- 添加和修改的弹出层开始 -->
 <div style="display: none;padding: 5px" id="addOrUpdateDiv">
 	<form action="" method="post" class="layui-form layui-form-pane" id="dataFrm" lay-filter="dataFrm">
+
+		<div class="layui-form-item magt3">
+			<label class="layui-form-label">征订期号</label>
+			<div class="layui-input-block">
+				<select name="orderId" id="orderid"  lay-verify="required">
+					<option value="">请选择征订期号</option>
+				</select>
+			</div>
+		</div>
+		<div class="layui-form-item ">
+			<label class="layui-form-label">学校</label>
+			<div class="layui-input-block">
+				<select name="deptId" id="deptid"  lay-verify="required">
+					<option value="">请选择学校</option>
+				</select>
+			</div>
+		</div>
+		<div class="layui-form-item ">
+			<label class="layui-form-label">自编书目</label>
+			<div class="layui-input-block">
+				<select name="bookId" id="bookid"  lay-verify="required">
+					<option value="">请选择自编书目</option>
+				</select>
+			</div>
+		</div>
 		<div class="layui-form-item">
 			<div class="layui-inline">
-			    <label class="layui-form-label">征订教材名称</label>
+			    <label class="layui-form-label">学生订数</label>
 			    <div class="layui-input-inline">
 			      <input type="hidden" name="id">
-			      <input type="text" name="subscriptionName" lay-verify="required" autocomplete="off" placeholder="请输入征订教材名称" class="layui-input">
+			      <input type="text" name="studNum"  autocomplete="off" placeholder="请输入征订教材名称" class="layui-input">
 			    </div>
 		    </div>
+
 			<div class="layui-inline">
-			    <label class="layui-form-label">征订教材电话</label>
+			    <label class="layui-form-label">教师订数</label>
 			    <div class="layui-input-inline">
-			      <input type="hidden" name="id">
-			      <input type="text" name="telephone" lay-verify="required" autocomplete="off" placeholder="请输入征订教材电话" class="layui-input">
-			    </div>
-		    </div>
-			<div class="layui-inline">
-			    <label class="layui-form-label">邮编</label>
-			    <div class="layui-input-inline">
-			      <input type="hidden" name="id">
-			      <input type="text" name="zip"  autocomplete="off" placeholder="请输入征订教材邮编" class="layui-input">
+			      <input type="text" name="teaNum" autocomplete="off" placeholder="请输入征订教材电话" class="layui-input">
 			    </div>
 		    </div>
  	   </div>
- 	   <div class="layui-form-item">
-		    <label class="layui-form-label">征订教材地址</label>
-		    <div class="layui-input-block">
-		      <input type="text" name="address" autocomplete="off" placeholder="请输入征订教材地址" class="layui-input">
-		    </div>
- 	   </div>
- 	   <div class="layui-form-item">
-			<div class="layui-inline">
-			    <label class="layui-form-label">联系人</label>
-			    <div class="layui-input-inline">
-			      <input type="hidden" name="id">
-			      <input type="text" name="connectionperson" lay-verify="required" autocomplete="off" placeholder="请输入联系人" class="layui-input">
-			    </div>
-		    </div>
-			<div class="layui-inline">
-			    <label class="layui-form-label">联系人电话</label>
-			    <div class="layui-input-inline">
-			      <input type="hidden" name="id">
-			      <input type="text" name="phone" lay-verify="required" autocomplete="off" placeholder="请输入联系人电话" class="layui-input">
-			    </div>
-		    </div>
-			<div class="layui-inline">
-			    <label class="layui-form-label">邮箱</label>
-			    <div class="layui-input-inline">
-			      <input type="hidden" name="id">
-			      <input type="text" name="email" lay-verify="required" autocomplete="off" placeholder="请输入征订教材邮箱" class="layui-input">
-			    </div>
-		    </div>
- 	   </div>
- 	   <div class="layui-form-item">
-			<div class="layui-inline">
-			    <label class="layui-form-label">开户银行</label>
-			    <div class="layui-input-inline">
-			      <input type="hidden" name="id">
-			      <input type="text" name="bank" lay-verify="required" autocomplete="off" placeholder="请输入开户银行" class="layui-input">
-			    </div>
-		    </div>
-			<div class="layui-inline">
-			    <label class="layui-form-label">帐号</label>
-			    <div class="layui-input-inline">
-			      <input type="hidden" name="id">
-			      <input type="text" name="account" lay-verify="required" autocomplete="off" placeholder="请输入征订教材帐号" class="layui-input">
-			    </div>
-		    </div>
-			<div class="layui-inline">
-			    <label class="layui-form-label">传真</label>
-			    <div class="layui-input-inline">
-			      <input type="hidden" name="id">
-			      <input type="text" name="fax" lay-verify="required" autocomplete="off" placeholder="请输入征订教材传真" class="layui-input">
-			    </div>
-		    </div>
- 	   </div>
-	  <div class="layui-form-item">
-	    <div class="layui-inline">
-	      <label class="layui-form-label">是否可用</label>
-	      <div class="layui-input-inline">
-	        <input type="radio" name="available" value="1" title="可用" checked="">
-	        <input type="radio" name="available" value="0" title="不可用" >
-	      </div>
-	    </div>
-	  </div>
+
  	   <div class="layui-form-item">
 		    <div class="layui-input-block" style="text-align: center;">
 		      	<button type="button" class="layui-btn" lay-submit="" lay-filter="doSubmit" id="doSubmit" ><span class="layui-icon layui-icon-add-1"></span>提交</button>
@@ -187,15 +151,15 @@ layui.use(['jquery','form','table','layer'],function(){
 		    ,cols: [ [
 		      {type:'checkbox',align:'center'}
 		      ,{field:'id', title:'ID',align:'center' ,width:'80'}
-		      ,{field:'deptId', title:'学校编号',align:'center',width:'120'}
-		      ,{field:'orderId', title:'征订期号',align:'center',width:'120'}
-		      ,{field:'bookId', title:'自编书目编号',align:'center',width:'120'}
+		      ,{field:'schoolname', title:'学校名称',align:'center',width:'120'}
+		      ,{field:'ordername', title:'期号名称',align:'center',width:'148'}
+		      ,{field:'bookname', title:'书名',align:'center',width:'120'}
 		      ,{field:'grade', title:'年级',align:'center',width:'150'}
-		      ,{field:'studNum', title:'学生订数',align:'center',width:'150'}
-		      ,{field:'teaNum', title:'教师订数',align:'center',width:'120'}
+		      ,{field:'studNum', title:'学生订数',align:'center',width:'91'}
+		      ,{field:'teaNum', title:'教师订数',align:'center',width:'91'}
 		      ,{field:'operName', title:'操作员',align:'center',width:'150'}
 		      ,{field:'createTime', title:'创建时间',align:'center',width:'120'}
-		      ,{fixed: 'right', title:'操作', toolbar: '#subscriptionRowBar',align:'center',width:'200'}
+		      ,{fixed: 'right', title:'操作', toolbar: '#subscriptionRowBar',align:'center',width:'176'}
 		    ] ]
 		      ,done: function(res, curr, count){ //处理删除某一页最后一条数据的BUG
 			        if(res.data.length==0&&curr!=1){
@@ -255,6 +219,36 @@ layui.use(['jquery','form','table','layer'],function(){
 				title:'添加征订教材',
 				success:function(){
 					$("#dataFrm")[0].reset();
+					$.get("/order/loadAllOrderForSelect",function(res){
+						var data=res.data;
+						var domorder=$("#orderid");
+						var html='<option value="">请选择征订期号</option>'
+						$.each(data,function(index,item){
+							html+='<option value="'+item.id+'">'+item.comment+'</option>'
+						});
+						domorder.html(html);
+						form.render("select");
+					});
+					$.get("/dept/loadAllSchoolForSelect",function(res){
+						var data=res.data;
+						var domorder=$("#deptid");
+						var html='<option value="">请选择学校</option>'
+						$.each(data,function(index,item){
+							html+='<option value="'+item.id+'">'+item.title+'</option>'
+						});
+						domorder.html(html);
+						form.render("select");
+					});
+					$.get("/book/loadAllBookForSelect",function(res){
+						var data=res.data;
+						var domorder=$("#bookid");
+						var html='<option value="">请选择自编书目</option>'
+						$.each(data,function(index,item){
+							html+='<option value="'+item.id+'">'+item.name+'</option>'
+						});
+						domorder.html(html);
+						form.render("select");
+					});
 					url="/subscription/addSubscription";
 				}
 			});
@@ -271,6 +265,17 @@ layui.use(['jquery','form','table','layer'],function(){
 					$("#dataFrm")[0].reset();
 					//装载新的数据
 					form.val("dataFrm",data);
+					var domorder=$("#orderid");
+					var html='<option value="'+data.orderId+'">'+data.ordername+'</option>'
+					domorder.html(html);
+					var domorder1=$("#deptid");
+					var html1='<option value="'+data.deptId+'">'+data.schoolname+'</option>'
+					domorder1.html(html1);
+					var domorder2=$("#bookid");
+					var html2='<option value="'+data.bookId+'">'+data.bookname+'</option>'
+					domorder2.html(html2);
+					form.render("select");
+
 					url="/subscription/updateSubscription";
 				}
 			});
@@ -288,7 +293,7 @@ layui.use(['jquery','form','table','layer'],function(){
 		});
 		//删除
 		function deleteSubscription(data){
-			layer.confirm('你确定要删除【'+data.subscriptionName+'】这个征订教材吗?', {icon: 3, title:'提示'}, function(index){
+			layer.confirm('你确定要删除'+data.schoolname+'的这条已征订教材吗?', {icon: 3, title:'提示'}, function(index){
 				$.post("/subscription/deleteSubscription",{id:data.id},function(res){
 					if(res.code==200){
 						tableIns.reload();
@@ -304,7 +309,7 @@ layui.use(['jquery','form','table','layer'],function(){
 			var checkStatus = table.checkStatus('subscriptionTable');
 			var dataLength=checkStatus.data.length;
 			if(dataLength>0){
-				layer.confirm('你确定要删除这些征订教材数据吗?', {icon: 3, title:'提示'}, function(index){
+				layer.confirm('你确定要删除这些已征订的教材吗?', {icon: 3, title:'提示'}, function(index){
 						var data=checkStatus.data; //获取选中行的数据
 						var ids="";
 						$.each(data,function(index,item){

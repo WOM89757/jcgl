@@ -5,13 +5,21 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.wm.jcgl.entity.Book;
+import com.wm.jcgl.entity.Order;
 import com.wm.jcgl.entity.Provider;
 import com.wm.jcgl.entity.Subscription;
+import com.wm.jcgl.service.BookService;
+import com.wm.jcgl.service.OrderService;
 import com.wm.jcgl.service.SubscriptionService;
+import com.wm.jcgl.service.impl.BookServiceImpl;
 import com.wm.jcgl.vo.SubscriptionVo;
 import com.wm.sys.common.Constast;
 import com.wm.sys.common.DataGridView;
 import com.wm.sys.common.ResultObj;
+import com.wm.sys.common.WebUtils;
+import com.wm.sys.entity.Dept;
+import com.wm.sys.entity.User;
+import com.wm.sys.service.DeptService;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -21,6 +29,7 @@ import org.springframework.web.bind.annotation.RestController;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -37,6 +46,12 @@ public class SubscriptionController {
 
     @Autowired
     private SubscriptionService subscriptionService;
+    @Autowired
+    private OrderService orderService;
+    @Autowired
+    private BookService bookService;
+    @Autowired
+    private DeptService deptService;
 
     /**
      * 查询
@@ -45,22 +60,46 @@ public class SubscriptionController {
     public DataGridView loadAllSubscription(SubscriptionVo subscriptionVo) {
         IPage<Subscription> page = new Page<>(subscriptionVo.getPage(), subscriptionVo.getLimit());
         QueryWrapper<Subscription> queryWrapper = new QueryWrapper<>();
-//        queryWrapper.like(StringUtils.isNotBlank(subscriptionVo.getSubscriptionName()), "subscriptionName",
-//                subscriptionVo.getSubscriptionName());
-//        queryWrapper.like(StringUtils.isNotBlank(subscriptionVo.getPhone()), "phone", subscriptionVo.getPhone());
-//        queryWrapper.like(StringUtils.isNotBlank(subscriptionVo.getConnectionperson()), "connectionperson",
-//                subscriptionVo.getConnectionperson());
+        queryWrapper.like(StringUtils.isNotBlank(subscriptionVo.getGrade()), "grade",subscriptionVo.getGrade());
+        if(StringUtils.isNotBlank(subscriptionVo.getSchoolname())){
+            queryWrapper.inSql("dept_id","select id from sys_dept where sys_dept.title like '%"+subscriptionVo.getSchoolname()+"%'");
+        }
+        if(StringUtils.isNotBlank(subscriptionVo.getOrdername())){
+            queryWrapper.inSql("order_id","select id from b_order where b_order.comment like '%"+subscriptionVo.getOrdername()+"%'");
+        }
+        if(StringUtils.isNotBlank(subscriptionVo.getBookname())){
+            queryWrapper.inSql("book_id","select id from b_book where b_book.name like '%"+subscriptionVo.getBookname()+"%'");
+        }
+        User user = (User) WebUtils.getSession().getAttribute("user");
+        if(1!=user.getDeptid()){
+            //非销售店查询
+            queryWrapper.eq("dept_id",user.getDeptid());
+        }
         this.subscriptionService.page(page, queryWrapper);
-//        List<Book> records = page.getRecords();
-//        for (Book book : records) {
-//            book.setOrderid(bookVo.getOrderid());
-//            if(null!=book.getProviderId()){
-//                Provider provider = this.providerService.getById(book.getProviderId());
-//                if(null!=provider) {
-//                    book.setProvidername(provider.getProviderName());
-//                }
-//            }
-//        }
+        List<Subscription> records = page.getRecords();
+        for (Subscription subscription : records) {
+            //根据id查询征订期号名称
+            if(null!=subscription.getOrderId()){
+                Order order  = this.orderService.getById(subscription.getOrderId());
+                if(null!=order) {
+                    subscription.setOrdername(order.getComment());
+                }
+            }
+            //根据id查询书名
+            if(null!=subscription.getBookId()){
+                    Book book  = this.bookService.getById(subscription.getBookId());
+                if(null!=book) {
+                    subscription.setBookname(book.getName());
+                }
+            }
+            //根据id查询学校名
+            if(null!=subscription.getDeptId()){
+                Dept dept  = this.deptService.getById(subscription.getDeptId());
+                if(null!=dept) {
+                    subscription.setSchoolname(dept.getTitle());
+                }
+            }
+        }
         return new DataGridView(page.getTotal(), page.getRecords());
     }
 
@@ -70,6 +109,9 @@ public class SubscriptionController {
     @RequestMapping("addSubscription")
     public ResultObj addSubscription(SubscriptionVo subscriptionVo) {
         try {
+            subscriptionVo.setCreateTime(new Date());
+            User user = (User) WebUtils.getSession().getAttribute("user");
+            subscriptionVo.setOperName(user.getName());
             this.subscriptionService.save(subscriptionVo);
             return ResultObj.ADD_SUCCESS;
         } catch (Exception e) {

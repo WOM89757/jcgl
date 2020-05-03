@@ -303,7 +303,6 @@ public class BookController {
     @RequestMapping("loadAllBookForSelect")
     public DataGridView loadAllBookForSelect() {
         QueryWrapper<Book> queryWrapper = new QueryWrapper<>();
-        queryWrapper.eq("available", Constast.AVAILABLE_TRUE);
         List<Book> list = this.bookService.list(queryWrapper);
         for (Book book : list) {
             Provider provider = this.providerService.getById(book.getProviderId());

@@ -79,6 +79,12 @@ public class Subscription implements Serializable {
      */
     @TableField("createTime")
     private Date createTime;
+    @TableField(exist = false)
+    private String bookname;
+    @TableField(exist = false)
+    private String ordername;
+    @TableField(exist = false)
+    private String schoolname;
 
 
 }
