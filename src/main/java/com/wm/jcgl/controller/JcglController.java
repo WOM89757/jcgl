@@ -56,6 +56,13 @@ public class JcglController {
         return "business/subscription/subscriptionManager";
     }
     /**
+     * 跳转到报订
+     */
+    @RequestMapping("toSubmitManager")
+    public String toSubmitManager() {
+        return "business/booksubmit/bookSubmitManager";
+    }
+    /**
      * 跳转到进货管理
      */
     @RequestMapping("toInportManager")

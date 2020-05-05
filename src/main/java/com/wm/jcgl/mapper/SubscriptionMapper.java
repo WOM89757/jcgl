@@ -1,7 +1,10 @@
 package com.wm.jcgl.mapper;
 
+import com.wm.jcgl.entity.Booksubmit;
 import com.wm.jcgl.entity.Subscription;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+
+import java.util.List;
 
 /**
  * <p>
@@ -13,4 +16,5 @@ import com.baomidou.mybatisplus.core.mapper.BaseMapper;
  */
 public interface SubscriptionMapper extends BaseMapper<Subscription> {
 
+    List<Booksubmit> getSubscriptionWithOrderId(Integer orderId);
 }

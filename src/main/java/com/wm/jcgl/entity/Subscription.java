@@ -75,6 +75,11 @@ public class Subscription implements Serializable {
     private Integer deptId;
 
     /**
+     * 状态
+     */
+    private Integer status;
+
+    /**
      * 创建时间
      */
     @TableField("createTime")

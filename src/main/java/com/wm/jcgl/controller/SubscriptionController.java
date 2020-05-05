@@ -112,6 +112,8 @@ public class SubscriptionController {
             subscriptionVo.setCreateTime(new Date());
             User user = (User) WebUtils.getSession().getAttribute("user");
             subscriptionVo.setOperName(user.getName());
+            subscriptionVo.setStatus(Constast.STATUS_FALSE);
+            subscriptionVo.setGrade(this.bookService.getById(subscriptionVo.getBookId()).getGrade());
             this.subscriptionService.save(subscriptionVo);
             return ResultObj.ADD_SUCCESS;
         } catch (Exception e) {
@@ -131,6 +133,59 @@ public class SubscriptionController {
         } catch (Exception e) {
             e.printStackTrace();
             return ResultObj.UPDATE_ERROR;
+        }
+    }
+
+    /**
+     * 提交确认
+     */
+    @RequestMapping("submitSubscription")
+    public ResultObj submitSubscription(Integer id) {
+        try {
+            Subscription subscription = this.subscriptionService.getById(id);
+            subscription.setStatus(Constast.STATUS_TRUE);
+            this.subscriptionService.updateById(subscription);
+            return ResultObj.OPERATE_SUCCESS;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResultObj.OPERATE_SUCCESS;
+        }
+    }
+    /**
+     * 批量提交确认
+     */
+    @RequestMapping("batchSubmitSubscription")
+    public ResultObj batchSubmitSubscription(SubscriptionVo subscriptionVo) {
+        try {
+            Collection<Serializable> idList = new ArrayList<Serializable>();
+            for (Integer id : subscriptionVo.getIds()) {
+                idList.add(id);
+            }
+            Collection<Subscription> subscriptionList = this.subscriptionService.listByIds(idList);
+            for (Subscription subscription : subscriptionList) {
+                subscription.setStatus(Constast.STATUS_TRUE);
+            }
+            this.subscriptionService.updateBatchById(subscriptionList);
+            return ResultObj.OPERATE_SUCCESS;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResultObj.OPERATE_SUCCESS;
+        }
+    }
+
+    /**
+     * 撤回确认
+     */
+    @RequestMapping("withdrawSubscription")
+    public ResultObj  withdrawSubscription(Integer id) {
+        try {
+            Subscription subscription = this.subscriptionService.getById(id);
+            subscription.setStatus(Constast.STATUS_FALSE);
+            this.subscriptionService.updateById(subscription);
+            return ResultObj.OPERATE_SUCCESS;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResultObj.OPERATE_SUCCESS;
         }
     }
 

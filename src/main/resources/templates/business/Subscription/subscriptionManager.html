@@ -64,11 +64,14 @@
 	<table class="layui-hide" id="subscriptionTable" lay-filter="subscriptionTable"></table>
 	<div id="subscriptionToolBar" style="display: none;">
 		<button type="button" lay-event="add" class="layui-btn layui-btn-sm"><span class="layui-icon layui-icon-add-1"></span>添加征订教材</button>
+		<button type="button" lay-event="batchSubmit" class="layui-btn layui-btn-sm layui-btn-normal"><span class="layui-icon layui-icon-add-1"></span>批量确认</button>
 		<button type="button" lay-event="batchDelete" class="layui-btn layui-btn-sm layui-btn-danger"><span class="layui-icon layui-icon-delete"></span>批量删除</button>
 	</div>
 	
 	<div id="subscriptionRowBar" style="display: none;">
 		<button type="button" lay-event="update" class="layui-btn layui-btn-sm"><span class="layui-icon layui-icon-edit"></span>更新</button>
+		<button type="button" lay-event="submit" class="layui-btn layui-btn-sm layui-btn-normal"><span class="layui-icon layui-icon-edit"></span>提交</button>
+		<button type="button" lay-event="resubmit" class="layui-btn layui-btn-sm layui-btn-warm"><span class="layui-icon layui-icon-edit"></span>重置提交</button>
 		<button type="button" lay-event="delete" class="layui-btn layui-btn-sm layui-btn-danger"><span class="layui-icon layui-icon-delete"></span>删除</button>
 	</div>
 </div>
@@ -90,7 +93,7 @@
 		<div class="layui-form-item ">
 			<label class="layui-form-label">学校</label>
 			<div class="layui-input-block">
-				<select name="deptId" id="deptid"  lay-verify="required">
+				<select name="deptId" id="deptid"  lay-verify="required" >
 					<option value="">请选择学校</option>
 				</select>
 			</div>
@@ -157,9 +160,12 @@ layui.use(['jquery','form','table','layer'],function(){
 		      ,{field:'grade', title:'年级',align:'center',width:'150'}
 		      ,{field:'studNum', title:'学生订数',align:'center',width:'91'}
 		      ,{field:'teaNum', title:'教师订数',align:'center',width:'91'}
+		      ,{field:'status', title:'确认提交',align:'center',width:'91',templet:function(d){
+					 return d.status==0?'<font color=red>未确认</font>':'<font color= blue>已确认</font>';
+		      }}
 		      ,{field:'operName', title:'操作员',align:'center',width:'150'}
 		      ,{field:'createTime', title:'创建时间',align:'center',width:'120'}
-		      ,{fixed: 'right', title:'操作', toolbar: '#subscriptionRowBar',align:'center',width:'176'}
+		      ,{fixed: 'right', title:'操作', toolbar: '#subscriptionRowBar',align:'center',width:'354'}
 		    ] ]
 		      ,done: function(res, curr, count){ //处理删除某一页最后一条数据的BUG
 			        if(res.data.length==0&&curr!=1){
@@ -189,6 +195,9 @@ layui.use(['jquery','form','table','layer'],function(){
 			    case 'add':
 			     openAddLayer();
 			    break;
+			    case 'batchSubmit':
+			    	batchSubmit();
+			    break;
 			    case 'batchDelete':
 			    	batchDelete();
 			    break;
@@ -201,6 +210,28 @@ layui.use(['jquery','form','table','layer'],function(){
 			 switch(obj.event){
 			    case 'update':
 			   		openUpdateSubscriptionLayer(data);
+			    break;
+			    case 'submit':
+					layer.confirm('提交后将无法修改，你确定仍要提交这条征订信息吗?', {icon: 3, title:'提示'}, function(index){
+						$.post("/subscription/submitSubscription",{id:data.id},function(res){
+							if(res.code==200){
+								tableIns.reload();
+							}
+							layer.msg(res.msg);
+						})
+						layer.close(index);
+					});
+					 break;
+			    case 'resubmit':
+					layer.confirm('你确定要重置这条征订信息吗?', {icon: 3, title:'提示'}, function(index){
+						$.post("/subscription/withdrawSubscription",{id:data.id},function(res){
+							if(res.code==200){
+								tableIns.reload();
+							}
+							layer.msg(res.msg);
+						})
+						layer.close(index);
+					});
 			    break;
 			    case 'delete':
 			   		deleteSubscription(data);
@@ -262,6 +293,7 @@ layui.use(['jquery','form','table','layer'],function(){
 				area:['800px','600px'],
 				title:'修改征订教材',
 				success:function(){
+
 					$("#dataFrm")[0].reset();
 					//装载新的数据
 					form.val("dataFrm",data);
@@ -275,6 +307,10 @@ layui.use(['jquery','form','table','layer'],function(){
 					var html2='<option value="'+data.bookId+'">'+data.bookname+'</option>'
 					domorder2.html(html2);
 					form.render("select");
+					$("#dataFrm").find(":text,input:hidden,:password,:radio,:checkbox,textarea,select").removeAttr("readonly");
+					if(data.status==1){
+						$("#dataFrm").find(":text,input:hidden,:password,:radio,:checkbox,textarea,select").attr("readonly","true");
+					}
 
 					url="/subscription/updateSubscription";
 				}
@@ -303,6 +339,35 @@ layui.use(['jquery','form','table','layer'],function(){
 			   layer.close(index);
 			});
 		}
+		//批量确认
+		function  batchSubmit(){
+			//得到选中行
+			var checkStatus = table.checkStatus('subscriptionTable');
+			var dataLength=checkStatus.data.length;
+			if(dataLength>0){
+				layer.confirm('提交后将无法再次更改，你确定要提交这些征订信息吗?', {icon: 3, title:'提示'}, function(index){
+						var data=checkStatus.data; //获取选中行的数据
+						var ids="";
+						$.each(data,function(index,item){
+							if(index==0){
+								ids+="ids="+item.id;
+							}else{
+								ids+="&ids="+item.id;
+							}
+						})
+						$.post("/subscription/batchSubmitSubscription",ids,function(res){
+							if(res.code==200){
+								tableIns.reload();
+							}
+							layer.msg(res.msg);
+						})	
+					   layer.close(index);
+					});
+				
+			}else{
+				layer.msg("请选中操作行")
+			}
+		}
 		//批量删除
 		function  batchDelete(){
 			//得到选中行
@@ -324,10 +389,10 @@ layui.use(['jquery','form','table','layer'],function(){
 								tableIns.reload();
 							}
 							layer.msg(res.msg);
-						})	
+						})
 					   layer.close(index);
 					});
-				
+
 			}else{
 				layer.msg("请选中操作行")
 			}

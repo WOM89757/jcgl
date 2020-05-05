@@ -80,6 +80,7 @@ public class OrderController {
                         subscriptionVo.setDeptId(school.getId());
                         subscriptionVo.setOperName(user.getName());
                         subscriptionVo.setCreateTime(new Date());
+                        subscriptionVo.setStatus(Constast.STATUS_FALSE);
                         subscriptionService.save(subscriptionVo);
                     }
                 }

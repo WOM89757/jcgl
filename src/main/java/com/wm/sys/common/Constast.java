@@ -29,6 +29,12 @@ public interface Constast {
 	 */
 	public static final Object AVAILABLE_TRUE = 1;
 	public static final Object AVAILABLE_FALSE = 0;
+
+	/**
+	 * 提交状态
+	 */
+	public static final Integer STATUS_TRUE = 1;
+	public static final Integer STATUS_FALSE = 0;
 	
 	/**
 	 * 用户类型

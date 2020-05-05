@@ -65,6 +65,7 @@ public class Booksubmit implements Serializable {
     /**
      * 进货折扣
      */
+
     private BigDecimal discount;
 
 
