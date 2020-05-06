@@ -516,7 +516,6 @@ layui.use(['jquery','form','table','layer','upload'],function(){
 				layer.confirm('你确定要删除这些书目信息吗?', {icon: 3, title:'提示'}, function(index){
 					var data=checkStatus.data; //获取选中行的数据
 					var ids="";
-					var orderid;
 					$.each(data,function(index,item){
 						if(index==0){
 							ids+="ids="+item.id;

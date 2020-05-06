@@ -222,7 +222,6 @@ layui.use(['jquery','form','table','layer'],function(){
 			return false;
 		});
 		form.on("submit(dobookadd)",function(data){
-			console.log(data.field);
 			$.post(url,data.field,function(res){
 				if(res.code==200){
 					tableIns.reload();

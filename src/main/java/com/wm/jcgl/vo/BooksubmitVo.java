@@ -5,6 +5,8 @@ import com.wm.jcgl.entity.Provider;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
+import java.util.ArrayList;
+
 @Data
 @EqualsAndHashCode(callSuper = false)
 public class BooksubmitVo extends Booksubmit {
@@ -18,5 +20,6 @@ public class BooksubmitVo extends Booksubmit {
 	private Integer limit = 10;
 
 	private Integer[] ids;
+	private ArrayList<Booksubmit> submitVoList;
 
 }

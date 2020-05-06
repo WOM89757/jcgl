@@ -32,23 +32,18 @@
 				</div>
 			</div>
 		    <div class="layui-inline">
-		      <label class="layui-form-label">报订名称</label>
+		      <label class="layui-form-label">书名</label>
 		      <div class="layui-input-inline">
 		        <input type="text" name="booksubmitName"  autocomplete="off" class="layui-input">
 		      </div>
 		    </div>
 		    <div class="layui-inline">
-		      <label class="layui-form-label">报订电话</label>
+		      <label class="layui-form-label">年级</label>
 		      <div class="layui-input-inline">
-		        <input type="text" name="phone"  autocomplete="off" class="layui-input">
+		        <input type="text" name="grade"  autocomplete="off" class="layui-input">
 		      </div>
 		    </div>
-		    <div class="layui-inline">
-		       <label class="layui-form-label">联系人</label>
-		       <div class="layui-input-inline">
-		        <input type="text" name="connectionperson"  autocomplete="off" class="layui-input">
-		      </div>
-		    </div>
+
 		  </div>
 		  <div class="layui-form-item">
 		  	 <div class="layui-input-block" style="text-align: center;">
@@ -77,100 +72,42 @@
 
 <!-- 数据表格结束 -->
 
-<!-- 添加和修改的弹出层开始 -->
-<div style="display: none;padding: 5px" id="addOrUpdateDiv">
-	<form action="" method="post" class="layui-form layui-form-pane" id="dataFrm" lay-filter="dataFrm">
-		<div class="layui-form-item">
-			<div class="layui-inline">
-			    <label class="layui-form-label">报订名称</label>
-			    <div class="layui-input-inline">
-			      <input type="hidden" name="id">
-			      <input type="text" name="booksubmitName" lay-verify="required" autocomplete="off" placeholder="请输入报订名称" class="layui-input">
-			    </div>
-		    </div>
-			<div class="layui-inline">
-			    <label class="layui-form-label">报订电话</label>
-			    <div class="layui-input-inline">
-			      <input type="hidden" name="id">
-			      <input type="text" name="telephone" lay-verify="required" autocomplete="off" placeholder="请输入报订电话" class="layui-input">
-			    </div>
-		    </div>
-			<div class="layui-inline">
-			    <label class="layui-form-label">邮编</label>
-			    <div class="layui-input-inline">
-			      <input type="hidden" name="id">
-			      <input type="text" name="zip"  autocomplete="off" placeholder="请输入报订邮编" class="layui-input">
-			    </div>
-		    </div>
- 	   </div>
- 	   <div class="layui-form-item">
-		    <label class="layui-form-label">报订地址</label>
-		    <div class="layui-input-block">
-		      <input type="text" name="address" autocomplete="off" placeholder="请输入报订地址" class="layui-input">
-		    </div>
- 	   </div>
- 	   <div class="layui-form-item">
-			<div class="layui-inline">
-			    <label class="layui-form-label">联系人</label>
-			    <div class="layui-input-inline">
-			      <input type="hidden" name="id">
-			      <input type="text" name="connectionperson" lay-verify="required" autocomplete="off" placeholder="请输入联系人" class="layui-input">
-			    </div>
-		    </div>
-			<div class="layui-inline">
-			    <label class="layui-form-label">联系人电话</label>
-			    <div class="layui-input-inline">
-			      <input type="hidden" name="id">
-			      <input type="text" name="phone" lay-verify="required" autocomplete="off" placeholder="请输入联系人电话" class="layui-input">
-			    </div>
-		    </div>
-			<div class="layui-inline">
-			    <label class="layui-form-label">邮箱</label>
-			    <div class="layui-input-inline">
-			      <input type="hidden" name="id">
-			      <input type="text" name="email" lay-verify="required" autocomplete="off" placeholder="请输入报订邮箱" class="layui-input">
-			    </div>
-		    </div>
- 	   </div>
- 	   <div class="layui-form-item">
-			<div class="layui-inline">
-			    <label class="layui-form-label">开户银行</label>
-			    <div class="layui-input-inline">
-			      <input type="hidden" name="id">
-			      <input type="text" name="bank" lay-verify="required" autocomplete="off" placeholder="请输入开户银行" class="layui-input">
-			    </div>
-		    </div>
-			<div class="layui-inline">
-			    <label class="layui-form-label">帐号</label>
-			    <div class="layui-input-inline">
-			      <input type="hidden" name="id">
-			      <input type="text" name="account" lay-verify="required" autocomplete="off" placeholder="请输入报订帐号" class="layui-input">
-			    </div>
-		    </div>
-			<div class="layui-inline">
-			    <label class="layui-form-label">传真</label>
-			    <div class="layui-input-inline">
-			      <input type="hidden" name="id">
-			      <input type="text" name="fax" lay-verify="required" autocomplete="off" placeholder="请输入报订传真" class="layui-input">
-			    </div>
-		    </div>
- 	   </div>
-	  <div class="layui-form-item">
-	    <div class="layui-inline">
-	      <label class="layui-form-label">是否可用</label>
-	      <div class="layui-input-inline">
-	        <input type="radio" name="available" value="1" title="可用" checked="">
-	        <input type="radio" name="available" value="0" title="不可用" >
-	      </div>
-	    </div>
-	  </div>
- 	   <div class="layui-form-item">
-		    <div class="layui-input-block" style="text-align: center;">
-		      	<button type="button" class="layui-btn" lay-submit="" lay-filter="doSubmit" id="doSubmit" ><span class="layui-icon layui-icon-add-1"></span>提交</button>
-      			<button type="reset" class="layui-btn layui-btn-warm"><span class="layui-icon layui-icon-refresh-1"></span>重置</button>
-		     </div>
- 	   </div>
-	</form>
+<!-- 添加的弹出层开始 -->
+<div style="display: none;padding: 5px" id="addDiv">
+
+
+	<!-- 数据表格开始 -->
+
+	<div>
+
+			<div class=" layui-form ">
+				<div class="layui-form-item">
+					<div class="layui-inline" style="margin-top: 10px;">
+						<label class="layui-form-label">征订期号</label>
+						<div class="layui-input-inline" style="width: 454px;">
+							<select name="orderId" id="add_orderid"  lay-verify="required">
+								<option value="">请选择所要查询的征订期号信息</option>
+							</select>
+						</div>
+						<div class="layui-input-inline">
+							<button type="button"  class="layui-btn layui-btn "lay-submit="" lay-filter="doAddSearch"><span class="layui-icon "></span>查询</button>
+
+						</div>
+					</div>
+
+				</div>
+				<div id="addbooksubmitToolBar" style="display: none;">
+					<button type="button" lay-event="batchAdd" class="layui-btn layui-btn-sm " lay-filter="dobookadd"><span class="layui-icon "></span>添加所选报订信息</button>
+				</div>
+			</div>
+
+
+
+		<table class="layui-hide" id="addTable" lay-filter="addTable"></table>
+
+	</div>
+
+	<!-- 数据表格结束 -->
 </div>
 <!-- 添加和修改的弹出层结束 -->
 
@@ -187,7 +124,7 @@ layui.use(['jquery','form','table','layer'],function(){
 		//加载 数据
 		 tableIns=table.render({
 			 elem: '#booksubmitTable'
-		    ,url:'/booksubmit/loadBooksubmit'
+		    ,url:'/booksubmit/loadAllBooksubmit'
 		    ,toolbar: '#booksubmitToolBar' //开启头部工具栏，并为其绑定左侧模板
 		    ,title: '报订数据表'
 		    ,height:'full-220'
@@ -195,8 +132,8 @@ layui.use(['jquery','form','table','layer'],function(){
 		    ,cols: [ [
 		      {type:'checkbox',align:'center'}
 		      ,{field:'id', title:'ID',align:'center' ,width:'80'}
-		      ,{field:'orderId', title:'期号名称',align:'center',width:'120'}
-		      ,{field:'bookId', title:'书名',align:'center',width:'120'}
+		      ,{field:'ordername', title:'期号名称',align:'center',width:'147'}
+		      ,{field:'bookname', title:'书名',align:'center',width:'120'}
 		      ,{field:'grade', title:'年级',align:'center',width:'150'}
 		      ,{field:'sumordNum', title:'待配订数',align:'center',width:'150'}
 		      ,{field:'inportNum', title:'库存量',align:'center',width:'120'}
@@ -204,7 +141,10 @@ layui.use(['jquery','form','table','layer'],function(){
 		      ,{fixed: 'right', title:'操作', toolbar: '#booksubmitRowBar',align:'center',width:'200'}
 		    ] ]
 		      ,done: function(res, curr, count){ //处理删除某一页最后一条数据的BUG
-			        if(res.data.length==0&&curr!=1){
+				 if(res.data==null){
+					 curr=1;
+				 }
+				 if(curr!=1&&res.data.length==0){
 			        	tableIns.reload({
 			        		page:{
 			        			curr:(curr-1)
@@ -213,8 +153,9 @@ layui.use(['jquery','form','table','layer'],function(){
 			        }
 			    }
 		});
-		
-		//模糊查询
+
+
+	//模糊查询
 		form.on("submit(doSearch)",function(data){
 			tableIns.reload({
 				where:data.field,
@@ -252,9 +193,7 @@ layui.use(['jquery','form','table','layer'],function(){
 		table.on("tool(booksubmitTable)",function(obj){
 			  var data = obj.data; //获得当前行数据
 			 switch(obj.event){
-			    case 'update':
-			   		openUpdateBooksubmitLayer(data);
-			    break;
+
 			    case 'delete':
 			   		deleteBooksubmit(data);
 			    break;
@@ -267,42 +206,110 @@ layui.use(['jquery','form','table','layer'],function(){
 		function openAddLayer(){
 			mainIndex=layer.open({
 				type:1,
-				content:$("#addOrUpdateDiv"),
+				content:$("#addDiv"),
 				area:['800px','600px'],
 				title:'添加报订',
 				success:function(){
-					$("#dataFrm")[0].reset();
+					//加载查询条件征订期号的下拉列表
+					$.get("/order/loadAllOrderForSelect",function(res){
+						var data=res.data;
+						var dom=$("#add_orderid");
+						var html='<option value="">请选择所要查询的征订期号信息</option>'
+						$.each(data,function(index,item){
+							html+='<option value="'+item.id+'">'+item.id+'-'+item.comment+'</option>'
+						});
+						dom.html(html);
+						form.render("select");
+					})
+					//查询已提交征订信息
+					form.on("submit(doAddSearch)",function(data){
+						addtableIns.reload({
+							where:data.field,
+							page:{
+								curr:1
+							}
+						});
+						return false;
+					});
+					//加载已提交征订数据
+					addtableIns=table.render({
+						elem: '#addTable'
+						,url:'/booksubmit/loadBooksubmit'
+						,toolbar: '#addbooksubmitToolBar' //开启头部工具栏，并为其绑定左侧模板
+						,title: '报订数据表'
+						,height:'full-220'
+						,page: false
+						,cols: [ [
+							{type:'checkbox',align:'center'}
+							,{field:'ordername', title:'期号名称',align:'center',width:'150'}
+							,{field:'bookname', title:'书名',align:'center',width:'120'}
+							,{field:'grade', title:'年级',align:'center',width:'150'}
+							,{field:'sumordNum', title:'征订数量',align:'center',width:'150'}
+
+						] ]
+						,done: function(res, curr, count){ //处理删除某一页最后一条数据的BUG
+							if(res.data==null){
+								curr=1;
+							}
+							if(curr!=1&&res.data.length==0){
+								addtableIns.reload({
+									page:{
+										curr:(curr-1)
+									}
+								});
+							}
+						}
+					});
+
+
+
+					//监听工具条的事件
+					table.on("toolbar(addTable)",function(obj){
+						switch(obj.event) {
+							case 'batchAdd':
+								batchAdd();
+								break;
+						}
+					});
+
+
+					//批量添加
+					function  batchAdd(){
+						var orderId = $("#add_orderid").val();
+						//得到选中行
+						var checkStatus = table.checkStatus('addTable');
+						var dataLength=checkStatus.data.length;
+						if(dataLength>0){
+							layer.confirm('你确定添加这些报订信息吗?', {icon: 3, title:'提示'}, function(index){
+								var data=checkStatus.data; //获取选中行的数据
+								var submitVoList= new Array();
+								 $.each(data,function(index,item){
+									  submitVoList.push(item)
+								});
+								$.post("/booksubmit/addBooksubmit",{orderid:orderId,submitlist:JSON.stringify(submitVoList)},function(res){
+									if(res.code==200){
+										layer.close(mainIndex);
+										tableIns.reload({
+											where:{orderId:orderId},
+											curr:1,
+										});
+									}
+									layer.msg(res.msg);
+								})
+								layer.close(index);
+
+							});
+						}else{
+							layer.msg("请选中操作行")
+						}
+					}
 					url="/booksubmit/addBooksubmit";
 				}
 			});
 		}
+
 		
-		//打开修改的弹出层
-		function openUpdateBooksubmitLayer(data){
-			mainIndex=layer.open({
-				type:1,
-				content:$("#addOrUpdateDiv"),
-				area:['800px','600px'],
-				title:'修改报订',
-				success:function(){
-					$("#dataFrm")[0].reset();
-					//装载新的数据
-					form.val("dataFrm",data);
-					url="/booksubmit/updateBooksubmit";
-				}
-			});
-		}
-		
-		form.on("submit(doSubmit)",function(data){
-			  $.post(url,data.field,function(res){
-					if(res.code==200){
-						tableIns.reload();
-					}
-						layer.msg(res.msg);
-						layer.close(mainIndex);
-					}) 
-			return false;
-		});
+
 		//删除
 		function deleteBooksubmit(data){
 			layer.confirm('你确定要删除【'+data.booksubmitName+'】这个报订吗?', {icon: 3, title:'提示'}, function(index){

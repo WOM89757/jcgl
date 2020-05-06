@@ -68,5 +68,10 @@ public class Booksubmit implements Serializable {
 
     private BigDecimal discount;
 
+    @TableField(exist = false)
+    private String bookname;
+
+    @TableField(exist = false)
+    private String ordername;
 
 }
