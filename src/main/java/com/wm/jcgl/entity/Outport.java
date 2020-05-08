@@ -4,6 +4,8 @@ import com.baomidou.mybatisplus.annotation.TableName;
 import java.time.LocalDateTime;
 import com.baomidou.mybatisplus.annotation.TableField;
 import java.io.Serializable;
+import java.util.Date;
+
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.experimental.Accessors;
@@ -33,7 +35,7 @@ public class Outport implements Serializable {
      * 退货时间
      */
     @TableField("outputTime")
-    private LocalDateTime outputTime;
+    private Date outputTime;
 
     /**
      * 操作员

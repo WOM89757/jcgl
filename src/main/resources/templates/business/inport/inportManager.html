@@ -26,7 +26,7 @@
 		   <div class="layui-inline">
 		       <label class="layui-form-label">	供应商</label>
 		       <div class="layui-input-inline">
-		         <select name="providerid" id="search_providerid" >
+		         <select name="providerId" id="search_providerid" >
 		         	<option value="">请选择供应商</option>
 		         </select>
 		      </div>
@@ -34,7 +34,7 @@
 		   <div class="layui-inline">
 		       <label class="layui-form-label">书目名称</label>
 		       <div class="layui-input-inline">
-		         <select name="bookid" id="search_bookid">
+		         <select name="bookId" id="search_bookid">
 		         	<option value="">请选择书目</option>
 		         </select>
 		      </div>
@@ -364,8 +364,8 @@ layui.use(['jquery','form','table','layer','laydate'],function(){
 					$("#dataFrm")[0].reset();
 					//装载新的数据
 					form.val("dataFrm",data);
-					initProviderSelect(data.providerid);
-					initBookSelect(data.providerid,data.bookid);
+					initProviderSelect(data.providerId);
+					initBookSelect(data.providerid,data.bookId);
 					url="/inport/updateInport";
 					//禁用供应商和书目的下拉框
 				    $(".mydiv").show();

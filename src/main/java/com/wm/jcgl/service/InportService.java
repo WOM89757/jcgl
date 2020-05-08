@@ -12,5 +12,6 @@ import com.baomidou.mybatisplus.extension.service.IService;
  * @since 2020-05-07
  */
 public interface InportService extends IService<Inport> {
-
+    @Override
+    boolean save(Inport entity);
 }

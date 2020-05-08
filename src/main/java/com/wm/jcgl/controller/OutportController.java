@@ -49,13 +49,13 @@ public class OutportController {
     public DataGridView loadAllOutport(OutportVo outportVo) {
         IPage<Outport> page = new Page<>(outportVo.getPage(), outportVo.getLimit());
         QueryWrapper<Outport> queryWrapper = new QueryWrapper<>();
-//        queryWrapper.eq(outportVo.getProviderid()!=null&&outportVo.getProviderid()!=0,"providerid",outportVo.getProviderid());
-//        queryWrapper.eq(outportVo.getBookid()!=null&&outportVo.getBookid()!=0,"bookid",outportVo.getBookid());
-//        queryWrapper.ge(outportVo.getStartTime()!=null, "outputtime", outportVo.getStartTime());
-//        queryWrapper.le(outportVo.getEndTime()!=null, "outputtime", outportVo.getEndTime());
-//        queryWrapper.like(StringUtils.isNotBlank(outportVo.getOperateperson()), "operateperson", outportVo.getOperateperson());
-//        queryWrapper.like(StringUtils.isNotBlank(outportVo.getRemark()), "remark", outportVo.getRemark());
-//        queryWrapper.orderByDesc("outputtime");
+        queryWrapper.eq(outportVo.getProviderId()!=null&&outportVo.getProviderId()!=0,"provider_id",outportVo.getProviderId());
+        queryWrapper.eq(outportVo.getBookId()!=null&&outportVo.getBookId()!=0,"book_id",outportVo.getBookId());
+        queryWrapper.ge(outportVo.getStartTime()!=null, "inportTime", outportVo.getStartTime());
+        queryWrapper.le(outportVo.getEndTime()!=null, "inportTime", outportVo.getEndTime());
+        queryWrapper.like(StringUtils.isNotBlank(outportVo.getOperateperson()), "operatePerson", outportVo.getOperateperson());
+        queryWrapper.like(StringUtils.isNotBlank(outportVo.getRemark()), "remark", outportVo.getRemark());
+        queryWrapper.orderByDesc("outputTime");
         this.outportService.page(page, queryWrapper);
         List<Outport> records = page.getRecords();
         for (Outport outport : records) {
@@ -78,7 +78,7 @@ public class OutportController {
     @RequestMapping("addOutport")
     public ResultObj addOutport(Integer id, Integer number, String remark) {
         try {
-            //this.outportService.addOutPort(id,number,remark);
+            this.outportService.addOutPort(id,number,remark);
             return ResultObj.OPERATE_SUCCESS;
         } catch (Exception e) {
             e.printStackTrace();

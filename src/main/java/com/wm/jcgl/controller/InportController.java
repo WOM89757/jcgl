@@ -51,13 +51,13 @@ public class InportController {
     public DataGridView loadAllInport(InportVo inportVo) {
         IPage<Inport> page = new Page<>(inportVo.getPage(), inportVo.getLimit());
         QueryWrapper<Inport> queryWrapper = new QueryWrapper<>();
-//        queryWrapper.eq(inportVo.getProviderid()!=null&&inportVo.getProviderid()!=0,"providerid",inportVo.getProviderid());
-//        queryWrapper.eq(inportVo.getBookid()!=null&&inportVo.getBookid()!=0,"bookid",inportVo.getBookid());
-//        queryWrapper.ge(inportVo.getStartTime()!=null, "inporttime", inportVo.getStartTime());
-//        queryWrapper.le(inportVo.getEndTime()!=null, "inporttime", inportVo.getEndTime());
-//        queryWrapper.like(StringUtils.isNotBlank(inportVo.getOperateperson()), "operateperson", inportVo.getOperateperson());
-//        queryWrapper.like(StringUtils.isNotBlank(inportVo.getRemark()), "remark", inportVo.getRemark());
-//        queryWrapper.orderByDesc("inporttime");
+        queryWrapper.eq(inportVo.getProviderId()!=null&&inportVo.getProviderId()!=0,"provider_id",inportVo.getProviderId());
+        queryWrapper.eq(inportVo.getBookId()!=null&&inportVo.getBookId()!=0,"book_id",inportVo.getBookId());
+        queryWrapper.ge(inportVo.getStartTime()!=null, "inportTime", inportVo.getStartTime());
+        queryWrapper.le(inportVo.getEndTime()!=null, "inportTime", inportVo.getEndTime());
+        queryWrapper.like(StringUtils.isNotBlank(inportVo.getOperatePerson()), "operatePerson", inportVo.getOperatePerson());
+        queryWrapper.like(StringUtils.isNotBlank(inportVo.getRemark()), "remark", inportVo.getRemark());
+        queryWrapper.orderByDesc("inportTime");
         this.inportService.page(page, queryWrapper);
         List<Inport> records = page.getRecords();
         for (Inport inport : records) {
@@ -83,10 +83,6 @@ public class InportController {
             inportVo.setInportTime(new Date());
             User user=(User) WebUtils.getSession().getAttribute("user");
             inportVo.setOperatePerson(user.getName());
-            //给对应书目更新库存数量
-            Book book = this.bookService.getById(inportVo.getBookId());
-            book.setInportnumber(book.getInportnumber()+inportVo.getNumber());
-            this.bookService.updateById(book);
             this.inportService.save(inportVo);
             return ResultObj.ADD_SUCCESS;
         } catch (Exception e) {
