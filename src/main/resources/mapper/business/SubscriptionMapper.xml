@@ -17,5 +17,28 @@
         GROUP BY grade,book_id
 
     </select>
+<!--    SELECT
+           order_id,
+           book_id,
+					 dept_id,
+           grade,
+           SUM(studNum+teaNum) AS OrderNum
+        FROM
+            b_subscription
+        WHERE order_id=5
+        GROUP BY dept_id,grade,book_id-->
+    <select id="getSubscriptionForAllotment" resultType="com.wm.jcgl.entity.Allotment">
+        SELECT
+           order_id,
+           book_id,
+           dept_id,
+           grade,
+           SUM(studNum+teaNum) AS OrderNum
+        FROM
+            b_subscription
+        WHERE order_id=#{value}
+        GROUP BY dept_id,grade,book_id
+
+    </select>
 
 </mapper>

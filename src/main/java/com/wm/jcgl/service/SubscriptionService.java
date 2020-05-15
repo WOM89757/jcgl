@@ -1,5 +1,6 @@
 package com.wm.jcgl.service;
 
+import com.wm.jcgl.entity.Allotment;
 import com.wm.jcgl.entity.Booksubmit;
 import com.wm.jcgl.entity.Subscription;
 import com.baomidou.mybatisplus.extension.service.IService;
@@ -21,4 +22,11 @@ public interface SubscriptionService extends IService<Subscription> {
      * @return
      */
     List<Booksubmit> getSubscriptionWithOrderId(Integer orderId);
+
+    /**
+     * 通过期号id 得到所有征订信息为配发提供基本信息
+     * @param orderId
+     * @return
+     */
+    List<Allotment> getSubscriptionForAllotment(Integer orderId);
 }

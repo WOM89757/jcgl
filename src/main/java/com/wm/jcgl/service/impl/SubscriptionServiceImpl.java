@@ -1,5 +1,6 @@
 package com.wm.jcgl.service.impl;
 
+import com.wm.jcgl.entity.Allotment;
 import com.wm.jcgl.entity.Booksubmit;
 import com.wm.jcgl.entity.Subscription;
 import com.wm.jcgl.mapper.SubscriptionMapper;
@@ -25,5 +26,10 @@ public class SubscriptionServiceImpl extends ServiceImpl<SubscriptionMapper, Sub
     @Override
     public List<Booksubmit> getSubscriptionWithOrderId(Integer orderId) {
         return this.baseMapper.getSubscriptionWithOrderId(orderId);
+    }
+
+    @Override
+    public List<Allotment> getSubscriptionForAllotment(Integer orderId) {
+        return this.baseMapper.getSubscriptionForAllotment(orderId);
     }
 }

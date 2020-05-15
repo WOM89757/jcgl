@@ -1,15 +1,13 @@
 package com.wm.jcgl.vo;
 
+import com.wm.jcgl.entity.Allotment;
 import com.wm.jcgl.entity.Booksubmit;
-import com.wm.jcgl.entity.Provider;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
-import java.util.ArrayList;
-
 @Data
 @EqualsAndHashCode(callSuper = false)
-public class BooksubmitVo extends Booksubmit {
+public class AllotmentVo extends Allotment {
 
 	/*
 	 *  

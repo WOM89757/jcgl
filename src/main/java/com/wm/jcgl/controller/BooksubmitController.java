@@ -22,6 +22,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import javax.annotation.Resource;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -39,15 +40,13 @@ import java.util.List;
 @RestController
 @RequestMapping("/booksubmit")
 public class BooksubmitController {
-    @Autowired
+    @Resource
     private BooksubmitService submitService;
-
-    @Autowired
+    @Resource
     private SubscriptionService subscriptionService;
-
-    @Autowired
+    @Resource
     private BookService bookService;
-    @Autowired
+    @Resource
     private OrderService orderService;
 
     /**

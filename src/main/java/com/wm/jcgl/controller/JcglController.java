@@ -76,5 +76,19 @@ public class JcglController {
     public String toOutportManager() {
         return "business/outport/outportManager";
     }
+    /**
+     * 跳转到配发信息管理
+     */
+    @RequestMapping("toAllotmentinfoManager")
+    public String toAllotmentinfoManager() {
+        return "business/allotment/allotmentinfoManager";
+    }
+    /**
+     * 跳转到书目配发
+     */
+    @RequestMapping("toAllotmentManager")
+    public String toAllotmentManager() {
+        return "business/allotment/AllotmentManager";
+    }
 }
 

@@ -4,6 +4,8 @@ import com.baomidou.mybatisplus.annotation.TableName;
 import java.time.LocalDateTime;
 import com.baomidou.mybatisplus.annotation.TableField;
 import java.io.Serializable;
+import java.util.Date;
+
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.experimental.Accessors;
@@ -54,7 +56,7 @@ public class Allotment implements Serializable {
      * 创建时间
      */
     @TableField("createTime")
-    private LocalDateTime createTime;
+    private Date createTime;
 
     /**
      * 年级
@@ -77,6 +79,15 @@ public class Allotment implements Serializable {
      * 配发状态
      */
     private Integer status;
+
+    @TableField(exist = false)
+    private String bookname;
+
+    @TableField(exist = false)
+    private String ordername;
+
+    @TableField(exist = false)
+    private String schoolname;
 
 
 }

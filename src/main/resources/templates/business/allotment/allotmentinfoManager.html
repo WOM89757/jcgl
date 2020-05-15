@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>报订管理</title>
+<meta name="renderer" content="webkit">
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+<meta http-equiv="Access-Control-Allow-Origin" content="*">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<meta name="apple-mobile-web-app-status-bar-style" content="black">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="format-detection" content="telephone=no">
+<link rel="icon" href="/favicon.ico">
+<link rel="stylesheet" href="/resources/layui/css/layui.css" media="all" />
+<link rel="stylesheet" href="/resources/css/public.css" media="all" />
+
+</head>
+<body class="childrenBody">
+<!-- 查询条件开始 -->
+<fieldset class="layui-elem-field layui-field-title" style="margin-top: 5px;">
+  <legend>查询条件</legend>
+</fieldset>
+<blockquote class="layui-elem-quote">
+	<form action="" method="post" id="searchFrm" lay-filter="searchFrm" class="layui-form layui-form-pane">
+		<div class="layui-form-item">
+
+				<label class="layui-form-label">征订期号</label>
+				<div class="layui-input-block">
+					<select name="orderId" id="search_orderid"  lay-verify="required">
+						<option value="">请选择征订期号</option>
+					</select>
+				</div>
+
+
+		</div>
+		<div class="layui-form-item">
+		</div>
+		  <div class="layui-form-item">
+		  	 <div class="layui-input-block" style="text-align: center;">
+		       	<button type="button" class="layui-btn" lay-submit="" lay-filter="doSearch"><span class="layui-icon layui-icon-search"></span>查询</button>
+      			<button type="reset" class="layui-btn layui-btn-warm"><span class="layui-icon layui-icon-refresh-1"></span>重置</button>
+		      </div>
+		  </div>
+	</form>
+</blockquote>
+<!-- 查询条件结束-->
+
+
+<!-- 数据表格开始 -->
+<div>
+	<table class="layui-hide" id="allotmentTable" lay-filter="allotmentTable"></table>
+	<div id="allotmentToolBar" style="display: none;">
+		<button type="button" lay-event="batchAdd" class="layui-btn layui-btn-sm layui-btn-nomal"><span class="layui-icon layui-icon-delete"></span>批量导入</button>
+	</div>
+	
+	<div id="allotmentRowBar" style="display: none;">
+		<button type="button" lay-event="add" class="layui-btn layui-btn-sm"><span class="layui-icon layui-icon-edit"></span>导入</button>
+	</div>
+</div>
+
+<!-- 数据表格结束 -->
+
+<!-- 添加的弹出层开始 -->
+<div style="display: none;padding: 5px" id="addDiv">
+
+	<!-- 数据表格开始 -->
+
+	<div>
+			<div class=" layui-form ">
+				<div class="layui-form-item">
+					<div class="layui-inline" style="margin-top: 10px;">
+						<label class="layui-form-label">征订期号</label>
+						<div class="layui-input-inline" style="width: 454px;">
+							<select name="orderId" id="add_orderid"  lay-verify="required">
+								<option value="">请选择所要查询的征订期号信息</option>
+							</select>
+						</div>
+						<div class="layui-input-inline">
+							<button type="button"  class="layui-btn layui-btn "lay-submit="" lay-filter="doAddSearch"><span class="layui-icon "></span>查询</button>
+						</div>
+					</div>
+
+				</div>
+				<div id="addallotmentToolBar" style="display: none;">
+					<button type="button" lay-event="batchAdd" class="layui-btn layui-btn-sm " lay-filter="dobookadd"><span class="layui-icon "></span>添加所选报订信息</button>
+				</div>
+			</div>
+
+		<table class="layui-hide" id="addTable" lay-filter="addTable"></table>
+
+	</div>
+
+	<!-- 数据表格结束 -->
+</div>
+<!-- 添加和修改的弹出层结束 -->
+
+
+
+<script type="text/javascript" src="/resources/layui/layui.js"></script>
+<script type="text/javascript">
+var tableIns;
+layui.use(['jquery','form','table','layer'],function(){
+		var $=layui.jquery;
+		var form=layui.form;
+		var table=layui.table;
+		var layer=layui.layer;
+		//加载 数据
+		 tableIns=table.render({
+			 elem: '#allotmentTable'
+		    ,url:'/allotment/loadAllotmentWithOrderId'
+		    ,toolbar: '#allotmentToolBar' //开启头部工具栏，并为其绑定左侧模板
+		    ,title: '报订数据表'
+		    ,height:'full-220'
+		    ,page: true
+		    ,cols: [ [
+		      {type:'checkbox',align:'center'}
+		      ,{field:'ordername', title:'期号名称',align:'center'}
+		      ,{field:'schoolname', title:'学校',align:'center'}
+		      ,{field:'grade', title:'年级',align:'center'}
+		      ,{field:'bookname', title:'书名',align:'center'}
+		      ,{field:'orderNum', title:'应配发数量',align:'center'}
+		      ,{fixed: 'right', title:'操作', toolbar: '#allotmentRowBar',align:'center'}
+		    ] ]
+		      ,done: function(res, curr, count){ //处理删除某一页最后一条数据的BUG
+				 if(res.data==null){
+					 curr=1;
+				 }
+				 if(curr!=1&&res.data.length==0){
+			        	tableIns.reload({
+			        		page:{
+			        			curr:(curr-1)
+			        		}
+			        	});
+			        }
+			    }
+		});
+
+
+	//模糊查询
+		form.on("submit(doSearch)",function(data){
+			tableIns.reload({
+				where:data.field,
+				page:{
+					curr:1
+				}
+			});
+			return false;
+		});
+		//加载查询条件征订期号的下拉列表
+		$.get("/order/loadAllOrderForSelect",function(res){
+			var data=res.data;
+			var dom=$("#search_orderid");
+			var html='<option value="">请选择所要查询的征订期号信息</option>'
+			$.each(data,function(index,item){
+				html+='<option value="'+item.id+'">'+item.id+'-'+item.comment+'</option>'
+			});
+			dom.html(html);
+			form.render("select");
+		})
+		
+		//监听工具条的事件
+		table.on("toolbar(allotmentTable)",function(obj){
+			 switch(obj.event){
+			    case 'batchAdd':
+					batchAdd();
+			    break;
+			  };
+		});
+
+		//监听行工具条的事件
+			table.on("tool(allotmentTable)",function(obj){
+				var data = obj.data; //获得当前行数据
+				switch(obj.event){
+
+					case 'add':
+						add(data);
+						break;
+				};
+			});
+		
+		var mainIndex;
+
+		//删除
+			function add(data){
+				layer.confirm('你确定要添加这条配发信息吗?', {icon: 3, title:'提示'}, function(index){
+						var allotmentVoList= new Array();
+						allotmentVoList.push(data);
+					$.post("/allotment/addAllotment",{allotmentlist:JSON.stringify(allotmentVoList)},function(res){
+						if(res.code==200){
+							tableIns.reload();
+						}
+						layer.msg(res.msg);
+					})
+					layer.close(index);
+				});
+			}
+
+		//批量添加
+		function  batchAdd(){
+			var orderId = $("#add_orderid").val();
+			//得到选中行
+			var checkStatus = table.checkStatus('allotmentTable');
+			var dataLength=checkStatus.data.length;
+			if(dataLength>0){
+				layer.confirm('你确定添加这些配发信息吗?', {icon: 3, title:'提示'}, function(index){
+					var data=checkStatus.data; //获取选中行的数据
+					var allotmentVoList= new Array();
+					$.each(data,function(index,item){
+						allotmentVoList.push(item)
+					});
+						$.post("/allotment/addAllotment",{orderid:orderId,allotmentlist:JSON.stringify(allotmentVoList)},function(res){
+						if(res.code==200){
+							layer.close(mainIndex);
+							tableIns.reload({
+								where:{orderId:orderId},
+								curr:1,
+							});
+						}
+						layer.msg(res.msg);
+					})
+					layer.close(index);
+
+				});
+			}else{
+				layer.msg("请选中操作行")
+			}
+		}
+		
+	});
+</script>
+
+</body>
+</html>
