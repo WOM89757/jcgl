@@ -68,6 +68,8 @@ public class InportController {
             Book book = this.bookService.getById(inport.getBookId());
             if(null!=book) {
                 inport.setBookname(book.getName());
+                inport.setGrade(book.getGrade());
+
 
             }
         }

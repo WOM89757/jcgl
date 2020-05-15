@@ -1,10 +1,13 @@
 package com.wm.jcgl.service.impl;
 
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.wm.jcgl.entity.Book;
+import com.wm.jcgl.entity.Booksubmit;
 import com.wm.jcgl.entity.Inport;
 import com.wm.jcgl.entity.Outport;
 import com.wm.jcgl.mapper.BookMapper;
+import com.wm.jcgl.mapper.BooksubmitMapper;
 import com.wm.jcgl.mapper.InportMapper;
 import com.wm.jcgl.mapper.OutportMapper;
 import com.wm.jcgl.service.OutportService;
@@ -35,6 +38,9 @@ public class OutportServiceImpl extends ServiceImpl<OutportMapper, Outport> impl
     @Resource
     private InportMapper inportMapper;
 
+    @Resource
+    private BooksubmitMapper booksubmitMapper;
+
     /**
      * 添加退货信息
      * @param id
@@ -51,6 +57,15 @@ public class OutportServiceImpl extends ServiceImpl<OutportMapper, Outport> impl
         Book book = this.bookMapper.selectById(inport.getBookId());
         book.setInportnumber(book.getInportnumber()-number);
         this.bookMapper.updateById(book);
+
+        //根据期号id和书目id 修改报订信息的库存数量
+        QueryWrapper<Booksubmit> queryWrapper= new QueryWrapper<>();
+        queryWrapper.eq("order_id",inport.getOrderId());
+        queryWrapper.eq("book_id",inport.getBookId());
+        Booksubmit booksubmit=booksubmitMapper.selectOne(queryWrapper);
+        booksubmit.setInportNum(booksubmit.getInportNum()-number);
+        this.booksubmitMapper.updateById(booksubmit);
+
         //3,添加退货单信息
         Outport entity=new Outport();
         entity.setBookId(inport.getBookId());

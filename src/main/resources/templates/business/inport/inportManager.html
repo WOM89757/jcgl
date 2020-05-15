@@ -96,6 +96,15 @@
 <!-- 添加和修改的弹出层开始 -->
 <div style="display: none;padding: 5px" id="addOrUpdateDiv">
 	<form action="" method="post" class="layui-form layui-form-pane" id="dataFrm" lay-filter="dataFrm">
+		<div class="layui-form-item magt3">
+			<label class="layui-form-label">征订期号</label>
+			<div class="layui-input-block">
+				<select name="orderId" id="orderid"  lay-verify="required">
+					<option value="">请选择征订期号</option>
+				</select>
+				<div class="mydiv" title="不可修改" style="position:absolute;width:100%;height:100%;left:0px;top:0px;background:#fff;opacity:0;filter:alpha(opacity=0)"> </div>
+			</div>
+		</div>
 			<div class="layui-form-item">
 				<div class="layui-inline">
 				    <label class="layui-form-label">供应商</label>
@@ -208,6 +217,7 @@ layui.use(['jquery','form','table','layer','laydate'],function(){
 		      {field:'id', title:'进货ID',align:'center' ,width:'80'}
 		      ,{field:'providername', title:'供应商',align:'center',width:'120'}
 		      ,{field:'bookname', title:'书名',align:'center',width:'120'}
+		      ,{field:'grade', title:'年级',align:'center',width:'120'}
 		      ,{field:'inportTime', title:'进货时间',align:'center',width:'165'}
 		      ,{field:'number', title:'进货数量',align:'center',width:'100'}
 		      ,{field:'inportPrice', title:'进货价格',align:'center',width:'100'}
@@ -245,7 +255,7 @@ layui.use(['jquery','form','table','layer','laydate'],function(){
 				var dom=$("#search_bookid");
 				var html='<option value="">请选择书目</option>'
 				$.each(data,function(index,item){
-					html+='<option value="'+item.id+'">'+item.name+'['+item.providername+']</option>'
+					html+='<option value="'+item.id+'">'+item.name+'['+item.grade+']</option>'
 				});
 				dom.html(html);
 				form.render("select");
@@ -302,6 +312,17 @@ layui.use(['jquery','form','table','layer','laydate'],function(){
 				success:function(){
 					$("#dataFrm")[0].reset();
 					url="/inport/addInport";
+					$.get("/order/loadAllOrderForSelect",function(res){
+						var data=res.data;
+						var domorder=$("#orderid");
+						var html='<option value="">请选择征订期号</option>'
+						$.each(data,function(index,item){
+							html+='<option value="'+item.id+'">'+item.comment+'</option>'
+						});
+						$("#orderid").val(data.orderId)
+						domorder.html(html);
+						form.render("select");
+					});
 					initProviderSelect();
 					$(".mydiv").hide();
 				}
@@ -340,7 +361,7 @@ layui.use(['jquery','form','table','layer','laydate'],function(){
 				var dom=$("#bookid");
 				var html='<option value="">请选择书目</option>'
 				$.each(data,function(index,item){
-					html+='<option value="'+item.id+'">'+item.name+'['+item.providername+']</option>'
+					html+='<option value="'+item.id+'">'+item.name+'['+item.grade+']</option>'
 				});
 				dom.html(html);
 				//如果bookid有值就反选

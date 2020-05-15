@@ -69,11 +69,21 @@ public class Inport implements Serializable {
      */
     private Integer providerId;
 
+    /**
+     * 期号编号
+     */
+    private String orderId;
+
     @TableField(exist = false)
     private String providername;
 
     @TableField(exist = false)
     private String bookname;
+
+    @TableField(exist = false)
+    private String grade;
+
+
 
 
 }
