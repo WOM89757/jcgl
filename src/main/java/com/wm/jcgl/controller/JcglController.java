@@ -90,5 +90,12 @@ public class JcglController {
     public String toAllotmentManager() {
         return "business/allotment/AllotmentManager";
     }
+    /**
+     * 跳转到书目匹配管理
+     */
+    @RequestMapping("toMatchInfoManager")
+    public String toMatchInfoManager() {
+        return "business/match/matchinfoManager";
+    }
 }
 

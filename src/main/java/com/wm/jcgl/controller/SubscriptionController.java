@@ -26,6 +26,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.annotation.Resource;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -44,13 +45,13 @@ import java.util.List;
 @RequestMapping("/subscription")
 public class SubscriptionController {
 
-    @Autowired
+    @Resource
     private SubscriptionService subscriptionService;
-    @Autowired
+    @Resource
     private OrderService orderService;
-    @Autowired
+    @Resource
     private BookService bookService;
-    @Autowired
+    @Resource
     private DeptService deptService;
 
     /**
@@ -122,7 +123,7 @@ public class SubscriptionController {
         }
     }
 
-    /**
+      /**
      * 修改
      */
     @RequestMapping("updateSubscription")

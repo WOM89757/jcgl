@@ -359,6 +359,7 @@ layui.extend({
 					//选中之前的所属部门  nodeId=data.deptid;
 					dtree.dataInit("deptTree", data.deptid);
    					dtree.setSelectValue("deptTree");
+   					//反选radio按钮
 					$("input[name='sex'][value="+data.sex+"]").attr('checked',true);
 
 					$(".thumbImg").attr("src",'/file/showImageByPath?path='+data.imgpath);

@@ -4,6 +4,8 @@ import com.baomidou.mybatisplus.annotation.TableName;
 import java.time.LocalDateTime;
 import com.baomidou.mybatisplus.annotation.TableField;
 import java.io.Serializable;
+import java.util.Date;
+
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.experimental.Accessors;
@@ -49,17 +51,6 @@ public class Match implements Serializable {
      */
     private Integer number;
 
-    /**
-     * 退货数量
-     */
-    @TableField("back_Num")
-    private Integer backNum;
-
-    /**
-     * 缺货数量
-     */
-    @TableField("lack_Num")
-    private Integer lackNum;
 
     /**
      * 操作员
@@ -76,12 +67,20 @@ public class Match implements Serializable {
      * 创建时间
      */
     @TableField("createTime")
-    private LocalDateTime createTime;
+    private Date createTime;
 
     /**
      * 【0未提交1提交】
      */
     private Integer status;
 
+    @TableField(exist = false)
+    private String bookname;
+    @TableField(exist = false)
+    private String ordername;
+    @TableField(exist = false)
+    private String schoolname;
+    @TableField(exist = false)
+    private String grade;
 
 }

@@ -346,5 +346,28 @@ public class BookController {
         }
         return new DataGridView(list);
     }
+
+    /**
+     *根据年级查询书目信息
+     */
+    @RequestMapping("loadBookByGrade")
+    public DataGridView loadBookByGrade(String grade) {
+        QueryWrapper<Book> queryWrapper=new QueryWrapper<>();
+        queryWrapper.eq(grade!=null, "grade", grade);
+        List<Book> list = this.bookService.list(queryWrapper);
+        return new DataGridView(list);
+    }
+    /**
+     *根据年级查询书目信息
+     */
+    @RequestMapping("loadGrade")
+    public DataGridView loadGrade(String grade) {
+        QueryWrapper<Book> queryWrapper=new QueryWrapper<>();
+        // SELECT grade FROM b_book GROUP BY grade
+        queryWrapper.select("grade");
+        queryWrapper.groupBy("grade");
+        List<Book> list = this.bookService.list(queryWrapper);
+        return new DataGridView(list);
+    }
 }
 
