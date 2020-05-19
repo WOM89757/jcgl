@@ -97,5 +97,13 @@ public class JcglController {
     public String toMatchInfoManager() {
         return "business/match/matchinfoManager";
     }
+    /**
+     * 跳转到智能匹配
+     */
+    @RequestMapping("toMatchManager")
+    public String toMatchManager() {
+        return "business/match/matchManager";
+    }
+
 }
 
