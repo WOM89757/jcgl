@@ -73,14 +73,16 @@ public class Match implements Serializable {
      * 【0未提交1提交】
      */
     private Integer status;
-
+    /**
+     * 年级
+     */
+    private String grade;
     @TableField(exist = false)
     private String bookname;
     @TableField(exist = false)
     private String ordername;
     @TableField(exist = false)
     private String schoolname;
-    @TableField(exist = false)
-    private String grade;
+
 
 }
