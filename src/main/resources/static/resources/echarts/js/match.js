@@ -7,6 +7,7 @@ layui.extend({
   var form =layui.form;
   $ = layui.jquery;
 
+  layer.msg("请选择征订期号！");
   //加载查询条件征订期号的下拉列表
   $.get("/order/loadAllOrderForSelect",function(res){
     var data=res.data;
@@ -21,7 +22,8 @@ layui.extend({
   form.on('select(doOrder)', function(data){
     layer.msg(JSON.stringify(data));
     console.log(data.value); //得到被选中的期号id
-    //TODO 发送Ajax从后台根据期号id拿到匹配结果中所有学校信息
+    var orderId = data.value;
+    //根据期号id拿到匹配结果中所有学校信息
     // 初始化树
     deptTree= dtree.render({
       elem: "#deptTree",
@@ -31,11 +33,21 @@ layui.extend({
       url: "/dept/loadDeptManagerLeftTreeJson",// 使用url加载（可与data加载同时存在）
       ficon: "-1"
     });
-    //TODO 根据期号id拿到匹配结果中所有匹配结果 给map
+    //根据期号id拿到match表中各学校余缺数量 给折线图
+    $.post("/match/loadSchoolMatch",{orderId:orderId},function(res) {
+      var data = res;
+      line(data);
+    })
 
-    //TODO 根据期号id拿到match表中各学校余缺数量 给折线图
+    // 根据期号id拿到match表中各书目余缺数量 给条形图
+    $.post("/match/loadBookMatch",{orderId:orderId},function(res) {
+      var data = res;
+      bar(data);
+    })
 
-    //TODO 根据期号id拿到match表中各各书目余缺数量 给条形图
+    //TODO 根据期号id拿到匹配结果中所有匹配结果 给  map
+    map();
+
 
   });
 
@@ -43,7 +55,9 @@ layui.extend({
   // 绑定节点点击
   dtree.on("node(deptTree)" ,function(obj){
     layer.msg(JSON.stringify(obj.param));
-    //TODO 根据学校id拿到各年级余缺数量
+    //TODO 根据期号和学校id拿到match表中各年级余缺数量 给折线图
+    //TODO 根据期号和学校id拿到match表中各书目余缺数量 给条形图
+    //TODO 根据期号和学校id拿到相关匹配结果 给map
 
     // window.parent.right.reloadTable(obj.param.nodeId);
   });
@@ -53,7 +67,17 @@ layui.extend({
 
 
 // 柱状图
-(function() {
+function bar(data) {
+  var bookName=[];
+  var lNum=[];
+  var bNum=[];
+
+  for(let i = 0;i < data.length ; i++){
+
+    bookName.push(data[i].name);
+    lNum.push(data[i].lnum);
+    bNum.push(data[i].bnum);
+  }
   var myColor = ["#1089E7", "#F57474", "#56D0E3", "#F8B448", "#8B78F6"];
   // 1. 实例化对象
   var myChart = echarts.init(document.querySelector(".bar .chart"));
@@ -73,7 +97,7 @@ layui.extend({
       {
         type: "category",
         inverse: true,
-        data: ["HTML5", "CSS3", "javascript", "VUE", "NODE"],
+        data: bookName,
         // 不显示y轴的线
         axisLine: {
           show: false
@@ -88,7 +112,7 @@ layui.extend({
         }
       },
       {
-        data: [702, 350, 610, 793, 664],
+        data: lNum,//TODO  缺少数量
         inverse: true,
         // 不显示y轴的线
         axisLine: {
@@ -108,7 +132,7 @@ layui.extend({
       {
         name: "条",
         type: "bar",
-        data: [70, 34, 60, 78, 69],
+        data: bNum,//TODO 剩余数量
         yAxisIndex: 0,
         // 修改第一组柱子的圆角
         itemStyle: {
@@ -139,7 +163,7 @@ layui.extend({
         barCategoryGap: 50,
         barWidth: 15,
         yAxisIndex: 1,
-        data: [100, 100, 100, 100, 100],
+        data: lNum, //TODO  框 缺少数量
         itemStyle: {
           color: "none",
           borderColor: "#00c1de",
@@ -160,33 +184,24 @@ layui.extend({
     console.log(params);
     console.log(params.dataIndex);   //获取点击柱状图的第几个柱子 是从0开始的哦
   });
-})();
+};
 // 折线图模块制作
-(function() {
-  var yearData = [
-    {
-      year: "2020", // 年份
-      data: [
-        // 两个数组是因为有两条线
-        [24, 40, 101, 134, 90, 230, 210, 230, 120, 230, 210, 120],
-        [40, 64, 191, 324, 290, 330, 310, 213, 180, 200, 180, 79]
-      ]
-    },
-    {
-      year: "2021", // 年份
-      data: [
-        // 两个数组是因为有两条线
-        [123, 175, 112, 197, 121, 67, 98, 21, 43, 64, 76, 38],
-        [143, 131, 165, 123, 178, 21, 82, 64, 43, 60, 19, 34]
-      ]
-    }
-  ];
+function line(data) {
+  var schoolName=[];
+  var lNum=[];
+  var bNum=[];
+  for(let i = 0;i < data.length ; i++){
+
+    schoolName.push(data[i].name);
+    lNum.push(data[i].lnum);
+    bNum.push(data[i].bnum);
+  }
   // 1. 实例化对象
   var myChart = echarts.init(document.querySelector(".line .chart"));
   // 2.指定配置
   var option = {
     // 通过这个color修改两条线的颜色
-    color: ["#00f2f1", "#ed3f35"],
+    color: ["#ed3f35","#00f2f1"],
     tooltip: {
       trigger: "axis"
     },
@@ -212,20 +227,7 @@ layui.extend({
     xAxis: {
       type: "category",
       boundaryGap: false,
-      data: [
-        "1月",
-        "2月",
-        "3月",
-        "4月",
-        "5月",
-        "6月",
-        "7月",
-        "8月",
-        "9月",
-        "10月",
-        "11月",
-        "12月"
-      ],
+      data: schoolName,
       axisTick: {
         show: false // 去除刻度线
       },
@@ -255,17 +257,17 @@ layui.extend({
     },
     series: [
       {
-        name: "新增粉丝",
+        name: "缺少数量",
         type: "line",
         // true 可以让我们的折线显示带有弧度
         smooth: true,
-        data: yearData[0].data[0]
+        data: lNum
       },
       {
-        name: "新增游客",
+        name: "剩余数量",
         type: "line",
         smooth: true,
-        data: yearData[0].data[1]
+        data: bNum
       }
     ]
   };
@@ -278,24 +280,25 @@ layui.extend({
   });
 
   // 5.点击切换效果
-  $(".line h2").on("click", "a", function() {
-    // alert(1);
-    // console.log($(this).index());
-    // 点击 a 之后 根据当前a的索引号 找到对应的 yearData的相关对象
-    // console.log(yearData[$(this).index()]);
-    var obj = yearData[$(this).index()];
-    option.series[0].data = obj.data[0];
-    option.series[1].data = obj.data[1];
-    // 需要重新渲染
-    myChart.setOption(option);
-  });
-})();
+  // $(".line h2").on("click", "a", function() {
+  //   // alert(1);
+  //   // console.log($(this).index());
+  //   // 点击 a 之后 根据当前a的索引号 找到对应的 schoolDate的相关对象
+  //   // console.log(schoolDate[$(this).index()]);
+  //   var obj = schoolDate[$(this).index()];
+  //   option.series[0].data = obj.data[0];
+  //   option.series[1].data = obj.data[1];
+  //   // 需要重新渲染
+  //   myChart.setOption(option);
+  // });
+};
+
 
 
 
 
 // 模拟飞行路线模块地图模块
-(function() {
+function map() {
   var myChart = echarts.init(document.querySelector(".map .chart"));
   var geoCoordMap = {
     上海: [121.4648, 31.2891],
@@ -605,4 +608,4 @@ layui.extend({
   window.addEventListener("resize", function() {
     myChart.resize();
   });
-})();
+};

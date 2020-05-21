@@ -1,5 +1,17 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.wm.jcgl.mapper.MatchMapper">
+<!--    //        SELECT dept_id,type,SUM(number)AS sum-->
+<!--    //        FROM b_match-->
+<!--    //        WHERE order_id=5-->
+<!--    //        GROUP BY dept_id,type-->
+    <select id="getMatchForLine" resultType="com.wm.jcgl.entity.Match">
+        SELECT
+           dept_id,type,SUM(number)AS snum
+        FROM
+            b_match
+        WHERE order_id=#{value}
+        GROUP BY dept_id,type
 
+    </select>
 </mapper>

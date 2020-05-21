@@ -6,6 +6,8 @@ import com.wm.jcgl.service.MatchService;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 /**
  * <p>
  * 教材匹配信息 服务实现类
@@ -17,4 +19,8 @@ import org.springframework.stereotype.Service;
 @Service
 public class MatchServiceImpl extends ServiceImpl<MatchMapper, Match> implements MatchService {
 
+    @Override
+    public List<Match> getMatchForLine(Integer orderId) {
+        return this.baseMapper.getMatchForLine(orderId);
+    }
 }

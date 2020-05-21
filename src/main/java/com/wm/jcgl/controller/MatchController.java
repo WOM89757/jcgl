@@ -4,14 +4,10 @@ package com.wm.jcgl.controller;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import com.wm.jcgl.entity.Book;
-import com.wm.jcgl.entity.Order;
-import com.wm.jcgl.entity.Match;
-import com.wm.jcgl.entity.Match;
+import com.wm.jcgl.entity.*;
 import com.wm.jcgl.service.BookService;
 import com.wm.jcgl.service.MatchService;
 import com.wm.jcgl.service.OrderService;
-import com.wm.jcgl.vo.MatchVo;
 import com.wm.jcgl.vo.MatchVo;
 import com.wm.sys.common.Constast;
 import com.wm.sys.common.DataGridView;
@@ -22,7 +18,6 @@ import com.wm.sys.entity.User;
 import com.wm.sys.service.DeptService;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.web.bind.annotation.RequestMapping;
-
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.annotation.Resource;
@@ -53,6 +48,82 @@ public class MatchController {
     @Resource
     private DeptService deptService;
 
+
+    /**
+     * 查询各学校余缺量
+     */
+    @RequestMapping("loadSchoolMatch")
+    public List<Line> loadSchoolMatch(MatchVo matchVo) {
+        QueryWrapper<Match> queryWrapper = new QueryWrapper<>();
+//        添加部门条件
+        if(null!=matchVo.getDeptId()){
+            queryWrapper.select("grade");
+            queryWrapper.eq("dept_id",matchVo.getDeptId());
+            queryWrapper.groupBy("grade");
+        }
+        queryWrapper.select("dept_id","SUM(lNum)AS lNum","SUM(bNum)AS bNum");
+        queryWrapper.eq("order_id",matchVo.getOrderId());
+        queryWrapper.groupBy("dept_id");
+        List<Match> matchList = this.matchService.list(queryWrapper);
+        List<Line> list = new ArrayList<Line>();
+        for (Match match:matchList) {
+            if(null!=matchVo.getDeptId()){
+                list.add(new Line(match.getGrade(),match.getLNum(),match.getBNum()));
+            }else {
+                //根据id查询学校名
+                if(null!=match.getDeptId()){
+                    Dept dept  = this.deptService.getById(match.getDeptId());
+                    if(null!=dept) {
+                        match.setSchoolname(dept.getTitle().replace(" ", ""));
+                    }
+                }
+                list.add(new Line(match.getSchoolname(),match.getLNum(),match.getBNum()));
+            }
+        }
+        return list;
+    }
+    /**
+     * 查询各书目余缺量
+     */
+    @RequestMapping("loadBookMatch")
+    public List<Bar> loadBookMatch(MatchVo matchVo) {
+//        SELECT book_id,SUM(lNum)AS lNum,SUM(bNum)AS bNum
+//        FROM b_match
+//        WHERE order_id=5
+//        GROUP BY book_id
+        QueryWrapper<Match> queryWrapper = new QueryWrapper<>();
+        if(null!=matchVo.getDeptId()){
+            //添加部门条件
+            queryWrapper.select("dept_id");
+            queryWrapper.eq("dept_id",matchVo.getDeptId());
+            //添加年级条件
+            if(StringUtils.isNotBlank(matchVo.getGrade())){
+                queryWrapper.select("grade");
+                queryWrapper.eq("grade",matchVo.getGrade());
+                queryWrapper.groupBy("grade");
+            }
+        }
+
+        queryWrapper.select("book_id","SUM(lNum)AS lNum","SUM(bNum)AS bNum");
+        queryWrapper.eq("order_id",matchVo.getOrderId());
+        queryWrapper.groupBy("book_id");
+        List<Match> matchList = this.matchService.list(queryWrapper);
+        List<Bar> list = new ArrayList<Bar>();
+        for (Match match:matchList) {
+             //根据id查询书名
+             if(null!=match.getBookId()){
+                 Book book  = this.bookService.getById(match.getBookId());
+                 if(null!=book) {
+                     match.setBookname(book.getName());
+                     match.setGrade(book.getGrade());
+                 }
+             }
+             list.add(new Bar(match.getBookname(),match.getLNum(),match.getBNum()));
+
+        }
+        return list;
+    }
+
     /**
      * 查询
      */
@@ -78,6 +149,8 @@ public class MatchController {
         this.matchService.page(page, queryWrapper);
         List<Match> records = page.getRecords();
         for (Match match : records) {
+
+            match.setNumber(match.getLNum()==0?match.getBNum():match.getLNum());
             //根据id查询征订期号名称
             if(null!=match.getOrderId()){
                 Order order  = this.orderService.getById(match.getOrderId());
@@ -116,6 +189,12 @@ public class MatchController {
             matchVo.setStatus(Constast.STATUS_FALSE);
 
             //matchVo.setDeptId(user.getDeptid());
+            if(matchVo.getType()==1){
+                matchVo.setLNum(matchVo.getNumber());
+            }else
+            {
+                matchVo.setBNum(matchVo.getNumber());
+            }
             this.matchService.save(matchVo);
             return ResultObj.ADD_SUCCESS;
         } catch (Exception e) {
@@ -129,7 +208,27 @@ public class MatchController {
     @RequestMapping("updateMatch")
     public ResultObj updateMatch(MatchVo matchVo) {
         try {
-            this.matchService.updateById(matchVo);
+//            Match temp = this.matchService.getById(matchVo.getId());
+//            if(temp.getType()==matchVo.getType()){
+//                if(matchVo.getType()==1){
+//                    matchVo.setLNum(matchVo.getNumber());
+//                }else {
+//                    matchVo.setBNum(matchVo.getNumber());
+//                }
+//            }else{
+//                if(temp.getType()==1){
+//                    matchVo.setLimit()
+//                }
+//            }
+
+            if(matchVo.getType()==1){
+                matchVo.setLNum(matchVo.getNumber());
+                matchVo.setBNum(0);
+            }else {
+                matchVo.setBNum(matchVo.getNumber());
+                matchVo.setLNum(0);
+            }
+                this.matchService.updateById(matchVo);
             return ResultObj.UPDATE_SUCCESS;
         } catch (Exception e) {
             e.printStackTrace();

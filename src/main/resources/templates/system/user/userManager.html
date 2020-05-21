@@ -361,6 +361,11 @@ layui.extend({
    					dtree.setSelectValue("deptTree");
    					//反选radio按钮
 					$("input[name='sex'][value="+data.sex+"]").attr('checked',true);
+					if(data.sex==0){
+						$('input:radio[name=sex]')[1].checked = true;
+					}else {
+						$('input:radio[name=sex]')[0].checked = true;
+					}
 
 					$(".thumbImg").attr("src",'/file/showImageByPath?path='+data.imgpath);
 

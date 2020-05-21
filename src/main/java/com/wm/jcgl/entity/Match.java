@@ -47,9 +47,16 @@ public class Match implements Serializable {
     private Integer type;
 
     /**
-     * 数量
+     * 缺少数量
      */
-    private Integer number;
+    @TableField("lNum")
+    private Integer lNum;
+
+    /**
+     *剩余数量
+     */
+    @TableField("bNum")
+    private Integer bNum;
 
 
     /**
@@ -83,6 +90,9 @@ public class Match implements Serializable {
     private String ordername;
     @TableField(exist = false)
     private String schoolname;
+    @TableField(exist = false)
+    private Integer number;
+
 
 
 }
