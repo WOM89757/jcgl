@@ -20,17 +20,20 @@ layui.extend({
     form.render("select");
   })
   form.on('select(doOrder)', function(data){
-    layer.msg(JSON.stringify(data));
-    console.log(data.value); //得到被选中的期号id
     var orderId = data.value;
-    //根据期号id拿到匹配结果中所有学校信息
+    if(orderId == null || orderId == undefined || orderId == ''){
+      layer.msg('请选择征订期号！');
+      return 0;
+    }
+    //根据期号id拿到匹配结果中学校信息
     // 初始化树
     deptTree= dtree.render({
       elem: "#deptTree",
       dataStyle: "layuiStyle",  //使用layui风格的数据格式
       dataFormat: "list",  //配置data的风格为list
-      response:{message:"msg",statusCode:0},  //修改response中返回数据的定义
-      url: "/dept/loadDeptManagerLeftTreeJson",// 使用url加载（可与data加载同时存在）
+      response:{message:"msg",statusCode:0},  //修改response中返回数据的定义,
+      request:{orderId:orderId},
+      url: "/match/loadDeptTreeJsonByOrderId",// 使用url加载（可与data加载同时存在）
       ficon: "-1"
     });
     //根据期号id拿到match表中各学校余缺数量 给折线图
@@ -54,9 +57,18 @@ layui.extend({
 
   // 绑定节点点击
   dtree.on("node(deptTree)" ,function(obj){
-    layer.msg(JSON.stringify(obj.param));
-    //TODO 根据期号和学校id拿到match表中各年级余缺数量 给折线图
-    //TODO 根据期号和学校id拿到match表中各书目余缺数量 给条形图
+    var  orderId = $("#search_orderid").val();
+    var deptId = obj.param.nodeId;
+    // 根据期号和学校id拿到match表中各年级余缺数量 给折线图
+    $.post("/match/loadSchoolMatch",{orderId:orderId,deptId:deptId},function(res) {
+      var data = res;
+      line(data);
+    })
+    // 根据期号和学校id拿到match表中各书目余缺数量 给条形图
+    $.post("/match/loadBookMatch",{orderId:orderId,deptId:deptId},function(res) {
+      var data = res;
+      bar(data);
+    })
     //TODO 根据期号和学校id拿到相关匹配结果 给map
 
     // window.parent.right.reloadTable(obj.param.nodeId);
@@ -83,6 +95,15 @@ function bar(data) {
   var myChart = echarts.init(document.querySelector(".bar .chart"));
   // 2. 指定配置和数据
   var option = {
+    legend: {
+          data: ['剩余数量','缺少数量'],
+          textStyle: {
+            color: "#4c9bfd"
+          },
+        },
+    tooltip: {
+      trigger: "axis"
+    },
     grid: {
       top: "10%",
       left: "22%",
@@ -93,7 +114,38 @@ function bar(data) {
     xAxis: {
       show: false
     },
+    dataZoom: [//给x轴设置滚动条
+      {
+        start:0,//默认为0
+        end: 100-1500/31,//默认为100
+        type: 'slider',
+        show: true,
+        yAxisIndex: [0,1],
+        handleSize: 0,//滑动条的 左右2个滑动条的大小
+
+        left: '95%', //左边的距离
+        right: '3%',//右边的距离
+
+        borderColor: "#000",
+        fillerColor: '#269cdb',
+        borderRadius:5,
+        backgroundColor: '#33384b',//两边未选中的滑动条区域的颜色
+        showDataShadow: false,//是否显示数据阴影 默认auto
+        showDetail: false,//即拖拽时候是否显示详细数值信息 默认true
+        realtime:true, //是否实时更新
+        filterMode: 'filter',
+      },
+      //下面这个属性是里面拖到
+      {
+        type: 'inside',
+        show: true,
+        yAxisIndex: [0,1],
+        start: 0,//默认为1
+        end: 100-1500/31,//默认为100
+      },
+    ],
     yAxis: [
+
       {
         type: "category",
         inverse: true,
@@ -112,7 +164,8 @@ function bar(data) {
         }
       },
       {
-        data: lNum,//TODO  缺少数量
+        show: false,
+        data: bookName,
         inverse: true,
         // 不显示y轴的线
         axisLine: {
@@ -129,21 +182,32 @@ function bar(data) {
       }
     ],
     series: [
+
       {
-        name: "条",
+        name: "缺少数量",
         type: "bar",
-        data: bNum,//TODO 剩余数量
+        barCategoryGap: 50,
+        barWidth: 15,
         yAxisIndex: 0,
+        data: lNum,
+        itemStyle: {
+          color: "#FF0000",
+          borderColor: "#FF0000",
+          opacity:0.45,
+          borderWidth: 3,
+          barBorderRadius: 15
+        }
+      },
+      {
+        name: "剩余数量",
+        type: "bar",
+        data: bNum,
+        yAxisIndex: 1,
         // 修改第一组柱子的圆角
         itemStyle: {
           barBorderRadius: 20,
           // 此时的color 可以修改柱子的颜色
-          color: function(params) {
-            // params 传进来的是柱子对象
-            // console.log(params);
-            // dataIndex 是当前柱子的索引号
-            return myColor[params.dataIndex];
-          }
+          color: '#1089E7'
         },
         // 柱子之间的距离
         barCategoryGap: 50,
@@ -157,20 +221,6 @@ function bar(data) {
           formatter: "{c}%"
         }
       },
-      {
-        name: "框",
-        type: "bar",
-        barCategoryGap: 50,
-        barWidth: 15,
-        yAxisIndex: 1,
-        data: lNum, //TODO  框 缺少数量
-        itemStyle: {
-          color: "none",
-          borderColor: "#00c1de",
-          borderWidth: 3,
-          barBorderRadius: 15
-        }
-      }
     ]
   };
 
@@ -180,11 +230,12 @@ function bar(data) {
   window.addEventListener("resize", function() {
     myChart.resize();
   });
-  myChart.on('click', function (params) {
-    console.log(params);
-    console.log(params.dataIndex);   //获取点击柱状图的第几个柱子 是从0开始的哦
-  });
+  // myChart.on('click', function (params) {
+  //   console.log(params);
+  //   console.log(params.dataIndex);   //获取点击柱状图的第几个柱子 是从0开始的哦
+  // });
 };
+
 // 折线图模块制作
 function line(data) {
   var schoolName=[];
@@ -278,19 +329,20 @@ function line(data) {
   window.addEventListener("resize", function() {
     myChart.resize();
   });
-
-  // 5.点击切换效果
-  // $(".line h2").on("click", "a", function() {
-  //   // alert(1);
-  //   // console.log($(this).index());
-  //   // 点击 a 之后 根据当前a的索引号 找到对应的 schoolDate的相关对象
-  //   // console.log(schoolDate[$(this).index()]);
-  //   var obj = schoolDate[$(this).index()];
-  //   option.series[0].data = obj.data[0];
-  //   option.series[1].data = obj.data[1];
-  //   // 需要重新渲染
-  //   myChart.setOption(option);
-  // });
+  // 5.监听折线点击事件
+  myChart.on('click', function (params) {
+    var  orderId = $("#search_orderid").val();
+    var deptId = $(".dtree-theme-item-this").attr("data-id");
+    if(deptId == null || deptId == undefined || deptId == ''){
+      layer.msg('请在学校列表中选择学校！');
+      return 0;
+    }
+    var grade = params.name;
+    $.post("/match/loadBookMatch",{orderId:orderId,deptId:deptId,grade:grade},function(res) {
+      var data = res;
+      bar(data);
+    })
+  });
 };
 
 

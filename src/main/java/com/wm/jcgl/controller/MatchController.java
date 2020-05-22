@@ -9,13 +9,11 @@ import com.wm.jcgl.service.BookService;
 import com.wm.jcgl.service.MatchService;
 import com.wm.jcgl.service.OrderService;
 import com.wm.jcgl.vo.MatchVo;
-import com.wm.sys.common.Constast;
-import com.wm.sys.common.DataGridView;
-import com.wm.sys.common.ResultObj;
-import com.wm.sys.common.WebUtils;
+import com.wm.sys.common.*;
 import com.wm.sys.entity.Dept;
 import com.wm.sys.entity.User;
 import com.wm.sys.service.DeptService;
+import com.wm.sys.vo.DeptVo;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -48,6 +46,38 @@ public class MatchController {
     @Resource
     private DeptService deptService;
 
+    //SELECT dept_id FROM b_match WHERE order_id=5 GROUP BY dept_id
+    /**
+     * 根据期号id加载部门管理左边的部门树的json
+     */
+    @RequestMapping("loadDeptTreeJsonByOrderId")
+    public DataGridView loadDeptTreeJsonByOrderId(MatchVo matchVo) {
+        QueryWrapper<Match> queryWrapper = new QueryWrapper<>();
+//        添加部门条件
+        if(null!=matchVo.getOrderId()){
+            queryWrapper.groupBy("dept_id");
+            queryWrapper.eq("order_id",matchVo.getOrderId());
+            queryWrapper.select("dept_id");
+            List<Match> list = this.matchService.list(queryWrapper);
+            List<TreeNode> treeNodes=new ArrayList<>();
+            Dept deptManger  = this.deptService.getById(1);
+            treeNodes.add(new TreeNode(deptManger.getId(), deptManger.getPid(), deptManger.getTitle(), deptManger.getOpen()==1?true:false));
+            for (Match match : list) {
+                //根据id查询学校名
+                if(null!=match.getDeptId()){
+                    Dept dept  = this.deptService.getById(match.getDeptId());
+                    if(null!=dept) {
+                        match.setSchoolname(dept.getTitle().replace(" ", ""));
+                        Boolean spread=dept.getOpen()==1?true:false;
+                        treeNodes.add(new TreeNode(dept.getId(), dept.getPid(), dept.getTitle(), spread));
+                    }
+                }
+            }
+            return new DataGridView(treeNodes);
+        }
+
+        return new DataGridView(null);
+    }
 
     /**
      * 查询各学校余缺量
@@ -56,12 +86,12 @@ public class MatchController {
     public List<Line> loadSchoolMatch(MatchVo matchVo) {
         QueryWrapper<Match> queryWrapper = new QueryWrapper<>();
 //        添加部门条件
+        queryWrapper.select("dept_id","SUM(lNum)AS lNum","SUM(bNum)AS bNum");
         if(null!=matchVo.getDeptId()){
-            queryWrapper.select("grade");
+            queryWrapper.select("grade","dept_id","SUM(lNum)AS lNum","SUM(bNum)AS bNum");
             queryWrapper.eq("dept_id",matchVo.getDeptId());
             queryWrapper.groupBy("grade");
         }
-        queryWrapper.select("dept_id","SUM(lNum)AS lNum","SUM(bNum)AS bNum");
         queryWrapper.eq("order_id",matchVo.getOrderId());
         queryWrapper.groupBy("dept_id");
         List<Match> matchList = this.matchService.list(queryWrapper);
@@ -92,6 +122,7 @@ public class MatchController {
 //        WHERE order_id=5
 //        GROUP BY book_id
         QueryWrapper<Match> queryWrapper = new QueryWrapper<>();
+
         if(null!=matchVo.getDeptId()){
             //添加部门条件
             queryWrapper.select("dept_id");
@@ -103,8 +134,8 @@ public class MatchController {
                 queryWrapper.groupBy("grade");
             }
         }
-
         queryWrapper.select("book_id","SUM(lNum)AS lNum","SUM(bNum)AS bNum");
+
         queryWrapper.eq("order_id",matchVo.getOrderId());
         queryWrapper.groupBy("book_id");
         List<Match> matchList = this.matchService.list(queryWrapper);
