@@ -6,7 +6,7 @@ layui.extend({
   var layer = layui.layer;
   var form =layui.form;
   $ = layui.jquery;
-
+  map();
   layer.msg("请选择征订期号！");
   //加载查询条件征订期号的下拉列表
   $.get("/order/loadAllOrderForSelect",function(res){
@@ -348,11 +348,41 @@ function line(data) {
 
 
 
-
 // 模拟飞行路线模块地图模块
-function map() {
+function map(matchData) {
   var myChart = echarts.init(document.querySelector(".map .chart"));
+  var mapNames = ['china','fufeng'];
+  var mapName = mapNames[1];
+  // if(matchData == null || matchData == undefined || matchData == ''){
+  //     mapName = mapNames[0];
+  // }
+  // 名称坐标map
   var geoCoordMap = {
+
+    // 学校坐标
+    召公初中:[108.004254,34.443154],
+    召首初中:[108.000733,34.398368],
+    天度初中:[107.976045,34.496635],
+    新庄小学:[11992789.546,4041905.88089],
+    作里小学:[13137011.9689,3993418.12774],
+    天度中心小学:[12019259,4071363],
+    三头小学:[12148453.2382,4021935.34669],
+    聚粮小学 :[12025719.2189,4057682.99058],
+    召首小学:[107.993028,34.398358],
+    吴家小学:[11655563,3661820],
+    召光小学:[107.998636,34.411993],
+    灵护小学:[12025877.553,4059371.36617],
+    西张小学 :[107.975838,34.420065],
+    吕宅小学:[107.98587,34.428272],
+    召公中心小学 :[108.004199,34.443141],
+    袁新小学 :[12023808.5474,4057061.74513],
+    后董小学:[107.975722,34.404433],
+    官道小学:[116.1546,39.710265],
+
+
+
+
+
     上海: [121.4648, 31.2891],
     东莞: [113.8953, 22.901],
     东营: [118.7073, 37.5513],
@@ -468,21 +498,16 @@ function map() {
     青岛: [120.4651, 36.3373],
     韶关: [113.7964, 24.7028]
   };
-
+// 匹配结果信息
   var XAData = [
-    [{ name: "西安" }, { name: "拉萨", value: 100 }],
-    [{ name: "西安" }, { name: "上海", value: 100 }],
-    [{ name: "西安" }, { name: "广州", value: 100 }],
-    [{ name: "西安" }, { name: "西宁", value: 100 }],
-    [{ name: "西安" }, { name: "银川", value: 100 }]
+    [{ name: "召公初中" }, { name: "召首初中", value: 100 }],
+    [{ name: "召公初中" }, { name: "天度初中", value: 100 }]
   ];
 
+
   var XNData = [
-    [{ name: "西宁" }, { name: "北京", value: 100 }],
-    [{ name: "西宁" }, { name: "上海", value: 100 }],
-    [{ name: "西宁" }, { name: "广州", value: 100 }],
-    [{ name: "西宁" }, { name: "西安", value: 100 }],
-    [{ name: "西宁" }, { name: "银川", value: 100 }]
+    [{ name: "召首初中" }, { name: "召公初中", value: 100 }],
+    [{ name: "召首初中" }, { name: "天度初中", value: 100 }]
   ];
 
   var YCData = [
@@ -518,9 +543,10 @@ function map() {
   var color = ["#a6c84c", "#ffa022", "#46bee9"]; //航线的颜色
   var series = [];
   [
-    ["西安", XAData],
-    ["西宁", XNData],
-    ["银川", YCData]
+      //    [XAData[0].name, XAData],
+    ["召公初中", XAData],
+    ["召首初中", XNData],
+    // ["银川", YCData]
   ].forEach(function(item, i) {
     series.push(
       {
@@ -549,12 +575,18 @@ function map() {
         zlevel: 2,
         symbol: ["none", "arrow"],
         symbolSize: 10,
+        // effect: {
+        //   show: true,
+        //   period: 6,
+        //   trailLength: 0,
+        //   symbol: planePath,
+        //   symbolSize: 15
+        // },
         effect: {
           show: true,
-          period: 6,
-          trailLength: 0,
-          symbol: planePath,
-          symbolSize: 15
+          period: 3, //箭头指向速度，值越小速度越快
+          trailLength: 0.01, //特效尾迹长度[0,1]值越大，尾迹越长重
+          symbolSize: 9, //图标大小
         },
         lineStyle: {
           normal: {
@@ -572,6 +604,7 @@ function map() {
         coordinateSystem: "geo",
         zlevel: 2,
         rippleEffect: {
+          // scale: 4,
           brushType: "stroke"
         },
         label: {
@@ -620,24 +653,28 @@ function map() {
         }
       }
     },
+
     legend: {
       orient: "vertical",
       top: "bottom",
       left: "right",
-      data: ["西安 Top3", "西宁 Top3", "银川 Top3"],
+      // TODO 动态替换
+      data: ["召公初中 Top3", "召首初中 Top3", "银川 Top3"],
       textStyle: {
         color: "#fff"
       },
       selectedMode: "multiple"
     },
     geo: {
-      map: "china",
+      map: mapName,
       label: {
         emphasis: {
           show: true,
           color: "#fff"
         }
       },
+      // center:[108.000367,34.442728],
+      // selectedMode: 'single',
       // 把中国地图放大了1.2倍
       zoom: 1.2,
       roam: true,
@@ -659,5 +696,56 @@ function map() {
   // 监听浏览器缩放，图表对象调用缩放resize函数
   window.addEventListener("resize", function() {
     myChart.resize();
+  });
+  myChart.on('geoselectchanged', function(params) {
+    console.log(params);
+    var _batch = params.batch[0];
+    var _arr = params.batch[0].selected;
+    // 选中区域
+    if (_arr[_batch.name]) {
+      console.log('选中' + _batch.name);
+      mapName = mapNames[1];
+      myChart.setOption({
+        geo: {
+          map: mapName,
+          label: {
+            emphasis: {
+              show: true,
+              color: "#fff"
+            }
+          },
+          // center:[108.000367,34.442728],
+          selectedMode: 'single',
+          // 把中国地图放大了1.2倍
+          zoom: 1.2,
+          roam: true,
+          itemStyle: {
+            normal: {
+              // 地图省份的背景颜色
+              areaColor: "rgba(20, 41, 87,0.6)",
+              borderColor: "#195BB9",
+              borderWidth: 1
+            },
+            emphasis: {
+              areaColor: "#2B91B7"
+            }
+          }
+        },
+      })
+    }
+    // 取消选择
+    else {
+      console.log('取消选择')
+      myChart.setOption({
+        series: [{
+          name: 'areaScatter',
+          type: 'scatter',
+          coordinateSystem: 'geo',
+          data: [],
+          symbol: 'circle',
+          symbolSize: 23,
+        }]
+      })
+    }
   });
 };

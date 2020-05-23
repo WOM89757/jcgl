@@ -13,7 +13,6 @@ import com.wm.sys.common.*;
 import com.wm.sys.entity.Dept;
 import com.wm.sys.entity.User;
 import com.wm.sys.service.DeptService;
-import com.wm.sys.vo.DeptVo;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -59,21 +58,29 @@ public class MatchController {
             queryWrapper.eq("order_id",matchVo.getOrderId());
             queryWrapper.select("dept_id");
             List<Match> list = this.matchService.list(queryWrapper);
-            List<TreeNode> treeNodes=new ArrayList<>();
-            Dept deptManger  = this.deptService.getById(1);
-            treeNodes.add(new TreeNode(deptManger.getId(), deptManger.getPid(), deptManger.getTitle(), deptManger.getOpen()==1?true:false));
-            for (Match match : list) {
-                //根据id查询学校名
-                if(null!=match.getDeptId()){
-                    Dept dept  = this.deptService.getById(match.getDeptId());
-                    if(null!=dept) {
-                        match.setSchoolname(dept.getTitle().replace(" ", ""));
-                        Boolean spread=dept.getOpen()==1?true:false;
-                        treeNodes.add(new TreeNode(dept.getId(), dept.getPid(), dept.getTitle(), spread));
+            if(list.size()>0){
+                List<TreeNode> treeNodes=new ArrayList<>();
+                Dept deptManger  = this.deptService.getById(1);
+                treeNodes.add(new TreeNode(deptManger.getId(), deptManger.getPid(), deptManger.getTitle(), deptManger.getOpen()==1?true:false));
+                for (Match match : list) {
+                    //根据id查询学校名
+                    if(null!=match.getDeptId()){
+                        Dept dept  = this.deptService.getById(match.getDeptId());
+                        if(null!=dept) {
+                            match.setSchoolname(dept.getTitle().replace(" ", ""));
+                            Boolean spread=dept.getOpen()==1?true:false;
+                            treeNodes.add(new TreeNode(dept.getId(), dept.getPid(), dept.getTitle(), spread));
+                        }
                     }
                 }
+                return new DataGridView(treeNodes);
             }
-            return new DataGridView(treeNodes);
+            else{
+                Integer code = Constast.ERROR;
+                String msg = "无数据";
+
+                return  new DataGridView(code,msg);
+            }
         }
 
         return new DataGridView(null);

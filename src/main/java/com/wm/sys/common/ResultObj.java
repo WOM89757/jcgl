@@ -35,6 +35,7 @@ public class ResultObj {
 
 
 	public static final ResultObj  OPERATE_ERROR_DELETE=new ResultObj(Constast.ERROR, "操作失败,请根据ID先删除自编书目中的数据！");
+	public static final ResultObj  OPERATE_ERROR_QUERY=new ResultObj(Constast.ERROR, "无数据！");
 
 	private Integer code;
 	private String msg;
