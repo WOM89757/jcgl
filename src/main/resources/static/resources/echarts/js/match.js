@@ -49,7 +49,10 @@ layui.extend({
     })
 
     //TODO 根据期号id拿到匹配结果中所有匹配结果 给  map
-    map();
+    $.post("/match/loadMatchResult",{orderId:orderId},function(res) {
+      let data = res;
+      map(data);
+    })
 
 
   });
@@ -350,6 +353,26 @@ function line(data) {
 
 // 模拟飞行路线模块地图模块
 function map(matchData) {
+  var lineDates = [];
+  // 1: [,…]
+      // 0: {fromName: "召公初中", books: [{bookname: "化学", value: 15}, {bookname: "物理", value: 15}], toName: "天度初中"}
+          // books: [{bookname: "化学", value: 15}, {bookname: "物理", value: 15}]
+                // 0: {bookname: "化学", value: 15}
+                // 1: {bookname: "物理", value: 15}
+          // fromName: "召公初中"
+          // toName: "天度初中"
+  // [{ name: "召公初中" }, { name: "天度初中"}, [{value: 100 ,bookname:'语文'},{value: 300 ,bookname:'数学'}]],
+  // ["召公初中", XAData],
+  if(matchData!=null || matchData !=undefined){
+    for (var i = 0; i < matchData.length; i++) {
+      var temp = {};
+      for (var j = 0; j < matchData[i].length; j++){
+        temp[j].push({name:matchData[i][j].fromName},{name:matchData[i][j].toName},matchData[i][j].books);
+      }
+      lineDates.push([matchData[i][0].fromName,temp]);
+    }
+  }
+
   var myChart = echarts.init(document.querySelector(".map .chart"));
   var mapNames = ['china','fufeng'];
   var mapName = mapNames[1];
@@ -500,14 +523,14 @@ function map(matchData) {
   };
 // 匹配结果信息
   var XAData = [
-    [{ name: "召公初中" }, { name: "召首初中", value: 100 }],
-    [{ name: "召公初中" }, { name: "天度初中", value: 100 }]
+    [{ name: "召公初中" }, { name: "天度初中"}, [{value: 100 ,bookname:'语文'},{value: 300 ,bookname:'数学'}]],
+    [{ name: "召公初中" }, { name: "召首初中"}, [{value: 200 ,bookname:'英语'},{value: 100 ,bookname:'数学'}]]
   ];
 
 
   var XNData = [
-    [{ name: "召首初中" }, { name: "召公初中", value: 100 }],
-    [{ name: "召首初中" }, { name: "天度初中", value: 100 }]
+    [{ name: "召首初中" }, { name: "召公初中"}, [{value: 300 ,bookname:'化学'},{value: 100 ,bookname:'数学'}]],
+    [{ name: "召首初中" }, { name: "天度初中"}, [{value: 200 ,bookname:'物理'},{value: 100 ,bookname:'数学'}]]
   ];
 
   var YCData = [
@@ -528,12 +551,18 @@ function map(matchData) {
 
       var fromCoord = geoCoordMap[dataItem[0].name];
       var toCoord = geoCoordMap[dataItem[1].name];
+      let bookvalue ="";
+      for(var j=0;j<dataItem[2].length;j++){
+        bookvalue += dataItem[2][j].bookname +':'+dataItem[2][j].value+'本</br>';
+      }
+
       if (fromCoord && toCoord) {
         res.push({
           fromName: dataItem[0].name,
           toName: dataItem[1].name,
           coords: [fromCoord, toCoord],
-          value: dataItem[1].value
+          // value:    dataItem[2].bookname +':'+dataItem[1].value+'本'
+          value:  bookvalue,
         });
       }
     }
@@ -542,98 +571,194 @@ function map(matchData) {
 
   var color = ["#a6c84c", "#ffa022", "#46bee9"]; //航线的颜色
   var series = [];
-  [
+  // if(lineDates!=null || lineDates !=undefined){
+  //
+  //   // for(var i=0;i<lineDates.length;i++){
+  //   //
+  //   //     series.push(
+  //   //         {
+  //   //           name: lineDates[i][0] + " Top3",
+  //   //           type: "lines",
+  //   //           zlevel: 1,
+  //   //           effect: {
+  //   //             show: true,
+  //   //             period: 6,
+  //   //             trailLength: 0.7,
+  //   //             color: "red", //arrow箭头的颜色
+  //   //             symbolSize: 3
+  //   //           },
+  //   //           lineStyle: {
+  //   //             normal: {
+  //   //               color: color[i],
+  //   //               width: 0,
+  //   //               curveness: 0.2
+  //   //             }
+  //   //           },
+  //   //           data: convertData(lineDates[i][1])
+  //   //         },
+  //   //         {
+  //   //           name: lineDates[i][0] + " Top3",
+  //   //           type: "lines",
+  //   //           zlevel: 2,
+  //   //           symbol: ["none", "arrow"],
+  //   //           symbolSize: 10,
+  //   //           // effect: {
+  //   //           //   show: true,
+  //   //           //   period: 6,
+  //   //           //   trailLength: 0,
+  //   //           //   symbol: planePath,
+  //   //           //   symbolSize: 15
+  //   //           // },
+  //   //           effect: {
+  //   //             show: true,
+  //   //             period: 3, //箭头指向速度，值越小速度越快
+  //   //             trailLength: 0.01, //特效尾迹长度[0,1]值越大，尾迹越长重
+  //   //             symbolSize: 9, //图标大小
+  //   //           },
+  //   //           lineStyle: {
+  //   //             normal: {
+  //   //               color: color[i],
+  //   //               width: 1,
+  //   //               opacity: 0.6,
+  //   //               curveness: 0.2
+  //   //             }
+  //   //           },
+  //   //           data: convertData(lineDates[i][1])
+  //   //         },
+  //   //         {
+  //   //           name: lineDates[i][0] + " Top3",
+  //   //           type: "effectScatter",
+  //   //           coordinateSystem: "geo",
+  //   //           zlevel: 2,
+  //   //           rippleEffect: {
+  //   //             // scale: 4,
+  //   //             brushType: "stroke"
+  //   //           },
+  //   //           label: {
+  //   //             normal: {
+  //   //               show: true,
+  //   //               position: "right",
+  //   //               formatter: "{b}"
+  //   //             }
+  //   //           },
+  //   //           symbolSize: function(val) {
+  //   //             return val[2] / 8;
+  //   //           },
+  //   //           itemStyle: {
+  //   //             normal: {
+  //   //               color: color[i]
+  //   //             },
+  //   //             emphasis: {
+  //   //               areaColor: "#2B91B7"
+  //   //             }
+  //   //           },
+  //   //           data: lineDates[i][1].map(function(dataItem) {
+  //   //             return {
+  //   //               name: dataItem[1].name,
+  //   //               value: geoCoordMap[dataItem[1].name].concat([dataItem[1].value])
+  //   //             };
+  //   //           })
+  //   //         }
+  //   //     );
+  //   // }
+  //
+  // }
+  if(matchData!=null || matchData !=undefined){
+
+    [
       //    [XAData[0].name, XAData],
-    ["召公初中", XAData],
-    ["召首初中", XNData],
-    // ["银川", YCData]
-  ].forEach(function(item, i) {
-    series.push(
-      {
-        name: item[0] + " Top3",
-        type: "lines",
-        zlevel: 1,
-        effect: {
-          show: true,
-          period: 6,
-          trailLength: 0.7,
-          color: "red", //arrow箭头的颜色
-          symbolSize: 3
-        },
-        lineStyle: {
-          normal: {
-            color: color[i],
-            width: 0,
-            curveness: 0.2
-          }
-        },
-        data: convertData(item[1])
-      },
-      {
-        name: item[0] + " Top3",
-        type: "lines",
-        zlevel: 2,
-        symbol: ["none", "arrow"],
-        symbolSize: 10,
-        // effect: {
-        //   show: true,
-        //   period: 6,
-        //   trailLength: 0,
-        //   symbol: planePath,
-        //   symbolSize: 15
-        // },
-        effect: {
-          show: true,
-          period: 3, //箭头指向速度，值越小速度越快
-          trailLength: 0.01, //特效尾迹长度[0,1]值越大，尾迹越长重
-          symbolSize: 9, //图标大小
-        },
-        lineStyle: {
-          normal: {
-            color: color[i],
-            width: 1,
-            opacity: 0.6,
-            curveness: 0.2
-          }
-        },
-        data: convertData(item[1])
-      },
-      {
-        name: item[0] + " Top3",
-        type: "effectScatter",
-        coordinateSystem: "geo",
-        zlevel: 2,
-        rippleEffect: {
-          // scale: 4,
-          brushType: "stroke"
-        },
-        label: {
-          normal: {
-            show: true,
-            position: "right",
-            formatter: "{b}"
-          }
-        },
-        symbolSize: function(val) {
-          return val[2] / 8;
-        },
-        itemStyle: {
-          normal: {
-            color: color[i]
+      // ["召公初中", XAData],
+      // ["召首初中", XNData],
+      // ["银川", YCData]
+      lineDates
+    ].forEach(function(item, i) {
+      series.push(
+          {
+            name: item[0] + " Top3",
+            type: "lines",
+            zlevel: 1,
+            effect: {
+              show: true,
+              period: 6,
+              trailLength: 0.7,
+              color: "red", //arrow箭头的颜色
+              symbolSize: 3
+            },
+            lineStyle: {
+              normal: {
+                color: color[i],
+                width: 0,
+                curveness: 0.2
+              }
+            },
+            data: convertData(item[1])
           },
-          emphasis: {
-            areaColor: "#2B91B7"
+          {
+            name: item[0] + " Top3",
+            type: "lines",
+            zlevel: 2,
+            symbol: ["none", "arrow"],
+            symbolSize: 10,
+            // effect: {
+            //   show: true,
+            //   period: 6,
+            //   trailLength: 0,
+            //   symbol: planePath,
+            //   symbolSize: 15
+            // },
+            effect: {
+              show: true,
+              period: 3, //箭头指向速度，值越小速度越快
+              trailLength: 0.01, //特效尾迹长度[0,1]值越大，尾迹越长重
+              symbolSize: 9, //图标大小
+            },
+            lineStyle: {
+              normal: {
+                color: color[i],
+                width: 1,
+                opacity: 0.6,
+                curveness: 0.2
+              }
+            },
+            data: convertData(item[1])
+          },
+          {
+            name: item[0] + " Top3",
+            type: "effectScatter",
+            coordinateSystem: "geo",
+            zlevel: 2,
+            rippleEffect: {
+              // scale: 4,
+              brushType: "stroke"
+            },
+            label: {
+              normal: {
+                show: true,
+                position: "right",
+                formatter: "{b}"
+              }
+            },
+            symbolSize: function(val) {
+              return val[2] / 8;
+            },
+            itemStyle: {
+              normal: {
+                color: color[i]
+              },
+              emphasis: {
+                areaColor: "#2B91B7"
+              }
+            },
+            data: item[1].map(function(dataItem) {
+              return {
+                name: dataItem[1].name,
+                value: geoCoordMap[dataItem[1].name].concat([dataItem[1].value])
+              };
+            })
           }
-        },
-        data: item[1].map(function(dataItem) {
-          return {
-            name: dataItem[1].name,
-            value: geoCoordMap[dataItem[1].name].concat([dataItem[1].value])
-          };
-        })
-      }
-    );
-  });
+      );
+    });
+  }
   var option = {
     tooltip: {
       trigger: "item",

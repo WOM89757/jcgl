@@ -5,9 +5,7 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.wm.jcgl.entity.*;
-import com.wm.jcgl.service.BookService;
-import com.wm.jcgl.service.MatchService;
-import com.wm.jcgl.service.OrderService;
+import com.wm.jcgl.service.*;
 import com.wm.jcgl.vo.MatchVo;
 import com.wm.sys.common.*;
 import com.wm.sys.entity.Dept;
@@ -19,10 +17,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import javax.annotation.Resource;
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 
 /**
  * <p>
@@ -44,16 +39,24 @@ public class MatchController {
     private BookService bookService;
     @Resource
     private DeptService deptService;
+    @Resource
+    private ResultService resultService;
+    @Resource
+    private LackService lackService;
+    @Resource
+    private BackService backService;
 
-    //SELECT dept_id FROM b_match WHERE order_id=5 GROUP BY dept_id
+
+
     /**
-     * 根据期号id加载部门管理左边的部门树的json
+     * 根据期号id加载学校json数据
      */
     @RequestMapping("loadDeptTreeJsonByOrderId")
     public DataGridView loadDeptTreeJsonByOrderId(MatchVo matchVo) {
         QueryWrapper<Match> queryWrapper = new QueryWrapper<>();
 //        添加部门条件
         if(null!=matchVo.getOrderId()){
+//            this.matchFunction(matchVo.getOrderId());
             queryWrapper.groupBy("dept_id");
             queryWrapper.eq("order_id",matchVo.getOrderId());
             queryWrapper.select("dept_id");
@@ -86,6 +89,199 @@ public class MatchController {
         return new DataGridView(null);
     }
 
+    /**
+     * 教材匹配算法，初次调用用于生成数据，之后用于更新数据
+     * @param orderId
+     */
+    public void matchFunction(Integer orderId){
+        //查询书目缺少详细信息
+        QueryWrapper<Match> lqueryWrapper = new QueryWrapper<>();
+        lqueryWrapper.select("order_id","dept_id", "book_id", "lNum AS number");
+        lqueryWrapper.eq("order_id", orderId);
+        lqueryWrapper.eq("type", 1);   //类型为缺少
+        List<Match> lMatchList = this.matchService.list(lqueryWrapper);
+        Iterator<Match> lIterator = lMatchList.iterator();
+
+        // 查询书目剩余详细信息
+        QueryWrapper<Match> bqueryWrapper = new QueryWrapper<>();
+        bqueryWrapper.select("order_id","dept_id", "book_id", "bNum AS number");
+        bqueryWrapper.eq("order_id", 5);
+        bqueryWrapper.eq("type", 0);   //类型为剩余
+        List<Match> bMatchList = this.matchService.list(bqueryWrapper);
+        Iterator<Match> bIterator = bMatchList.iterator();
+
+        //获取操作用户
+        User user = (User) WebUtils.getSession().getAttribute("user");
+        List<Lack> lList = new ArrayList<Lack>();
+        List<Back> bList = new ArrayList<Back>();
+        List<Result> resultsList = new ArrayList<Result>();
+        while(lIterator.hasNext()){
+            Match l_info = lIterator.next();
+            // 没有退货信息 缺货信息加入缺货单
+            if(bMatchList.size()==0){
+                Lack lack = new Lack();
+                lack.setBookId(l_info.getBookId());
+                lack.setOrderId(l_info.getOrderId());
+                lack.setDeptId(l_info.getDeptId());
+                lack.setNumber(l_info.getNumber());
+                lack.setOperName(user.getName());
+                lack.setCreateTime(new Date());
+                lList.add(lack);
+                lIterator.remove();
+            }
+            //有退货信息，根据退货信息匹配缺货信息
+            while(bIterator.hasNext()){
+                Match b_info = bIterator.next();
+                if(b_info.getBookId() == l_info.getBookId()){
+                    Integer remainNum = b_info.getNumber() - l_info.getNumber();
+                    if(remainNum > 0 || remainNum == 0){
+                        Result result = new Result();
+                        result.setOrderId(l_info.getOrderId());
+                        result.setBdeptId(b_info.getDeptId());
+                        result.setLdeptId(l_info.getDeptId());
+                        result.setBookId(l_info.getBookId());
+                        result.setNumber(b_info.getNumber()-remainNum);
+                        resultsList.add(result);
+                        lIterator.remove();
+                        b_info.setNumber(remainNum);
+                        if(remainNum==0){	bIterator.remove(); } //移除数量为零的退货信息
+                        break;      //该条缺货记录已匹配完成，结束循环，跳出循环体，匹配下一条缺货数据
+                    }
+                    else{
+                        if(b_info.getNumber()==0){ bIterator.remove(); break;}
+                        Result result = new Result();
+                        result.setOrderId(l_info.getOrderId());
+                        result.setBdeptId(b_info.getDeptId());
+                        result.setLdeptId(l_info.getDeptId());
+                        result.setBookId(l_info.getBookId());
+                        result.setNumber(b_info.getNumber());
+                        resultsList.add(result);
+                        l_info.setNumber(l_info.getNumber()-b_info.getNumber());
+                        bIterator.remove();//移除数量为零的退货信息
+                        continue;
+                    }
+                }
+            }
+            // 没有可以匹配的退货信息 缺货信息加入缺货单
+            if(!bIterator.hasNext()){
+                Lack lack = new Lack();
+                lack.setBookId(l_info.getBookId());
+                lack.setOrderId(l_info.getOrderId());
+                lack.setDeptId(l_info.getDeptId());
+                lack.setNumber(l_info.getNumber());
+                lack.setOperName(user.getName());
+                lack.setCreateTime(new Date());
+                lList.add(lack);
+                lIterator.remove();
+            }
+        }
+        if(bMatchList.size()>0) {
+            //缺数小于余数 资源剩余  退货信息加入退货单
+            Iterator<Match> iterator = bMatchList.iterator();
+            while(iterator.hasNext()) {
+                Match b_info = iterator.next();
+                Back back = new Back();
+                back.setBookId(b_info.getBookId());
+                back.setOrderId(b_info.getOrderId());
+                back.setDeptId(b_info.getDeptId());
+                back.setNumber(b_info.getNumber());
+                back.setOperName(user.getName());
+                back.setCreateTime(new Date());
+                bList.add(back);
+                iterator.remove();
+            }
+        }
+//        System.out.println(resultsList);
+//        System.out.println(lList);
+//        System.out.println(bList);
+        if(resultsList.size()>0){
+            QueryWrapper<Result> queryWrapper = new QueryWrapper<>();
+            queryWrapper.eq("order_id",orderId);
+            if(this.resultService.count()>0){
+                this.resultService.remove(queryWrapper);
+            }
+            this.resultService.saveBatch(resultsList);
+        }
+        if(lList.size()>0){
+            QueryWrapper<Lack> queryWrapper = new QueryWrapper<>();
+            queryWrapper.eq("order_id",orderId);
+            this.lackService.remove(queryWrapper);
+            this.lackService.saveBatch(lList);
+        }
+        if(bList.size()>0){
+            QueryWrapper<Back> queryWrapper = new QueryWrapper<>();
+            queryWrapper.eq("order_id",orderId);
+            this.backService.remove(queryWrapper);
+            this.backService.saveBatch(bList);
+        }
+    }
+    /**
+     * 查询各学校余缺量
+     */
+    @RequestMapping("loadMatchResult")
+    public List<Line> loadMatchResult(MatchVo matchVo) {
+
+        QueryWrapper<Result> idsqueryWrapper = new QueryWrapper<>();
+        idsqueryWrapper.select("bdept_id");
+        idsqueryWrapper.eq("order_id",matchVo.getOrderId());
+        idsqueryWrapper.groupBy("bdept_id");
+        List<Result> idslist = this.resultService.list(idsqueryWrapper);
+        List<Integer> ids = new ArrayList<Integer>();
+        for (Result result:idslist) {
+            ids.add(result.getBdeptId());
+        }
+        List allList = new ArrayList();
+        for (Integer bId:ids) {
+
+            QueryWrapper<Result> lidsqueryWrapper = new QueryWrapper<>();
+            lidsqueryWrapper.select("ldept_id");
+            lidsqueryWrapper.eq("order_id",matchVo.getOrderId());
+            lidsqueryWrapper.eq("bdept_id",bId);
+            lidsqueryWrapper.groupBy("ldept_id");
+            List<Result> lidslist = this.resultService.list(lidsqueryWrapper);
+            List<Integer> lids = new ArrayList<Integer>();
+            for (Result result:lidslist) {
+                lids.add(result.getLdeptId());
+            }
+
+            List<matchResult> list = new ArrayList<matchResult>();
+            for (Integer lId:lids) {
+                QueryWrapper<Result> queryWrapper = new QueryWrapper<>();
+                queryWrapper.select("bdept_id","ldept_id","book_id","number");
+                queryWrapper.eq("order_id",matchVo.getOrderId());
+                queryWrapper.eq("bdept_id",bId);
+                queryWrapper.eq("ldept_id",lId);
+                List<Result> resultList = this.resultService.list(queryWrapper);
+                String fromName = null;
+                String toName = null;
+                List<matchbook> bookList = new ArrayList<>();
+                for (Result result:resultList) {
+                    //根据id查询学校名
+                    if(null!=result.getBdeptId()){
+                        Dept bdept  = this.deptService.getById(result.getBdeptId());
+                        Dept ldept  = this.deptService.getById(result.getLdeptId());
+                        if(null!=bdept && null!=ldept) {
+                            result.setBDeptName(bdept.getTitle().replace(" ", ""));
+                            result.setLDeptName(ldept.getTitle().replace(" ", ""));
+                        }
+                    }
+                    if(null!=result.getBookId()){
+                        Book book  = this.bookService.getById(result.getBookId());
+                        if(null!=book) {
+                            result.setBookName(book.getName());
+                        }
+                    }
+                    fromName = result.getBDeptName();
+                    toName = result.getLDeptName();
+                    bookList.add(new matchbook(result.getBookName(),result.getNumber()));
+                }
+                list.add(new matchResult(fromName,toName,bookList));
+            }
+            allList.add(list);
+        }
+        System.out.println(allList);
+        return allList;
+    }
     /**
      * 查询各学校余缺量
      */
