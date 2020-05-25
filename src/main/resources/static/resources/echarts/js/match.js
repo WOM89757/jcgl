@@ -7,6 +7,7 @@ layui.extend({
   var form =layui.form;
   $ = layui.jquery;
   map();
+
   layer.msg("请选择征订期号！");
   //加载查询条件征订期号的下拉列表
   $.get("/order/loadAllOrderForSelect",function(res){
@@ -25,6 +26,20 @@ layui.extend({
       layer.msg('请选择征订期号！');
       return 0;
     }
+    //根据期号id拿到match表中各指标数据
+    $.post("/match/getHeartInfo",{orderId:orderId},function(res) {
+      $("#lNum").text("0");
+      $("#bNum").text("0");
+      $("#mRatio").text("0%");
+      $("#lRatio").text("0%");
+      var data = res.data;
+      $("#lNum").text(data.lNum);
+      $("#bNum").text(data.bNum);
+      $("#mRatio").text(data.mRatio+'%');
+      $("#lRatio").text(data.lRatio+'%');
+
+
+    })
     //根据期号id拿到匹配结果中学校信息
     // 初始化树
     deptTree= dtree.render({
@@ -48,7 +63,7 @@ layui.extend({
       bar(data);
     })
 
-    //TODO 根据期号id拿到匹配结果中所有匹配结果 给  map
+    // 根据期号id拿到匹配结果中所有匹配结果 给  map
     $.post("/match/loadMatchResult",{orderId:orderId},function(res) {
       let data = res;
       map(data);
@@ -72,9 +87,7 @@ layui.extend({
       var data = res;
       bar(data);
     })
-    //TODO 根据期号和学校id拿到相关匹配结果 给map
-
-    // window.parent.right.reloadTable(obj.param.nodeId);
+    // 根据期号和学校id拿到相关匹配结果 给map
   });
 });
 
@@ -221,7 +234,7 @@ function bar(data) {
           show: true,
           position: "inside",
           // {c} 会自动的解析为 数据  data里面的数据
-          formatter: "{c}%"
+          formatter: "{c}"
         }
       },
     ]
@@ -239,7 +252,7 @@ function bar(data) {
   // });
 };
 
-// 折线图模块制作
+// 折线图模块
 function line(data) {
   var schoolName=[];
   var lNum=[];
@@ -351,27 +364,30 @@ function line(data) {
 
 
 
-// 模拟飞行路线模块地图模块
+// 地图模块：模拟模拟匹配路线
 function map(matchData) {
   var lineDates = [];
-  // 1: [,…]
-      // 0: {fromName: "召公初中", books: [{bookname: "化学", value: 15}, {bookname: "物理", value: 15}], toName: "天度初中"}
-          // books: [{bookname: "化学", value: 15}, {bookname: "物理", value: 15}]
-                // 0: {bookname: "化学", value: 15}
-                // 1: {bookname: "物理", value: 15}
-          // fromName: "召公初中"
-          // toName: "天度初中"
-  // [{ name: "召公初中" }, { name: "天度初中"}, [{value: 100 ,bookname:'语文'},{value: 300 ,bookname:'数学'}]],
-  // ["召公初中", XAData],
-  if(matchData!=null || matchData !=undefined){
-    for (var i = 0; i < matchData.length; i++) {
-      var temp = {};
-      for (var j = 0; j < matchData[i].length; j++){
-        temp[j].push({name:matchData[i][j].fromName},{name:matchData[i][j].toName},matchData[i][j].books);
+  var typeData = [];
+
+  if(matchData!=null || matchData !=undefined ){
+    if(matchData.length !=0){
+
+      for (var i = 0; i < matchData.length; i++) {
+        var heartString= "";
+        var bottomString = [];
+        heartString = matchData[i][0].fromName;
+        typeData.push(matchData[i][0].fromName);
+        for (var j = 0; j < matchData[i].length; j++){
+          var temp = [];
+          temp.push({name:matchData[i][j].fromName},{name:matchData[i][j].toName},matchData[i][j].books);
+          bottomString.push(temp);
+        }
+        lineDates.push([heartString,bottomString]);
+
       }
-      lineDates.push([matchData[i][0].fromName,temp]);
     }
   }
+
 
   var myChart = echarts.init(document.querySelector(".map .chart"));
   var mapNames = ['china','fufeng'];
@@ -405,7 +421,7 @@ function map(matchData) {
 
 
 
-
+    // 各城市坐标
     上海: [121.4648, 31.2891],
     东莞: [113.8953, 22.901],
     东营: [118.7073, 37.5513],
@@ -521,25 +537,6 @@ function map(matchData) {
     青岛: [120.4651, 36.3373],
     韶关: [113.7964, 24.7028]
   };
-// 匹配结果信息
-  var XAData = [
-    [{ name: "召公初中" }, { name: "天度初中"}, [{value: 100 ,bookname:'语文'},{value: 300 ,bookname:'数学'}]],
-    [{ name: "召公初中" }, { name: "召首初中"}, [{value: 200 ,bookname:'英语'},{value: 100 ,bookname:'数学'}]]
-  ];
-
-
-  var XNData = [
-    [{ name: "召首初中" }, { name: "召公初中"}, [{value: 300 ,bookname:'化学'},{value: 100 ,bookname:'数学'}]],
-    [{ name: "召首初中" }, { name: "天度初中"}, [{value: 200 ,bookname:'物理'},{value: 100 ,bookname:'数学'}]]
-  ];
-
-  var YCData = [
-    [{ name: "拉萨" }, { name: "潍坊", value: 100 }],
-    [{ name: "拉萨" }, { name: "哈尔滨", value: 100 }],
-    [{ name: "银川" }, { name: "上海", value: 100 }],
-    [{ name: "银川" }, { name: "西安", value: 100 }],
-    [{ name: "银川" }, { name: "西宁", value: 100 }]
-  ];
 
   var planePath =
     "path://M1705.06,1318.313v-89.254l-319.9-221.799l0.073-208.063c0.521-84.662-26.629-121.796-63.961-121.491c-37.332-0.305-64.482,36.829-63.961,121.491l0.073,208.063l-319.9,221.799v89.254l330.343-157.288l12.238,241.308l-134.449,92.931l0.531,42.034l175.125-42.917l175.125,42.917l0.531-42.034l-134.449-92.931l12.238-241.308L1705.06,1318.313z";
@@ -548,7 +545,6 @@ function map(matchData) {
     var res = [];
     for (var i = 0; i < data.length; i++) {
       var dataItem = data[i];
-
       var fromCoord = geoCoordMap[dataItem[0].name];
       var toCoord = geoCoordMap[dataItem[1].name];
       let bookvalue ="";
@@ -571,195 +567,147 @@ function map(matchData) {
 
   var color = ["#a6c84c", "#ffa022", "#46bee9"]; //航线的颜色
   var series = [];
-  // if(lineDates!=null || lineDates !=undefined){
-  //
-  //   // for(var i=0;i<lineDates.length;i++){
-  //   //
-  //   //     series.push(
-  //   //         {
-  //   //           name: lineDates[i][0] + " Top3",
-  //   //           type: "lines",
-  //   //           zlevel: 1,
-  //   //           effect: {
-  //   //             show: true,
-  //   //             period: 6,
-  //   //             trailLength: 0.7,
-  //   //             color: "red", //arrow箭头的颜色
-  //   //             symbolSize: 3
-  //   //           },
-  //   //           lineStyle: {
-  //   //             normal: {
-  //   //               color: color[i],
-  //   //               width: 0,
-  //   //               curveness: 0.2
-  //   //             }
-  //   //           },
-  //   //           data: convertData(lineDates[i][1])
-  //   //         },
-  //   //         {
-  //   //           name: lineDates[i][0] + " Top3",
-  //   //           type: "lines",
-  //   //           zlevel: 2,
-  //   //           symbol: ["none", "arrow"],
-  //   //           symbolSize: 10,
-  //   //           // effect: {
-  //   //           //   show: true,
-  //   //           //   period: 6,
-  //   //           //   trailLength: 0,
-  //   //           //   symbol: planePath,
-  //   //           //   symbolSize: 15
-  //   //           // },
-  //   //           effect: {
-  //   //             show: true,
-  //   //             period: 3, //箭头指向速度，值越小速度越快
-  //   //             trailLength: 0.01, //特效尾迹长度[0,1]值越大，尾迹越长重
-  //   //             symbolSize: 9, //图标大小
-  //   //           },
-  //   //           lineStyle: {
-  //   //             normal: {
-  //   //               color: color[i],
-  //   //               width: 1,
-  //   //               opacity: 0.6,
-  //   //               curveness: 0.2
-  //   //             }
-  //   //           },
-  //   //           data: convertData(lineDates[i][1])
-  //   //         },
-  //   //         {
-  //   //           name: lineDates[i][0] + " Top3",
-  //   //           type: "effectScatter",
-  //   //           coordinateSystem: "geo",
-  //   //           zlevel: 2,
-  //   //           rippleEffect: {
-  //   //             // scale: 4,
-  //   //             brushType: "stroke"
-  //   //           },
-  //   //           label: {
-  //   //             normal: {
-  //   //               show: true,
-  //   //               position: "right",
-  //   //               formatter: "{b}"
-  //   //             }
-  //   //           },
-  //   //           symbolSize: function(val) {
-  //   //             return val[2] / 8;
-  //   //           },
-  //   //           itemStyle: {
-  //   //             normal: {
-  //   //               color: color[i]
-  //   //             },
-  //   //             emphasis: {
-  //   //               areaColor: "#2B91B7"
-  //   //             }
-  //   //           },
-  //   //           data: lineDates[i][1].map(function(dataItem) {
-  //   //             return {
-  //   //               name: dataItem[1].name,
-  //   //               value: geoCoordMap[dataItem[1].name].concat([dataItem[1].value])
-  //   //             };
-  //   //           })
-  //   //         }
-  //   //     );
-  //   // }
-  //
-  // }
-  if(matchData!=null || matchData !=undefined){
-
-    [
-      //    [XAData[0].name, XAData],
-      // ["召公初中", XAData],
-      // ["召首初中", XNData],
-      // ["银川", YCData]
-      lineDates
-    ].forEach(function(item, i) {
-      series.push(
-          {
-            name: item[0] + " Top3",
-            type: "lines",
-            zlevel: 1,
-            effect: {
-              show: true,
-              period: 6,
-              trailLength: 0.7,
-              color: "red", //arrow箭头的颜色
-              symbolSize: 3
-            },
-            lineStyle: {
-              normal: {
-                color: color[i],
-                width: 0,
-                curveness: 0.2
-              }
-            },
-            data: convertData(item[1])
-          },
-          {
-            name: item[0] + " Top3",
-            type: "lines",
-            zlevel: 2,
-            symbol: ["none", "arrow"],
-            symbolSize: 10,
-            // effect: {
-            //   show: true,
-            //   period: 6,
-            //   trailLength: 0,
-            //   symbol: planePath,
-            //   symbolSize: 15
-            // },
-            effect: {
-              show: true,
-              period: 3, //箭头指向速度，值越小速度越快
-              trailLength: 0.01, //特效尾迹长度[0,1]值越大，尾迹越长重
-              symbolSize: 9, //图标大小
-            },
-            lineStyle: {
-              normal: {
-                color: color[i],
-                width: 1,
-                opacity: 0.6,
-                curveness: 0.2
-              }
-            },
-            data: convertData(item[1])
-          },
-          {
-            name: item[0] + " Top3",
-            type: "effectScatter",
-            coordinateSystem: "geo",
-            zlevel: 2,
-            rippleEffect: {
-              // scale: 4,
-              brushType: "stroke"
-            },
-            label: {
-              normal: {
+  function getRandomInt(max) {
+    return Math.floor(Math.random() * Math.floor(max));
+  }
+  if(matchData!=null || matchData !=undefined ){
+    if(matchData.length !=0){
+      for(var i = 0;i<lineDates.length;i++){
+        var j = getRandomInt(3);
+        series.push(
+            {
+              name: lineDates[i][0],
+              type: "lines",
+              zlevel: 1,
+              effect: {
                 show: true,
-                position: "right",
-                formatter: "{b}"
-              }
-            },
-            symbolSize: function(val) {
-              return val[2] / 8;
-            },
-            itemStyle: {
-              normal: {
-                color: color[i]
+                period: 6,
+                trailLength: 0.7,
+                color: "red", //arrow箭头的颜色
+                symbolSize: 5
               },
-              emphasis: {
-                areaColor: "#2B91B7"
-              }
+              lineStyle: {
+                normal: {
+                  color: color[j],
+                  width: 0,
+                  curveness: 0.2
+                }
+              },
+              data: convertData(lineDates[i][1])
             },
-            data: item[1].map(function(dataItem) {
-              return {
-                name: dataItem[1].name,
-                value: geoCoordMap[dataItem[1].name].concat([dataItem[1].value])
-              };
-            })
-          }
-      );
-    });
+            {
+              name: lineDates[i][0],
+              type: "lines",
+              zlevel: 2,
+              symbol: ["none", "arrow"],
+              symbolSize: 10,
+              // effect: {
+              //   show: true,
+              //   period: 6,
+              //   trailLength: 0,
+              //   symbol: planePath,
+              //   symbolSize: 15
+              // },
+              effect: {
+                show: true,
+                period: 3, //箭头指向速度，值越小速度越快
+                trailLength: 0.01, //特效尾迹长度[0,1]值越大，尾迹越长重
+                symbolSize: 9, //图标大小
+              },
+              lineStyle: {
+                normal: {
+                  color: color[j],
+                  width: 1,
+                  opacity: 0.6,
+                  curveness: 0.2
+                }
+              },
+              data: convertData(lineDates[i][1])
+            },
+            {
+              name: lineDates[i][0],
+              type: "effectScatter",
+              coordinateSystem: "geo",
+              zlevel: 2,
+              rippleEffect: {
+                // scale: 4,
+                brushType: "stroke"
+              },
+              label: {
+                normal: {
+                  show: true,
+                  position: "right",
+                  formatter: "{b}"
+                }
+              },
+              symbolSize: function(val) {
+                return val[2] / 8;
+              },
+              itemStyle: {
+                normal: {
+                  color: color[j]
+                },
+                emphasis: {
+                  areaColor: "#2B91B7"
+                }
+              },
+              data: lineDates[i][1].map(function(dataItem) {
+                return {
+                  name: dataItem[1].name,
+                  value: geoCoordMap[dataItem[1].name]
+                };
+              }),
+            },
+            {
+              name:lineDates[i][0],
+              type: 'scatter',
+              coordinateSystem: 'geo',
+              zlevel: 2,
+              rippleEffect: {
+                // period: 4,
+                brushType: 'stroke',
+                // scale: 4
+              },
+              label: {
+                normal: {
+                  show: true,
+                  position: 'right',
+                  //offset:[5, 0],
+                  // color: '#0f0',
+                  formatter: '{b}',
+                  // textStyle: {
+                  //   color: "#0f0"
+                  // }
+                },
+                // emphasis: {
+                //   show: true,
+                //   color: "#f60"
+                // }
+              },
+              // symbol: 'pin',
+              symbolSize: function(val) {
+                return val[2] / 8;
+              },
+              itemStyle: {
+                normal: {
+                  color: color[j]
+                },
+                emphasis: {
+                  areaColor: "#2B91B7"
+                },
+              },
+              data: [{
+                name:  lineDates[i][0],
+                value: geoCoordMap[ lineDates[i][0]],
+              }],
+            }
+
+        );
+      }
+    }
   }
   var option = {
+
     tooltip: {
       trigger: "item",
       formatter: function(params, ticket, callback) {
@@ -778,17 +726,32 @@ function map(matchData) {
         }
       }
     },
+    toolbox: {
+      show: true,
+      feature: {
+        // dataView: {readOnly: false},
+        restore: {},
+        saveAsImage: {}
+      },
+    },
 
     legend: {
       orient: "vertical",
+      selectedMode: "multiple",
+      //下一版本修复 全选与反选功能
+      // selector: ['all', 'inverse'],
+      // selectorLabel:{
+      //   show : true,
+      //   color : "#fff",
+      //   position :'end',
+      //   distance : 15
+      // },
       top: "bottom",
       left: "right",
-      // TODO 动态替换
-      data: ["召公初中 Top3", "召首初中 Top3", "银川 Top3"],
+      data: typeData,
       textStyle: {
         color: "#fff"
       },
-      selectedMode: "multiple"
     },
     geo: {
       map: mapName,
@@ -798,8 +761,7 @@ function map(matchData) {
           color: "#fff"
         }
       },
-      // center:[108.000367,34.442728],
-      // selectedMode: 'single',
+
       // 把中国地图放大了1.2倍
       zoom: 1.2,
       roam: true,
@@ -811,66 +773,17 @@ function map(matchData) {
           borderWidth: 1
         },
         emphasis: {
-          areaColor: "#2B91B7"
+          show:true,
+          areaColor: 'rgba(20, 41, 87,0.6)'
         }
       }
     },
     series: series
   };
   myChart.setOption(option);
+
   // 监听浏览器缩放，图表对象调用缩放resize函数
   window.addEventListener("resize", function() {
     myChart.resize();
-  });
-  myChart.on('geoselectchanged', function(params) {
-    console.log(params);
-    var _batch = params.batch[0];
-    var _arr = params.batch[0].selected;
-    // 选中区域
-    if (_arr[_batch.name]) {
-      console.log('选中' + _batch.name);
-      mapName = mapNames[1];
-      myChart.setOption({
-        geo: {
-          map: mapName,
-          label: {
-            emphasis: {
-              show: true,
-              color: "#fff"
-            }
-          },
-          // center:[108.000367,34.442728],
-          selectedMode: 'single',
-          // 把中国地图放大了1.2倍
-          zoom: 1.2,
-          roam: true,
-          itemStyle: {
-            normal: {
-              // 地图省份的背景颜色
-              areaColor: "rgba(20, 41, 87,0.6)",
-              borderColor: "#195BB9",
-              borderWidth: 1
-            },
-            emphasis: {
-              areaColor: "#2B91B7"
-            }
-          }
-        },
-      })
-    }
-    // 取消选择
-    else {
-      console.log('取消选择')
-      myChart.setOption({
-        series: [{
-          name: 'areaScatter',
-          type: 'scatter',
-          coordinateSystem: 'geo',
-          data: [],
-          symbol: 'circle',
-          symbolSize: 23,
-        }]
-      })
-    }
   });
 };

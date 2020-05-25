@@ -77,18 +77,18 @@
 			<div class="no">
 				<div class="no-hd">
 					<ul>
-						<li>125811</li>
-						<li>100000</li>
-						<li>87.6%</li>
-						<li>94.5%</li>
+						<li id="lNum">0</li>
+						<li id="bNum">0</li>
+						<li id="mRatio">0%</li>
+						<li id="lRatio">0%</li>
 					</ul>
 				</div>
 				<div class="no-bd">
 					<ul>
 						<li>教材缺少总量</li>
 						<li>教材剩余总量</li>
-						<li>匹配比率</li>
-						<li>缺少比率</li>
+						<li>匹配率</li>
+						<li>缺少率</li>
 					</ul>
 				</div>
 			</div>
@@ -118,16 +118,6 @@
 				<div class="panel-footer"></div>
 			</div>
 
-<!--			<div class="panel line2">-->
-<!--				<h2>折线图-播放量</h2>-->
-<!--				<div class="chart">图表</div>-->
-<!--				<div class="panel-footer"></div>-->
-<!--			</div>-->
-<!--			<div class="panel pie2">-->
-<!--				<h2>饼形图-地区分布</h2>-->
-<!--				<div class="chart">图表</div>-->
-<!--				<div class="panel-footer"></div>-->
-<!--			</div>-->
 		</div>
 	</section>
 	<script src="/resources/echarts/js/flexible.js"></script>
@@ -145,72 +135,4 @@
 
 </body>
 </html>
-<!--	<div class="layui-row">-->
-<!--		<div class="layui-col-md2" style="overflow:auto; height:571px ;overflow-x: hidden;">-->
-<!--			&lt;!&ndash; 左侧学校列表开始 &ndash;&gt;-->
-<!--			&lt;!&ndash; 存放树的容器 &ndash;&gt;-->
-<!--			<ul id="deptTree" class="dtree" data-id="0"></ul>-->
-<!--			<script type="text/javascript">-->
-<!--				var deptTree;-->
-<!--				layui.extend({-->
-<!--					dtree: '/resources/layui_ext/dtree/dtree'   // {/}的意思即代表采用自有路径，即不跟随 base 路径-->
-<!--				}).use(['dtree','layer','jquery'], function(){-->
-<!--					var dtree = layui.dtree;-->
-<!--					var layer = layui.layer;-->
-<!--					$ = layui.jquery;-->
 
-<!--					// 初始化树-->
-<!--					deptTree= dtree.render({-->
-<!--						elem: "#deptTree",-->
-<!--						dataStyle: "layuiStyle",  //使用layui风格的数据格式-->
-<!--						dataFormat: "list",  //配置data的风格为list-->
-<!--						response:{message:"msg",statusCode:0},  //修改response中返回数据的定义-->
-<!--						url: "/dept/loadDeptManagerLeftTreeJson" // 使用url加载（可与data加载同时存在）-->
-<!--					});-->
-
-<!--					// 绑定节点点击-->
-<!--					dtree.on("node(deptTree)" ,function(obj){-->
-<!--						layer.msg(JSON.stringify(obj.param));-->
-<!--						// window.parent.right.reloadTable(obj.param.nodeId);-->
-<!--					});-->
-<!--				});-->
-
-<!--			</script>-->
-<!--			&lt;!&ndash; 左侧学校列表结束 &ndash;&gt;-->
-<!--		</div>-->
-<!--		<div class="layui-col-md6">-->
-<!--			<div class="grid-demo">33.33%</div>-->
-<!--		</div>-->
-<!--		<div class="layui-col-md4">-->
-<!--			&lt;!&ndash; 右侧条形图开始 &ndash;&gt;-->
-<!--			<div id="main" style="width: 507.63px;height:400px;" ></div>-->
-<!--			<script type="text/javascript">-->
-<!--				// 基于准备好的dom，初始化echarts实例-->
-<!--				var myChart = echarts.init(document.getElementById('main'));-->
-
-<!--				// 指定图表的配置项和数据-->
-<!--				var option = {-->
-<!--					title: {-->
-<!--						text: 'ECharts 入门示例'-->
-<!--					},-->
-<!--					tooltip: {},-->
-<!--					legend: {-->
-<!--						data:['销量']-->
-<!--					},-->
-<!--					xAxis: {-->
-<!--						data: ["衬衫","羊毛衫","雪纺衫","裤子","高跟鞋","袜子"]-->
-<!--					},-->
-<!--					yAxis: {},-->
-<!--					series: [{-->
-<!--						name: '销量',-->
-<!--						type: 'bar',-->
-<!--						data: [5, 20, 36, 10, 10, 20]-->
-<!--					}]-->
-<!--				};-->
-
-<!--				// 使用刚指定的配置项和数据显示图表。-->
-<!--				myChart.setOption(option);-->
-<!--			</script>-->
-<!--			&lt;!&ndash; 右侧条形图结束 &ndash;&gt;-->
-<!--		</div>-->
-<!--	</div>-->

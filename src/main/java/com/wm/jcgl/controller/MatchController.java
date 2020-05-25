@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import javax.annotation.Resource;
 import java.io.Serializable;
+import java.text.DecimalFormat;
 import java.util.*;
 
 /**
@@ -46,7 +47,72 @@ public class MatchController {
     @Resource
     private BackService backService;
 
+    /**
+     * 根据期号id返回相应指标数据
+     * @param matchVo
+     * @return
+     */
+    @RequestMapping("getHeartInfo")
+    public DataGridView getHeartInfo(MatchVo matchVo){
 
+        Integer lNum,bNum,mNum,lschoolNum,schoolNum;
+        String mRatio,lRatio;
+        DecimalFormat df = new DecimalFormat("######0");
+        //查询教材缺少总量
+        QueryWrapper<Match> lqueryWrapper = new QueryWrapper<>();
+        lqueryWrapper.select("SUM(lNum) AS number");
+        lqueryWrapper.eq("order_id",matchVo.getOrderId());
+        lqueryWrapper.eq("type",1);
+        Match lmatch = this.matchService.getOne(lqueryWrapper);
+        lNum = lmatch == null ? 0:lmatch.getNumber();
+
+        //查询教材剩余总量
+        QueryWrapper<Match>bqueryWrapper = new QueryWrapper<>();
+        bqueryWrapper.select("SUM(bNum) AS number");
+        bqueryWrapper.eq("order_id",matchVo.getOrderId());
+        bqueryWrapper.eq("type",0);
+        Match bmatch = this.matchService.getOne(bqueryWrapper);
+        bNum = bmatch == null ? 0:bmatch.getNumber();
+
+        //查询教材已匹配总量
+        QueryWrapper<Result> mqueryWrapper = new QueryWrapper<>();
+        mqueryWrapper.select("SUM(number) AS number");
+        mqueryWrapper.eq("order_id",matchVo.getOrderId());
+        Result result = this.resultService.getOne(mqueryWrapper);
+        mNum = result == null ? 0:result.getNumber();
+        if(lNum==0){
+            mRatio = df.format((mNum.doubleValue()/1)*100);
+        }else
+        {
+            mRatio = df.format((mNum.doubleValue()/lNum.doubleValue())*100);
+        }
+
+        //查询学校总量
+        QueryWrapper<Dept> squeryWrapper = new QueryWrapper<>();
+        squeryWrapper.ne("id",1);
+        schoolNum = this.deptService.count(squeryWrapper) == 0 ? 1:this.deptService.count(squeryWrapper);
+
+        //查询缺少学校总量
+        QueryWrapper<Match>lsqueryWrapper = new QueryWrapper<>();
+        lsqueryWrapper.select("dept_id");
+        lsqueryWrapper.eq("order_id",matchVo.getOrderId());
+        lsqueryWrapper.eq("type",1);
+        lsqueryWrapper.groupBy("dept_id");
+        List<Match> matchList = this.matchService.list(lsqueryWrapper);
+        lschoolNum = matchList.size();
+        lRatio = df.format((lschoolNum.doubleValue()/schoolNum.doubleValue())*100);
+
+
+        Map<String,Object> data = new HashMap<String,Object>();
+        data.put("lNum",lNum);
+        data.put("bNum",bNum);
+        data.put("mRatio",mRatio);
+        data.put("lRatio",lRatio);
+
+
+
+        return new DataGridView(data);
+    }
 
     /**
      * 根据期号id加载学校json数据
@@ -56,7 +122,7 @@ public class MatchController {
         QueryWrapper<Match> queryWrapper = new QueryWrapper<>();
 //        添加部门条件
         if(null!=matchVo.getOrderId()){
-//            this.matchFunction(matchVo.getOrderId());
+
             queryWrapper.groupBy("dept_id");
             queryWrapper.eq("order_id",matchVo.getOrderId());
             queryWrapper.select("dept_id");
@@ -93,7 +159,7 @@ public class MatchController {
      * 教材匹配算法，初次调用用于生成数据，之后用于更新数据
      * @param orderId
      */
-    public void matchFunction(Integer orderId){
+    public boolean matchFunction(Integer orderId){
         //查询书目缺少详细信息
         QueryWrapper<Match> lqueryWrapper = new QueryWrapper<>();
         lqueryWrapper.select("order_id","dept_id", "book_id", "lNum AS number");
@@ -105,7 +171,7 @@ public class MatchController {
         // 查询书目剩余详细信息
         QueryWrapper<Match> bqueryWrapper = new QueryWrapper<>();
         bqueryWrapper.select("order_id","dept_id", "book_id", "bNum AS number");
-        bqueryWrapper.eq("order_id", 5);
+        bqueryWrapper.eq("order_id", orderId);
         bqueryWrapper.eq("type", 0);   //类型为剩余
         List<Match> bMatchList = this.matchService.list(bqueryWrapper);
         Iterator<Match> bIterator = bMatchList.iterator();
@@ -191,9 +257,6 @@ public class MatchController {
                 iterator.remove();
             }
         }
-//        System.out.println(resultsList);
-//        System.out.println(lList);
-//        System.out.println(bList);
         if(resultsList.size()>0){
             QueryWrapper<Result> queryWrapper = new QueryWrapper<>();
             queryWrapper.eq("order_id",orderId);
@@ -214,73 +277,76 @@ public class MatchController {
             this.backService.remove(queryWrapper);
             this.backService.saveBatch(bList);
         }
+        return true;
     }
     /**
-     * 查询各学校余缺量
+     * 查询各匹配结果
      */
     @RequestMapping("loadMatchResult")
     public List<Line> loadMatchResult(MatchVo matchVo) {
+        if(this.matchFunction(matchVo.getOrderId())){
 
-        QueryWrapper<Result> idsqueryWrapper = new QueryWrapper<>();
-        idsqueryWrapper.select("bdept_id");
-        idsqueryWrapper.eq("order_id",matchVo.getOrderId());
-        idsqueryWrapper.groupBy("bdept_id");
-        List<Result> idslist = this.resultService.list(idsqueryWrapper);
-        List<Integer> ids = new ArrayList<Integer>();
-        for (Result result:idslist) {
-            ids.add(result.getBdeptId());
-        }
-        List allList = new ArrayList();
-        for (Integer bId:ids) {
-
-            QueryWrapper<Result> lidsqueryWrapper = new QueryWrapper<>();
-            lidsqueryWrapper.select("ldept_id");
-            lidsqueryWrapper.eq("order_id",matchVo.getOrderId());
-            lidsqueryWrapper.eq("bdept_id",bId);
-            lidsqueryWrapper.groupBy("ldept_id");
-            List<Result> lidslist = this.resultService.list(lidsqueryWrapper);
-            List<Integer> lids = new ArrayList<Integer>();
-            for (Result result:lidslist) {
-                lids.add(result.getLdeptId());
+            QueryWrapper<Result> idsqueryWrapper = new QueryWrapper<>();
+            idsqueryWrapper.select("bdept_id");
+            idsqueryWrapper.eq("order_id",matchVo.getOrderId());
+            idsqueryWrapper.groupBy("bdept_id");
+            List<Result> idslist = this.resultService.list(idsqueryWrapper);
+            List<Integer> ids = new ArrayList<Integer>();
+            for (Result result:idslist) {
+                ids.add(result.getBdeptId());
             }
+            List allList = new ArrayList();
+            for (Integer bId:ids) {
 
-            List<matchResult> list = new ArrayList<matchResult>();
-            for (Integer lId:lids) {
-                QueryWrapper<Result> queryWrapper = new QueryWrapper<>();
-                queryWrapper.select("bdept_id","ldept_id","book_id","number");
-                queryWrapper.eq("order_id",matchVo.getOrderId());
-                queryWrapper.eq("bdept_id",bId);
-                queryWrapper.eq("ldept_id",lId);
-                List<Result> resultList = this.resultService.list(queryWrapper);
-                String fromName = null;
-                String toName = null;
-                List<matchbook> bookList = new ArrayList<>();
-                for (Result result:resultList) {
-                    //根据id查询学校名
-                    if(null!=result.getBdeptId()){
-                        Dept bdept  = this.deptService.getById(result.getBdeptId());
-                        Dept ldept  = this.deptService.getById(result.getLdeptId());
-                        if(null!=bdept && null!=ldept) {
-                            result.setBDeptName(bdept.getTitle().replace(" ", ""));
-                            result.setLDeptName(ldept.getTitle().replace(" ", ""));
-                        }
-                    }
-                    if(null!=result.getBookId()){
-                        Book book  = this.bookService.getById(result.getBookId());
-                        if(null!=book) {
-                            result.setBookName(book.getName());
-                        }
-                    }
-                    fromName = result.getBDeptName();
-                    toName = result.getLDeptName();
-                    bookList.add(new matchbook(result.getBookName(),result.getNumber()));
+                QueryWrapper<Result> lidsqueryWrapper = new QueryWrapper<>();
+                lidsqueryWrapper.select("ldept_id");
+                lidsqueryWrapper.eq("order_id",matchVo.getOrderId());
+                lidsqueryWrapper.eq("bdept_id",bId);
+                lidsqueryWrapper.groupBy("ldept_id");
+                List<Result> lidslist = this.resultService.list(lidsqueryWrapper);
+                List<Integer> lids = new ArrayList<Integer>();
+                for (Result result:lidslist) {
+                    lids.add(result.getLdeptId());
                 }
-                list.add(new matchResult(fromName,toName,bookList));
+
+                List<matchResult> list = new ArrayList<matchResult>();
+                for (Integer lId:lids) {
+                    QueryWrapper<Result> queryWrapper = new QueryWrapper<>();
+                    queryWrapper.select("bdept_id","ldept_id","book_id","number");
+                    queryWrapper.eq("order_id",matchVo.getOrderId());
+                    queryWrapper.eq("bdept_id",bId);
+                    queryWrapper.eq("ldept_id",lId);
+                    List<Result> resultList = this.resultService.list(queryWrapper);
+                    String fromName = null;
+                    String toName = null;
+                    List<matchbook> bookList = new ArrayList<>();
+                    for (Result result:resultList) {
+                        //根据id查询学校名
+                        if(null!=result.getBdeptId()){
+                            Dept bdept  = this.deptService.getById(result.getBdeptId());
+                            Dept ldept  = this.deptService.getById(result.getLdeptId());
+                            if(null!=bdept && null!=ldept) {
+                                result.setBDeptName(bdept.getTitle().replace(" ", ""));
+                                result.setLDeptName(ldept.getTitle().replace(" ", ""));
+                            }
+                        }
+                        if(null!=result.getBookId()){
+                            Book book  = this.bookService.getById(result.getBookId());
+                            if(null!=book) {
+                                result.setBookName(book.getName());
+                            }
+                        }
+                        fromName = result.getBDeptName();
+                        toName = result.getLDeptName();
+                        bookList.add(new matchbook(result.getBookName(),result.getNumber()));
+                    }
+                    list.add(new matchResult(fromName,toName,bookList));
+                }
+                allList.add(list);
             }
-            allList.add(list);
+            return allList;
         }
-        System.out.println(allList);
-        return allList;
+        return null;
     }
     /**
      * 查询各学校余缺量
