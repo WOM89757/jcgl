@@ -1,16 +1,15 @@
 package com.wm.jcgl.entity;
 
-import com.baomidou.mybatisplus.annotation.TableName;
 import com.baomidou.mybatisplus.annotation.IdType;
-import com.baomidou.mybatisplus.annotation.TableId;
-import java.time.LocalDateTime;
 import com.baomidou.mybatisplus.annotation.TableField;
-import java.io.Serializable;
-import java.util.Date;
-
+import com.baomidou.mybatisplus.annotation.TableId;
+import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.experimental.Accessors;
+
+import java.io.Serializable;
+import java.util.Date;
 
 /**
  * <p>
@@ -31,7 +30,7 @@ public class Order implements Serializable {
     /**
      * 00120101 01:课本 20:年份 1/2:春/秋 01:编号
      */
-    @TableId(value = "id", type = IdType.AUTO)
+    @TableId(type = IdType.ASSIGN_ID)
     private Integer id;
 
 

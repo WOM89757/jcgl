@@ -98,7 +98,7 @@
 			<div class="layui-inline">
 			    <label class="layui-form-label">征订期号</label>
 			    <div class="layui-input-inline">
-			      <input type="text" name="id"  autocomplete="off" disabled class="layui-input ">
+			      <input type="text" name="id"  id="laodOrderId" autocomplete="off" readonly placeholder="自动生成，请填写其他信息" class="layui-input ">
 			    </div>
 		    </div>
 			<div class="layui-inline">
@@ -112,13 +112,17 @@
 			<div class="layui-inline">
 				<label class="layui-form-label">年份</label>
 				<div class="layui-input-inline">
-					<input type="text" name="year"  autocomplete="off" placeholder="请输入期号年份" lay-verify="required" class="layui-input">
+					<input type="text" name="year" id="year"  autocomplete="off" placeholder="请输入期号年份" lay-verify="required" class="layui-input">
 				</div>
 			</div>
 			<div class="layui-inline">
-				<label class="layui-form-label">卷期号</label>
+				<label class="layui-form-label">季度</label>
 				<div class="layui-input-inline">
-					<input type="text" name="qihao"  autocomplete="off" placeholder="请输入卷期号" lay-verify="required" class="layui-input">
+					<select name="qihao" id="qihao"  lay-verify="required">
+						<option value="">请选择季度</option>
+						<option value="1">春季</option>
+						<option value="2">秋季</option>
+					</select>
 				</div>
 			</div>
 		</div>
@@ -140,10 +144,10 @@
 			<div class="layui-inline">
 			    <label class="layui-form-label">业务类型</label>
 			    <div class="layui-input-inline">
-					<select name="ywtpye" id="YWtpye" lay-verify="required">
+					<select name="ywtpye" id="YWtpye" lay-filter="YWtpye" lay-verify="required">
 						<option value="">请选择业务类型</option>
-						<option value="教材">教材</option>
-						<option value="教辅">教辅</option>
+						<option value="01">教材</option>
+						<option value="02">教辅</option>
 					</select>
 				</div>
 		    </div>
@@ -208,7 +212,9 @@ layui.use(['jquery','form','table','layer','laydate'],function(){
 		      ,{field:'year', title:'年份',align:'center',width:'120'}
 		      ,{field:'qihao', title:'卷期号',align:'center',width:'150'}
 		      ,{field:'jctype', title:'教材类型',align:'center',width:'150'}
-		      ,{field:'ywtpye', title:'业务类型',align:'center',width:'120'}
+		      ,{field:'ywtpye', title:'业务类型',align:'center',width:'120',templet:function(d){
+						 return d.ywtpye==01?'<font >教材</font>':'<font >教辅</font>';
+					 }}
 
 		      ,{field:'createtime', title:'创建时间',align:'center',width:'120'}
 		      ,{field:'opername', title:'操作员',align:'center',width:'180'}
@@ -245,6 +251,28 @@ layui.use(['jquery','form','table','layer','laydate'],function(){
 				}
 			});
 			return false;
+		});
+		//监听下拉框
+		form.on('select(YWtpye)',function(data){
+
+			var  year= $("#year").val();
+			var  qihao= $("#qihao").val();
+			if(year == null || year == undefined || year == ''){
+				layer.msg('填写年份信息！');
+				return;
+			}
+			if(qihao == null || qihao == undefined || qihao == ''){
+				layer.msg('请选择业务类型！');
+				return;
+			}
+
+			//加载期号id
+			$.post("/order/loadOrderId",{year:year,qihao:qihao,ywtpye:data.value},function(res) {
+
+				var data = res.data
+				$("#laodOrderId").val(data);
+			})
+
 		});
 		
 		//监听工具条的事件

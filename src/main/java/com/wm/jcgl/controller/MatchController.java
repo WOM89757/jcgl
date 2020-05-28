@@ -174,7 +174,7 @@ public class MatchController {
         bqueryWrapper.eq("order_id", orderId);
         bqueryWrapper.eq("type", 0);   //类型为剩余
         List<Match> bMatchList = this.matchService.list(bqueryWrapper);
-        Iterator<Match> bIterator = bMatchList.iterator();
+
 
         //获取操作用户
         User user = (User) WebUtils.getSession().getAttribute("user");
@@ -195,6 +195,7 @@ public class MatchController {
                 lList.add(lack);
                 lIterator.remove();
             }
+            Iterator<Match> bIterator = bMatchList.iterator();
             //有退货信息，根据退货信息匹配缺货信息
             while(bIterator.hasNext()){
                 Match b_info = bIterator.next();
@@ -260,7 +261,7 @@ public class MatchController {
         if(resultsList.size()>0){
             QueryWrapper<Result> queryWrapper = new QueryWrapper<>();
             queryWrapper.eq("order_id",orderId);
-            if(this.resultService.count()>0){
+            if(this.resultService.count(queryWrapper)>0){
                 this.resultService.remove(queryWrapper);
             }
             this.resultService.saveBatch(resultsList);

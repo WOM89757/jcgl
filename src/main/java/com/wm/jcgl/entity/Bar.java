@@ -5,7 +5,9 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-
+/**
+ *柱形图对应实体
+ */
 @Data
 @AllArgsConstructor
 @NoArgsConstructor

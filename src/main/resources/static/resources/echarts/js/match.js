@@ -177,7 +177,11 @@ function bar(data) {
         // 把刻度标签里面的文字颜色设置为白色
         axisLabel: {
           color: "#fff"
-        }
+        },
+        // axisPointer: {
+        //   show:false //显示指示器
+        //
+        // },
       },
       {
         show: false,
@@ -730,28 +734,28 @@ function map(matchData) {
       show: true,
       feature: {
         // dataView: {readOnly: false},
-        restore: {},
+        // restore: {},
         saveAsImage: {}
       },
     },
 
     legend: {
-      orient: "vertical",
-      selectedMode: "multiple",
-      //下一版本修复 全选与反选功能
-      // selector: ['all', 'inverse'],
-      // selectorLabel:{
-      //   show : true,
-      //   color : "#fff",
-      //   position :'end',
-      //   distance : 15
-      // },
-      top: "bottom",
-      left: "right",
-      data: typeData,
-      textStyle: {
-        color: "#fff"
-      },
+        orient: "vertical",
+        selectedMode: "multiple",
+        //下一版本修复 全选与反选功能
+        // selector: ['all', 'inverse'],
+        // selectorLabel:{
+        //   show : true,
+        //   color : "#fff",
+        //   position :'end',
+        //   distance : 15
+        // },
+        top: "bottom",
+        left: "right",
+        data: typeData,
+        textStyle: {
+          color: "#fff"
+        },
     },
     geo: {
       map: mapName,

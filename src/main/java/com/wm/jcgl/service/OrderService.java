@@ -2,6 +2,7 @@ package com.wm.jcgl.service;
 
 import com.wm.jcgl.entity.Order;
 import com.baomidou.mybatisplus.extension.service.IService;
+import com.wm.jcgl.vo.OrderVo;
 
 /**
  * <p>
@@ -13,4 +14,10 @@ import com.baomidou.mybatisplus.extension.service.IService;
  */
 public interface OrderService extends IService<Order> {
 
+    /**
+     * 根据规则生成期号id
+     * @param orderVo
+     * @return
+     */
+    Integer loadOrderId(OrderVo orderVo);
 }

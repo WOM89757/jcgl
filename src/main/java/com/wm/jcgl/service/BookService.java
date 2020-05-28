@@ -1,8 +1,8 @@
 package com.wm.jcgl.service;
 
-import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
-import com.wm.jcgl.entity.Book;
 import com.baomidou.mybatisplus.extension.service.IService;
+import com.wm.jcgl.entity.Book;
+import com.wm.jcgl.vo.BookVo;
 
 import java.util.List;
 
@@ -16,7 +16,7 @@ import java.util.List;
  */
 public interface BookService extends IService<Book> {
 
-   // List<Book> listBYOrderId(QueryWrapper<Book> queryWrapper);
+
 
     /**
      * 根据期号ID查询所有的自编书目ID

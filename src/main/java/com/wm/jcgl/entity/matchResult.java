@@ -6,6 +6,10 @@ import lombok.NoArgsConstructor;
 
 import java.util.List;
 
+/**
+ * 匹配结果实体类
+ * @Autor WOM
+ */
 @Data
 @AllArgsConstructor
 @NoArgsConstructor

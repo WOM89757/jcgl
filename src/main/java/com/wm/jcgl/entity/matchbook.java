@@ -4,6 +4,10 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+/**
+ * 匹配结果：对应书目清单数据实体类
+ *
+ */
 @Data
 @AllArgsConstructor
 @NoArgsConstructor

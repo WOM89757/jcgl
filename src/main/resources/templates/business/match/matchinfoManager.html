@@ -176,7 +176,7 @@ layui.use(['jquery','form','table','layer'],function(){
 		      ,{field:'bookname', title:'书名',align:'center',width:'120'}
 		      ,{field:'grade', title:'年级',align:'center',width:'120'}
 		      ,{field:'type', title:'类型',align:'center',width:'150',templet:function(d){
-						 return d.type==0?'<font >剩余</font>':'<font color= blue>缺少</font>';
+						 return d.type==0?'<font >剩余</font>':'<font >缺少</font>';
 					 }}
 		      ,{field:'number', title:'数量',align:'center',width:'91',templet:function(d){
 						 return d.type==0?d.bnum:d.lnum;

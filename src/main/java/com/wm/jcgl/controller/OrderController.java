@@ -6,12 +6,9 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.wm.jcgl.entity.Book;
 import com.wm.jcgl.entity.Order;
-import com.wm.jcgl.entity.Provider;
-import com.wm.jcgl.entity.Subscription;
 import com.wm.jcgl.service.BookService;
 import com.wm.jcgl.service.OrderService;
 import com.wm.jcgl.service.SubscriptionService;
-import com.wm.jcgl.vo.BookVo;
 import com.wm.jcgl.vo.OrderVo;
 import com.wm.jcgl.vo.SubscriptionVo;
 import com.wm.sys.common.Constast;
@@ -24,11 +21,13 @@ import com.wm.sys.service.DeptService;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
-
 import org.springframework.web.bind.annotation.RestController;
 
 import java.io.Serializable;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Date;
+import java.util.List;
 
 /**
  * <p>
@@ -50,6 +49,17 @@ public class OrderController {
     private DeptService deptService;
     @Autowired
     private SubscriptionService subscriptionService;
+
+
+    /**
+     * 根据规则生成期号id
+     * @param orderVo
+     * @return
+     */
+    @RequestMapping("loadOrderId")
+    public DataGridView loadOrderId(OrderVo orderVo){
+        return new DataGridView(this.orderService.loadOrderId(orderVo));
+    }
 
     /**
      * 根据年级套订模型添加征订期号与自编书目

@@ -4,7 +4,10 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-
+/**
+ * 折线图对应实体类
+ *
+ */
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
