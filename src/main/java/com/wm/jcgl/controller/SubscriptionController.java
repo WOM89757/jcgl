@@ -6,12 +6,10 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.wm.jcgl.entity.Book;
 import com.wm.jcgl.entity.Order;
-import com.wm.jcgl.entity.Provider;
 import com.wm.jcgl.entity.Subscription;
 import com.wm.jcgl.service.BookService;
 import com.wm.jcgl.service.OrderService;
 import com.wm.jcgl.service.SubscriptionService;
-import com.wm.jcgl.service.impl.BookServiceImpl;
 import com.wm.jcgl.vo.SubscriptionVo;
 import com.wm.sys.common.Constast;
 import com.wm.sys.common.DataGridView;
@@ -21,9 +19,7 @@ import com.wm.sys.entity.Dept;
 import com.wm.sys.entity.User;
 import com.wm.sys.service.DeptService;
 import org.apache.commons.lang3.StringUtils;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
-
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.annotation.Resource;
@@ -62,6 +58,8 @@ public class SubscriptionController {
         IPage<Subscription> page = new Page<>(subscriptionVo.getPage(), subscriptionVo.getLimit());
         QueryWrapper<Subscription> queryWrapper = new QueryWrapper<>();
         queryWrapper.like(StringUtils.isNotBlank(subscriptionVo.getGrade()), "grade",subscriptionVo.getGrade());
+        queryWrapper.eq(null!=subscriptionVo.getOrderId(), "order_id",subscriptionVo.getOrderId());
+
         if(StringUtils.isNotBlank(subscriptionVo.getSchoolname())){
             queryWrapper.inSql("dept_id","select id from sys_dept where sys_dept.title like '%"+subscriptionVo.getSchoolname()+"%'");
         }

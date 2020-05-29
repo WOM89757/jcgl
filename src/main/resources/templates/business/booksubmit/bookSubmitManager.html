@@ -65,7 +65,6 @@
 	</div>
 	
 	<div id="booksubmitRowBar" style="display: none;">
-		<button type="button" lay-event="update" class="layui-btn layui-btn-sm"><span class="layui-icon layui-icon-edit"></span>更新</button>
 		<button type="button" lay-event="delete" class="layui-btn layui-btn-sm layui-btn-danger"><span class="layui-icon layui-icon-delete"></span>删除</button>
 	</div>
 </div>
@@ -140,7 +139,7 @@ layui.use(['jquery','form','table','layer'],function(){
 		      ,{field:'lackNum', title:'报订未到货',align:'center',width:'150',templet:function(d){
 						 return d.sumordNum-d.inportNum;
 			   }}
-		      ,{fixed: 'right', title:'操作', toolbar: '#booksubmitRowBar',align:'center',width:'200'}
+		      ,{fixed: 'right', title:'操作', toolbar: '#booksubmitRowBar',align:'center',width:'106'}
 		    ] ]
 		      ,done: function(res, curr, count){ //处理删除某一页最后一条数据的BUG
 				 if(res.data==null){
@@ -314,7 +313,7 @@ layui.use(['jquery','form','table','layer'],function(){
 
 		//删除
 		function deleteBooksubmit(data){
-			layer.confirm('你确定要删除【'+data.booksubmitName+'】这个报订吗?', {icon: 3, title:'提示'}, function(index){
+			layer.confirm('你确定要删除【'+data.bookname+'】这个报订吗?', {icon: 3, title:'提示'}, function(index){
 				$.post("/booksubmit/deleteBooksubmit",{id:data.id},function(res){
 					if(res.code==200){
 						tableIns.reload();

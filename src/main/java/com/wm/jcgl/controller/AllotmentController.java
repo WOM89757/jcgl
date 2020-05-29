@@ -5,16 +5,14 @@ import com.alibaba.fastjson.JSON;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.wm.jcgl.entity.Allotment;
 import com.wm.jcgl.entity.Book;
-import com.wm.jcgl.entity.Allotment;
-import com.wm.jcgl.entity.Allotment;
 import com.wm.jcgl.entity.Order;
 import com.wm.jcgl.service.AllotmentService;
 import com.wm.jcgl.service.BookService;
 import com.wm.jcgl.service.OrderService;
 import com.wm.jcgl.service.SubscriptionService;
 import com.wm.jcgl.vo.AllotmentVo;
-import com.wm.jcgl.vo.BookVo;
 import com.wm.sys.common.Constast;
 import com.wm.sys.common.DataGridView;
 import com.wm.sys.common.ResultObj;
@@ -23,9 +21,7 @@ import com.wm.sys.entity.Dept;
 import com.wm.sys.entity.User;
 import com.wm.sys.service.DeptService;
 import org.apache.commons.lang3.StringUtils;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
-
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
@@ -68,14 +64,12 @@ public class AllotmentController {
     public DataGridView loadALLAllotment(AllotmentVo allotmentVo) {
         IPage<Allotment> page = new Page<>(allotmentVo.getPage(), allotmentVo.getLimit());
         QueryWrapper<Allotment> queryWrapper = new QueryWrapper<Allotment>();
-        queryWrapper.like(null!=allotmentVo.getOrderId(), "order_id", allotmentVo.getOrderId());
-        queryWrapper.like(null!=allotmentVo.getDeptId(), "dept_id", allotmentVo.getDeptId());
+        queryWrapper.eq(null!=allotmentVo.getOrderId(), "order_id", allotmentVo.getOrderId());
+        queryWrapper.eq(null!=allotmentVo.getDeptId(), "dept_id", allotmentVo.getDeptId());
         queryWrapper.like(null!=allotmentVo.getStatus(), "status", allotmentVo.getStatus());
         queryWrapper.like(StringUtils.isNotBlank(allotmentVo.getGrade()), "grade", allotmentVo.getGrade());
 
-        if(StringUtils.isNotBlank(allotmentVo.getSchoolname())){
-            queryWrapper.inSql("dept_id","select id from sys_dept where sys_dept.title like '%"+allotmentVo.getSchoolname()+"%'");
-        }
+
         List<Allotment> allotmentList = this.allotmentService.list(queryWrapper);
         for (Allotment allotment : allotmentList) {
             Book book = this.bookService.getById(allotment.getBookId());

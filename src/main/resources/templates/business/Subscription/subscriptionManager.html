@@ -26,7 +26,9 @@
 		    <div class="layui-inline">
 		      <label class="layui-form-label">期号名称</label>
 		      <div class="layui-input-inline">
-		        <input type="text" name="ordername"  autocomplete="off" class="layui-input">
+				  <select name="orderId" id="search_orderid"  lay-verify="required">
+					  <option value="">请选择征订期号</option>
+				  </select>
 		      </div>
 		    </div>
 		    <div class="layui-inline">
@@ -177,7 +179,17 @@ layui.use(['jquery','form','table','layer'],function(){
 			        }
 			    }
 		});
-		
+	//加载查询条件征订期号的下拉列表
+	$.get("/order/loadAllOrderForSelect",function(res){
+		var data=res.data;
+		var dom=$("#search_orderid");
+		var html='<option value="">请选择所要查询的征订期号信息</option>'
+		$.each(data,function(index,item){
+			html+='<option value="'+item.id+'">'+item.id+'-'+item.comment+'</option>'
+		});
+		dom.html(html);
+		form.render("select");
+	})
 		//模糊查询
 		form.on("submit(doSearch)",function(data){
 			tableIns.reload({
