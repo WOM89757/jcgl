@@ -104,6 +104,20 @@ public class JcglController {
     public String toMatchManager() {
         return "business/match/matchManager";
     }
+    /**
+     * 跳转到学校缺货查询管理
+     */
+    @RequestMapping("toLackManager")
+    public String toLackManager() {
+        return "business/match/lackManager";
+    }
+    /**
+     * 跳转到学校退货查询管理
+     */
+    @RequestMapping("toBackManager")
+    public String toBackManager() {
+        return "business/match/backManager";
+    }
 
 }
 

@@ -62,5 +62,12 @@ public class Back implements Serializable {
      */
     private Integer number;
 
+    @TableField(exist = false)
+    private String bookname;
+    @TableField(exist = false)
+    private String ordername;
+    @TableField(exist = false)
+    private String schoolname;
+
 
 }

@@ -2,7 +2,7 @@
 <html>
 <head>
 <meta charset="UTF-8">
-<title>书目退货管理</title>
+<title>学校退货管理</title>
 <meta name="renderer" content="webkit">
 <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
 <meta http-equiv="Access-Control-Allow-Origin" content="*">
@@ -23,54 +23,33 @@
 <blockquote class="layui-elem-quote">
 	<form action="" method="post" id="searchFrm" lay-filter="searchFrm" class="layui-form layui-form-pane">
 		<div class="layui-form-item">
-			<div class="layui-inline">
-				<label class="layui-form-label">供应商</label>
-				<div class="layui-input-inline">
-					<select name="providerId" id="search_providerid" >
-						<option value="">请选择供应商</option>
+			<div class="layui-inline ">
+				<label class="layui-form-label">征订期号</label>
+				<div class="layui-input-block">
+					<select name="orderId" id="search_orderid"  >
+						<option value="">请选择征订期号</option>
 					</select>
 				</div>
 			</div>
-			<div class="layui-inline">
-				<label class="layui-form-label">书目名称</label>
-				<div class="layui-input-inline">
-					<select name="bookId" id="search_bookid">
-						<option value="">请选择书目</option>
+			<div class="layui-inline ">
+				<label class="layui-form-label">学校</label>
+				<div class="layui-input-block">
+					<select name="deptId" id="deptid" >
+						<option value="">请选择学校</option>
 					</select>
 				</div>
 			</div>
-			<div class="layui-inline">
-				<label class="layui-form-label">开始时间</label>
-				<div class="layui-input-inline">
-					<input type="text" name="startTime" readonly="readonly"  id="startTime" autocomplete="off" class="layui-input">
-				</div>
+			<div class="layui-inline" style="text-align: center;">
+
 			</div>
-		</div>
-		<div class="layui-form-item">
-			<div class="layui-inline">
-				<label class="layui-form-label">操作员</label>
-				<div class="layui-input-inline">
-					<input type="text" name="operateperson"  autocomplete="off" class="layui-input">
-				</div>
-			</div>
-			<div class="layui-inline">
-				<label class="layui-form-label">备注</label>
-				<div class="layui-input-inline">
-					<input type="text" name="remark"  autocomplete="off" class="layui-input">
-				</div>
-			</div>
-			<div class="layui-inline">
-				<label class="layui-form-label">结束时间</label>
-				<div class="layui-input-inline">
-					<input type="text"  name="endTime" readonly="readonly"  id="endTime"  autocomplete="off" class="layui-input">
-				</div>
-			</div>
-		</div>
-		<div class="layui-form-item">
-			<div class="layui-input-block" style="text-align: center;">
+
+			<div class="layui-inline" style="text-align: center;">
 				<button type="button" class="layui-btn" lay-submit="" lay-filter="doSearch"><span class="layui-icon layui-icon-search"></span>查询</button>
 				<button type="reset" class="layui-btn layui-btn-warm"><span class="layui-icon layui-icon-refresh-1"></span>重置</button>
 			</div>
+		</div>
+
+		<div class="layui-form-item">
 		</div>
 	</form>
 </blockquote>
@@ -79,7 +58,7 @@
 
 <!-- 数据表格开始 -->
 <div>
-	<table class="layui-hide" id="outportTable" lay-filter="outportTable"></table>
+	<table class="layui-hide" id="lackTable" lay-filter="lackTable"></table>
 </div>
 
 <!-- 数据表格结束 -->
@@ -105,24 +84,43 @@ layui.use(['jquery','form','table','layer','laydate'],function(){
 		
 		//加载 数据
 		 tableIns=table.render({
-			 elem: '#outportTable'
-		    ,url:'/outport/loadAllOutport'
+			 elem: '#lackTable'
+		    ,url:'/lack/loadAllLack'
 		    ,toolbar: true //开启头部工具栏，并为其绑定左侧模板
-		    ,title: '书目退货数据表'
+		    ,title: '学校退货数据表'
 		    ,height:'full-280'
 		    ,page: true
 		    ,cols: [ [
 		      {field:'id', title:'退货ID',align:'center' }
-		      ,{field:'providername', title:'供应商',align:'center'}
+		      ,{field:'ordername', title:'期号名称',align:'center'}
+		      ,{field:'schoolname', title:'学校名称',align:'center'}
 		      ,{field:'bookname', title:'书目名称',align:'center'}
-		      ,{field:'outputTime', title:'退货时间',align:'center'}
-		      ,{field:'number', title:'退货数量',align:'center'}
-		      ,{field:'outportprice', title:'退货价格',align:'center'}
-		      ,{field:'remark', title:'备注',align:'center'}
-		      ,{field:'operateperson', title:'操作员',align:'center'}
+		      ,{field:'number', title:'缺货数量',align:'center'}
+				 ,{field:'createTime', title:'缺货时间',align:'center'}
+		      ,{field:'operName', title:'操作员',align:'center'}
 		    ] ]
 		});
-
+		//加载查询条件征订期号的下拉列表
+		$.get("/order/loadAllOrderForSelect",function(res){
+			var data=res.data;
+			var dom=$("#search_orderid");
+			var html='<option value="">请选择所要查询的征订期号信息</option>'
+			$.each(data,function(index,item){
+				html+='<option value="'+item.id+'">'+item.id+'-'+item.comment+'</option>'
+			});
+			dom.html(html);
+			form.render("select");
+		})
+		$.get("/dept/loadAllSchoolForSelect",function(res){
+			var data=res.data;
+			var domorder=$("#deptid");
+			var html='<option value="">请选择学校</option>'
+			$.each(data,function(index,item){
+				html+='<option value="'+item.id+'">'+item.title+'</option>'
+			});
+			domorder.html(html);
+			form.render("select");
+		});
 		//加载查询条件供应商的下拉列表
 		$.get("/provider/loadAllProviderForSelect",function(res){
 			var data=res.data;
