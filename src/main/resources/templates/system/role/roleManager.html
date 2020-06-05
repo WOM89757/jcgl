@@ -16,6 +16,13 @@
 <link rel="stylesheet" href="/resources/css/public.css" media="all" />
 <link rel="stylesheet" href="/resources/layui_ext/dtree/dtree.css" media="all" />
 <link rel="stylesheet" href="/resources/layui_ext/dtree/font/dtreefont.css" media="all" />
+<style>
+	#layui-layer4 .layui-layer-btn-c a {
+		border-color: #ffffff;
+		background-color: #ffffff;
+		border: 0px solid #dedede;
+	}
+</style>
 </head>
 <body class="childrenBody">
 <!-- 查询条件开始 -->
@@ -47,8 +54,8 @@
 		  </div>
 		  <div class="layui-form-item">
 		      <div class="layui-input-block" style="text-align: center;">
-		      	<button type="button" class="layui-btn" lay-submit="" lay-filter="doSearch"><span class="layui-icon layui-icon-search"></span>查询</button>
-      			<button type="reset" class="layui-btn layui-btn-warm"><span class="layui-icon layui-icon-refresh-1"></span>重置</button>
+		      	<button type="button" class="layui-btn" lay-submit="" lay-filter="doSearch">查询</button>
+      			<button type="reset" class="layui-btn ">重置</button>
 		      </div>
 		  </div>
 	</form>
@@ -60,13 +67,13 @@
 <div>
 	<table class="layui-hide" id="roleTable" lay-filter="roleTable"></table>
 	<div id="roleToolBar" style="display: none;">
-		<button type="button" lay-event="add" shiro:hasPermission="role:create" class="layui-btn layui-btn-sm"><span class="layui-icon layui-icon-add-1"></span>添加角色</button>
+		<button type="button" lay-event="add" shiro:hasPermission="role:create" class="layui-btn layui-btn-sm">添加角色</button>
 	</div>
 	
 	<div id="roleRowBar" style="display: none;">
-		<button type="button" lay-event="update" shiro:hasPermission="role:update"  class="layui-btn layui-btn-sm"><span class="layui-icon layui-icon-edit"></span>更新</button>
-		<button type="button" lay-event="delete" shiro:hasPermission="role:delete" class="layui-btn layui-btn-sm layui-btn-danger"><span class="layui-icon layui-icon-delete"></span>删除</button>
-		<button type="button" lay-event="selectPermission" shiro:hasPermission="role:selectPermission" class="layui-btn layui-btn-sm"><span class="layui-icon layui-icon-about"></span>分配权限</button>
+		<button type="button" lay-event="update" shiro:hasPermission="role:update"  class="layui-btn layui-btn-sm">更新</button>
+		<button type="button" lay-event="delete" shiro:hasPermission="role:delete" class="layui-btn layui-btn-sm ">删除</button>
+		<button type="button" lay-event="selectPermission" shiro:hasPermission="role:selectPermission" class="layui-btn layui-btn-sm">分配权限</button>
 	</div>
 </div>
 
@@ -99,8 +106,8 @@
 		    </div>
  	   <div class="layui-form-item">
 		    <div class="layui-input-block" style="text-align: center;">
-		      	<button type="button" class="layui-btn" lay-submit="" lay-filter="doSubmit" id="doSubmit" ><span class="layui-icon layui-icon-add-1"></span>提交</button>
-      			<button type="reset" class="layui-btn layui-btn-warm"><span class="layui-icon layui-icon-refresh-1"></span>重置</button>
+		      	<button type="button" class="layui-btn" lay-submit="" lay-filter="doSubmit" id="doSubmit" >提交</button>
+      			<button type="reset" class="layui-btn ">重置</button>
 		     </div>
  	   </div>
 	</form>
@@ -136,10 +143,10 @@ layui.extend({
 		      ,{field:'name', title:'角色名称',align:'center'}
 		      ,{field:'remark', title:'角色备注',align:'center'}
 		      ,{field:'available', title:'是否可用',align:'center',templet:function(d){
-		    	  return d.available==1?'<font color=blue>可用</font>':'<font color=red>不可用</font>';
+		    	  return d.available==1?'<font >可用</font>':'<font >不可用</font>';
 		      }}
 		      ,{field:'createtime', title:'创建时间',align:'center'}
-		      ,{fixed: 'right', title:'操作', toolbar: '#roleRowBar',align:'center',width:'300'}
+		      ,{fixed: 'right', title:'操作', toolbar: '#roleRowBar',align:'center',width:'215'}
 		    ] ]
 		});
 		
@@ -186,7 +193,7 @@ layui.extend({
 			mainIndex=layer.open({
 				type:1,
 				content:$("#addOrUpdateDiv"),
-				area:['800px','600px'],
+				area:['700px','353px'],
 				title:'添加角色',
 				success:function(){
 					$("#dataFrm")[0].reset();
@@ -200,7 +207,7 @@ layui.extend({
 			mainIndex=layer.open({
 				type:1,
 				content:$("#addOrUpdateDiv"),
-				area:['800px','600px'],
+				area:['800px','353px'],
 				title:'修改角色',
 				success:function(){
 					$("#dataFrm")[0].reset();
@@ -241,7 +248,7 @@ layui.extend({
 				content:$("#selectRolePermissionDiv"),
 				area:['400px','600px'],
 				title:'分配【'+data.name+'】的权限',
-				btn: ['<span class=layui-icon>&#xe605;确认分配</span>', '<span class=layui-icon>&#x1006;关闭窗口</span>'],
+				btn: ['<i class= "layui-btn brole">确认分配</i>', '<i  class="layui-btn brole">关闭窗口</i>'],
 			    yes: function(index, layero){
 			    	//得到树选中的所有节点
 			    	var permissionData = dtree.getCheckbarNodesParam("permissionTree");
@@ -272,6 +279,12 @@ layui.extend({
 					});
 				}
 			});
+
+			$(".brole").parent().css({"background-color":"#EEE",
+										"border-color": "#ffffff",
+										"background-color": "#ffffff",
+										"border": "0px solid #dedede"
+									});
 		}
 	});
 </script>

@@ -48,7 +48,7 @@
 		  <div class="layui-form-item">
 		  	 <div class="layui-input-block" style="text-align: center;">
 		       	<button type="button" class="layui-btn" lay-submit="" lay-filter="doSearch"><span class="layui-icon layui-icon-search"></span>查询</button>
-      			<button type="reset" class="layui-btn layui-btn-warm"><span class="layui-icon layui-icon-refresh-1"></span>重置</button>
+      			<button type="reset" class="layui-btn "><span class="layui-icon layui-icon-refresh-1"></span>重置</button>
 		      </div>
 		  </div>
 	</form>
@@ -61,11 +61,11 @@
 	<table class="layui-hide" id="booksubmitTable" lay-filter="booksubmitTable"></table>
 	<div id="booksubmitToolBar" style="display: none;">
 		<button type="button" lay-event="add" class="layui-btn layui-btn-sm"><span class="layui-icon layui-icon-add-1"></span>添加报订</button>
-		<button type="button" lay-event="batchDelete" class="layui-btn layui-btn-sm layui-btn-danger"><span class="layui-icon layui-icon-delete"></span>批量删除</button>
+		<button type="button" lay-event="batchDelete" class="layui-btn layui-btn-sm "><span class="layui-icon layui-icon-delete"></span>批量删除</button>
 	</div>
 	
 	<div id="booksubmitRowBar" style="display: none;">
-		<button type="button" lay-event="delete" class="layui-btn layui-btn-sm layui-btn-danger"><span class="layui-icon layui-icon-delete"></span>删除</button>
+		<button type="button" lay-event="delete" class="layui-btn layui-btn-sm "><span class="layui-icon layui-icon-delete"></span>删除</button>
 	</div>
 </div>
 
@@ -88,7 +88,7 @@
 								<option value="">请选择所要查询的征订期号信息</option>
 							</select>
 						</div>
-						<div class="layui-input-inline">
+						<div class="layui-input-inline" style="width: 168px;">
 							<button type="button"  class="layui-btn layui-btn "lay-submit="" lay-filter="doAddSearch"><span class="layui-icon "></span>查询</button>
 
 						</div>

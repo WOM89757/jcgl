@@ -49,8 +49,8 @@
 		  </div>
 		  <div class="layui-form-item">
 		      <div class="layui-input-block" style="text-align: center;">
-		      	<button type="button" class="layui-btn" shiro:hasPermission="user:view" lay-submit="" lay-filter="doSearch"><span class="layui-icon layui-icon-search"></span>查询</button>
-      			<button type="reset" onclick="javascript:document.getElementById('search_deptid').value=''" class="layui-btn layui-btn-warm"><span class="layui-icon layui-icon-refresh-1"></span>重置</button>
+		      	<button type="button" class="layui-btn" shiro:hasPermission="user:view" lay-submit="" lay-filter="doSearch">查询</button>
+      			<button type="reset" onclick="javascript:document.getElementById('search_deptid').value=''" class="layui-btn ">重置</button>
 		      </div>
 		  </div>
 	</form>
@@ -62,14 +62,14 @@
 <div>
 	<table class="layui-hide" id="userTable" lay-filter="userTable"></table>
 	<div id="userToolBar" style="display: none;">
-		<button type="button" lay-event="add" shiro:hasPermission="user:create" class="layui-btn layui-btn-sm"><span class="layui-icon layui-icon-add-1"></span>添加用户</button>
+		<button type="button" lay-event="add" shiro:hasPermission="user:create" class="layui-btn layui-btn-sm">添加用户</button>
 	</div>
 	
 	<div id="userRowBar" style="display: none;">
-		<button type="button" lay-event="update" shiro:hasPermission="user:update" class="layui-btn layui-btn-sm"><span class="layui-icon layui-icon-edit"></span>更新</button>
-		<button type="button" lay-event="delete" shiro:hasPermission="user:delete" class="layui-btn layui-btn-sm layui-btn-danger"><span class="layui-icon layui-icon-delete"></span>删除</button>
-		<button type="button" lay-event="resetPwd" shiro:hasPermission="user:resetPwd" class="layui-btn layui-btn-sm"><span class="layui-icon layui-icon-edit"></span>重置密码</button>
-		<button type="button" lay-event="selectRole" shiro:hasPermission="user:selectRole" class="layui-btn layui-btn-sm layui-btn-danger"><span class="layui-icon layui-icon-delete"></span>分配角色</button>
+		<button type="button" lay-event="update" shiro:hasPermission="user:update" class="layui-btn layui-btn-sm">更新</button>
+		<button type="button" lay-event="delete" shiro:hasPermission="user:delete" class="layui-btn layui-btn-sm ">删除</button>
+		<button type="button" lay-event="resetPwd" shiro:hasPermission="user:resetPwd" class="layui-btn layui-btn-sm">重置密码</button>
+		<button type="button" lay-event="selectRole" shiro:hasPermission="user:selectRole" class="layui-btn layui-btn-sm ">分配角色</button>
 	</div>
 </div>
 
@@ -185,8 +185,8 @@
 
 			<div class="layui-form-item">
 				<div class="layui-input-block" style="text-align: center;">
-					<button type="button" class="layui-btn" lay-submit="" lay-filter="doSubmit" ><span class="layui-icon layui-icon-add-1"></span>提交</button>
-					<button type="reset" onclick="javascript:document.getElementById('deptid').value=''" class="layui-btn layui-btn-warm"><span class="layui-icon layui-icon-refresh-1"></span>重置</button>
+					<button type="button" class="layui-btn" lay-submit="" lay-filter="doSubmit" >提交</button>
+					<button type="reset" onclick="javascript:document.getElementById('deptid').value=''" class="layui-btn ">重置</button>
 				</div>
 			</div>
 		</div>
@@ -241,13 +241,13 @@ layui.extend({
 		      ,{field:'remark', title:'用户备注',align:'center',width:'150'}
 		      ,{field:'hiredate', title:'入职时间',align:'center',width:'180'}
 		      ,{field:'available', title:'是否可用',align:'center',width:'100',templet:function(d){
-		    	  return d.available==1?'<font color=blue>可用</font>':'<font color=red>不可用</font>';
+		    	  return d.available==1?'<font >可用</font>':'<font >不可用</font>';
 		      }}
 		      ,{field:'ordernum', title:'排序码',align:'center',width:'100'}
 		      ,{field:'imgpath', title:'用户头像',align:'center',width:'100',templet:function(d){
 					return '<img width=27 height=27 src=/file/showImageByPath?path='+d.imgpath+ ' />';
 				}}
-		      ,{fixed: 'right', title:'操作', toolbar: '#userRowBar',align:'center',width:'400'}
+		      ,{fixed: 'right', title:'操作', toolbar: '#userRowBar',align:'center',width:'297'}
 		    ] ]
 		    ,done: function(res, curr, count){ //处理删除某一页最后一条数据的BUG
 		        if(res.data.length==0&&curr!=1){

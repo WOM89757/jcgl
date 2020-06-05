@@ -16,18 +16,13 @@ import com.wm.sys.vo.UserVo;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.shiro.crypto.hash.Md5Hash;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.annotation.PropertySource;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.multipart.MultipartFile;
 
-
-import javax.servlet.http.HttpServletRequest;
-import java.io.File;
-import java.io.IOException;
-import java.util.*;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * <p>
@@ -61,7 +56,7 @@ public class UserController {
         queryWrapper.eq(StringUtils.isNotBlank(userVo.getName()), "loginname", userVo.getName()).or().eq(StringUtils.isNotBlank(userVo.getName()), "name", userVo.getName());
         queryWrapper.eq(StringUtils.isNotBlank(userVo.getAddress()), "address", userVo.getAddress());
         queryWrapper.eq("type", Constast.USER_TYPE_NORMAL);//查询系统用户
-        queryWrapper.eq(userVo.getDeptid()!=null, "deptid",userVo.getDeptid());
+        queryWrapper.eq(userVo.getDeptid()!=null, "dept_id",userVo.getDeptid());
         this.userService.page(page, queryWrapper);
 
 

@@ -65,8 +65,8 @@
 		</div>
 		  <div class="layui-form-item">
 		  	 <div class="layui-input-block" style="text-align: center;margin-left: auto;">
-		       	<button type="button" class="layui-btn" lay-submit="" lay-filter="doSearch"><span class="layui-icon layui-icon-search"></span>查询</button>
-      			<button type="reset" class="layui-btn layui-btn-warm"><span class="layui-icon layui-icon-refresh-1"></span>重置</button>
+		       	<button type="button" class="layui-btn" lay-submit="" lay-filter="doSearch">查询</button>
+      			<button type="reset" class="layui-btn ">重置</button>
 		      </div>
 		  </div>
 	</form>
@@ -79,13 +79,13 @@
 	<table class="layui-hide" id="orderTable" lay-filter="orderTable"></table>
 	<div id="orderToolBar" style="display: none;">
 		<button type="button" lay-event="add" class="layui-btn layui-btn-sm"><span class="layui-icon layui-icon-add-1"></span>添加期号</button>
-		<button type="button" lay-event="batchDelete" class="layui-btn layui-btn-sm layui-btn-danger"><span class="layui-icon layui-icon-delete"></span>批量删除</button>
+		<button type="button" lay-event="batchDelete" class="layui-btn layui-btn-sm ">批量删除</button>
 	</div>
 	
 	<div id="orderRowBar" style="display: none;">
-		<button type="button" lay-event="push" class="layui-btn layui-btn-sm"><span class="layui-icon layui-icon-edit"></span>发布</button>
-		<button type="button" lay-event="update" class="layui-btn layui-btn-sm"><span class="layui-icon layui-icon-edit"></span>更新</button>
-		<button type="button" lay-event="delete" class="layui-btn layui-btn-sm layui-btn-danger"><span class="layui-icon layui-icon-delete"></span>删除</button>
+		<button type="button" lay-event="push" class="layui-btn layui-btn-sm">发布</button>
+		<button type="button" lay-event="update" class="layui-btn layui-btn-sm">更新</button>
+		<button type="button" lay-event="delete" class="layui-btn layui-btn-sm ">删除</button>
 	</div>
 </div>
 
@@ -156,7 +156,7 @@
  	   <div class="layui-form-item">
 		    <div class="layui-input-block" style="text-align: center;">
 		      	<button type="button" class="layui-btn" lay-submit="" lay-filter="doSubmit" id="doSubmit" ><span class="layui-icon layui-icon-add-1"></span>提交</button>
-      			<button type="reset" class="layui-btn layui-btn-warm"><span class="layui-icon layui-icon-refresh-1"></span>重置</button>
+      			<button type="reset" class="layui-btn "><span class="layui-icon layui-icon-refresh-1"></span>重置</button>
 		     </div>
  	   </div>
 	</form>
@@ -179,7 +179,7 @@
 
 				<button class="layui-btn" lay-submit="" lay-filter="doPush"><i class="layui-icon">&#xe608;</i>添加</button>
 
-				<button type="reset" class="layui-btn layui-btn-warm "><span class="layui-icon layui-icon-refresh-1"></span>重置</button>
+				<button type="reset" class="layui-btn  "><span class="layui-icon layui-icon-refresh-1"></span>重置</button>
 
 		</div>
 	</div>
@@ -218,7 +218,7 @@ layui.use(['jquery','form','table','layer','laydate'],function(){
 
 		      ,{field:'createtime', title:'创建时间',align:'center',width:'120'}
 		      ,{field:'opername', title:'操作员',align:'center',width:'180'}
-		      ,{fixed: 'right', title:'操作', toolbar: '#orderRowBar',align:'center',width:'250'},
+		      ,{fixed: 'right', title:'操作', toolbar: '#orderRowBar',align:'center',width:'199'},
 		    ] ]
 		      ,done: function(res, curr, count){ //处理删除某一页最后一条数据的BUG
 			        if(res.data.length==0&&curr!=1){
@@ -323,7 +323,7 @@ layui.use(['jquery','form','table','layer','laydate'],function(){
 			mainIndex=layer.open({
 				type:1,
 				content:$("#PushDiv"),
-				area:['800px','600px'],
+				area:['500px','300px'],
 				title:'发布征订信息',
 				success:function(){
 

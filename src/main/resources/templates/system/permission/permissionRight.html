@@ -38,8 +38,8 @@
 		        <input type="text" name="percode"  autocomplete="off" class="layui-input">
 		      </div>
 		      <div class="layui-input-inline">
-		       	<button type="button" class="layui-btn" lay-submit="" lay-filter="doSearch"><span class="layui-icon layui-icon-search"></span>查询</button>
-      			<button type="reset" class="layui-btn layui-btn-warm"><span class="layui-icon layui-icon-refresh-1"></span>重置</button>
+		       	<button type="button" class="layui-btn" lay-submit="" lay-filter="doSearch">查询</button>
+      			<button type="reset" class="layui-btn ">重置</button>
 		      </div>
 		    </div>
 		  </div>
@@ -56,8 +56,8 @@
 	</div>
 	
 	<div id="permissionRowBar" style="display: none;">
-		<button type="button" lay-event="update" shiro:hasPermission="permission:update" class="layui-btn layui-btn-sm"><span class="layui-icon layui-icon-edit"></span>更新</button>
-		<button type="button" lay-event="delete" shiro:hasPermission="permission:delete" class="layui-btn layui-btn-sm layui-btn-danger"><span class="layui-icon layui-icon-delete"></span>删除</button>
+		<button type="button" lay-event="update" shiro:hasPermission="permission:update" class="layui-btn layui-btn-sm">更新</button>
+		<button type="button" lay-event="delete" shiro:hasPermission="permission:delete" class="layui-btn layui-btn-sm ">删除</button>
 	</div>
 </div>
 
@@ -111,7 +111,7 @@
  	   <div class="layui-form-item">
 		    <div class="layui-input-block" style="text-align: center;">
 		      	<button type="button" class="layui-btn" lay-submit="" lay-filter="doSubmit" id="doSubmit" ><span class="layui-icon layui-icon-add-1"></span>提交</button>
-      			<button type="reset" class="layui-btn layui-btn-warm"><span class="layui-icon layui-icon-refresh-1"></span>重置</button>
+      			<button type="reset" class="layui-btn ">重置</button>
 		     </div>
  	   </div>
 	</form>

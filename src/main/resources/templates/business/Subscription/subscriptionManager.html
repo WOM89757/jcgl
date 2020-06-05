@@ -53,7 +53,7 @@
 		  <div class="layui-form-item">
 		  	 <div class="layui-input-block" style="text-align: center;">
 		       	<button type="button" class="layui-btn" lay-submit="" lay-filter="doSearch"><span class="layui-icon layui-icon-search"></span>查询</button>
-      			<button type="reset" class="layui-btn layui-btn-warm"><span class="layui-icon layui-icon-refresh-1"></span>重置</button>
+      			<button type="reset" class="layui-btn "><span class="layui-icon layui-icon-refresh-1"></span>重置</button>
 		      </div>
 		  </div>
 	</form>
@@ -65,16 +65,16 @@
 <div>
 	<table class="layui-hide" id="subscriptionTable" lay-filter="subscriptionTable"></table>
 	<div id="subscriptionToolBar" style="display: none;">
-		<button type="button" lay-event="add" class="layui-btn layui-btn-sm"><span class="layui-icon layui-icon-add-1"></span>添加征订教材</button>
-		<button type="button" lay-event="batchSubmit" class="layui-btn layui-btn-sm layui-btn-normal"><span class="layui-icon layui-icon-add-1"></span>批量确认</button>
-		<button type="button" lay-event="batchDelete" class="layui-btn layui-btn-sm layui-btn-danger"><span class="layui-icon layui-icon-delete"></span>批量删除</button>
+		<button type="button" lay-event="add" class="layui-btn layui-btn-sm">添加征订教材</button>
+		<button type="button" lay-event="batchSubmit" class="layui-btn layui-btn-sm ">批量确认</button>
+		<button type="button" lay-event="batchDelete" class="layui-btn layui-btn-sm">批量删除</button>
 	</div>
 	
-	<div id="subscriptionRowBar" style="display: none;">
-		<button type="button" lay-event="update" class="layui-btn layui-btn-sm"><span class="layui-icon layui-icon-edit"></span>更新</button>
-		<button type="button" lay-event="submit" class="layui-btn layui-btn-sm layui-btn-normal"><span class="layui-icon layui-icon-edit"></span>提交</button>
-		<button type="button" lay-event="resubmit" class="layui-btn layui-btn-sm layui-btn-warm"><span class="layui-icon layui-icon-edit"></span>重置提交</button>
-		<button type="button" lay-event="delete" class="layui-btn layui-btn-sm layui-btn-danger"><span class="layui-icon layui-icon-delete"></span>删除</button>
+	<div id="subscriptionRowBar" class="layui-btn-group" style="display: none;">
+		<button type="button" lay-event="update" class="layui-btn layui-btn-sm">更新</button>
+		<button type="button" lay-event="submit" class="layui-btn layui-btn-sm ">提交</button>
+		<button type="button" lay-event="resubmit" class="layui-btn layui-btn-sm ">驳回</button>
+		<button type="button" lay-event="delete" class="layui-btn layui-btn-sm ">删除</button>
 	</div>
 </div>
 
@@ -163,11 +163,11 @@ layui.use(['jquery','form','table','layer'],function(){
 		      ,{field:'studNum', title:'学生订数',align:'center',width:'91'}
 		      ,{field:'teaNum', title:'教师订数',align:'center',width:'91'}
 		      ,{field:'status', title:'确认提交',align:'center',width:'91',templet:function(d){
-					 return d.status==0?'<font color=red>未确认</font>':'<font color= blue>已确认</font>';
+					 return d.status==0?'<font >未确认</font>':'<font >已确认</font>';
 		      }}
 		      ,{field:'operName', title:'操作员',align:'center',width:'150'}
-		      ,{field:'createTime', title:'创建时间',align:'center',width:'120'}
-		      ,{fixed: 'right', title:'操作', toolbar: '#subscriptionRowBar',align:'center',width:'354'}
+		      ,{field:'createTime', title:'创建时间',align:'center',width:'168'}
+		      ,{fixed: 'right', title:'操作', toolbar: '#subscriptionRowBar',align:'center',width:'248'}
 		    ] ]
 		      ,done: function(res, curr, count){ //处理删除某一页最后一条数据的BUG
 			        if(res.data.length==0&&curr!=1){

@@ -32,8 +32,8 @@
 		        <input type="text" name="title"  autocomplete="off" class="layui-input">
 		      </div>
 		      <div class="layui-input-inline">
-		       	<button type="button" class="layui-btn" lay-submit="" lay-filter="doSearch"><span class="layui-icon layui-icon-search"></span>查询</button>
-      			<button type="reset" class="layui-btn layui-btn-warm"><span class="layui-icon layui-icon-refresh-1"></span>重置</button>
+		       	<button type="button" class="layui-btn" lay-submit="" lay-filter="doSearch">查询</button>
+      			<button type="reset" class="layui-btn ">重置</button>
 		      </div>
 		    </div>
 		  </div>
@@ -46,12 +46,12 @@
 <div>
 	<table class="layui-hide" id="menuTable" lay-filter="menuTable"></table>
 	<div id="menuToolBar" style="display: none;">
-		<button type="button" lay-event="add" shiro:hasPermission="menu:create" class="layui-btn layui-btn-sm"><span class="layui-icon layui-icon-add-1"></span>添加菜单</button>
+		<button type="button" lay-event="add" shiro:hasPermission="menu:create" class="layui-btn layui-btn-sm">添加菜单</button>
 	</div>
 	
 	<div id="menuRowBar" style="display: none;">
-		<button type="button" lay-event="update" shiro:hasPermission="menu:update" class="layui-btn layui-btn-sm"><span class="layui-icon layui-icon-edit"></span>更新</button>
-		<button type="button" lay-event="delete" shiro:hasPermission="menu:delete" class="layui-btn layui-btn-sm layui-btn-danger"><span class="layui-icon layui-icon-delete"></span>删除</button>
+		<button type="button" lay-event="update" shiro:hasPermission="menu:update" class="layui-btn layui-btn-sm">更新</button>
+		<button type="button" lay-event="delete" shiro:hasPermission="menu:delete" class="layui-btn layui-btn-sm ">删除</button>
 	</div>
 </div>
 
@@ -118,8 +118,8 @@
  	   </div>
  	   <div class="layui-form-item">
 		    <div class="layui-input-block" style="text-align: center;">
-		      	<button type="button" class="layui-btn" lay-submit="" lay-filter="doSubmit" id="doSubmit" ><span class="layui-icon layui-icon-add-1"></span>提交</button>
-      			<button type="reset" class="layui-btn layui-btn-warm"><span class="layui-icon layui-icon-refresh-1"></span>重置</button>
+		      	<button type="button" class="layui-btn" lay-submit="" lay-filter="doSubmit" id="doSubmit" >提交</button>
+      			<button type="reset" class="layui-btn ">重置</button>
 		     </div>
  	   </div>
 	</form>
@@ -156,14 +156,14 @@ layui.extend({
 		    	  return '<font class=layui-icon>'+d.icon+'</font>';
 		      }}
 		      ,{field:'open', title:'是否展开',align:'center',width:'100',templet:function(d){
-		    	  return d.open==1?'<font color=blue>展开</font>':'<font color=red>不展开</font>';
+		    	  return d.open==1?'<font >展开</font>':'<font >不展开</font>';
 		      }}
 		      ,{field:'available', title:'是否可用',align:'center',width:'100',templet:function(d){
-		    	  return d.available==1?'<font color=blue>可用</font>':'<font color=red>不可用</font>';
+		    	  return d.available==1?'<font >可用</font>':'<font >不可用</font>';
 		      }}
 		      ,{field:'ordernum', title:'排序码',align:'center',width:'100'}
 		      ,{field:'target', title:'TARGET',align:'center',width:'100',hide:true}
-		      ,{fixed: 'right', title:'操作', toolbar: '#menuRowBar',align:'center',width:'200'}
+		      ,{fixed: 'right', title:'操作', toolbar: '#menuRowBar',align:'center',width:'134'}
 		    ] ]
 		      ,done: function(res, curr, count){ //处理删除某一页最后一条数据的BUG
 			        if(res.data.length==0&&curr!=1){
