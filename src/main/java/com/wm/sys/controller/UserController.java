@@ -208,7 +208,7 @@ public class UserController {
     /**
      * 删除用户
      */
-    @RequestMapping("deleteUser")
+        @RequestMapping("deleteUser")
     public ResultObj deleteUser(Integer id,String userimg) {
         try {
             //删除原文件

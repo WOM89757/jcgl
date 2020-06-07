@@ -88,7 +88,7 @@ public class JcglController {
      */
     @RequestMapping("toAllotmentManager")
     public String toAllotmentManager() {
-        return "business/allotment/AllotmentManager";
+        return "business/allotment/allotmentManager";
     }
     /**
      * 跳转到书目匹配管理

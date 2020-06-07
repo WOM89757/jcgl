@@ -53,7 +53,7 @@
 		  <div class="layui-form-item">
 		  	 <div class="layui-input-block" style="text-align: center;">
 		       	<button type="button" class="layui-btn" lay-submit="" lay-filter="doSearch"><span class="layui-icon layui-icon-search"></span>查询</button>
-      			<button type="reset" class="layui-btn "><span class="layui-icon layui-icon-refresh-1"></span>重置</button>
+      			<button type="reset" class="layui-btn ">重置</button>
 		      </div>
 		  </div>
 	</form>
@@ -127,8 +127,8 @@
 
  	   <div class="layui-form-item">
 		    <div class="layui-input-block" style="text-align: center;">
-		      	<button type="button" class="layui-btn" lay-submit="" lay-filter="doSubmit" id="doSubmit" ><span class="layui-icon layui-icon-add-1"></span>提交</button>
-      			<button type="reset" class="layui-btn layui-btn-warm"><span class="layui-icon layui-icon-refresh-1"></span>重置</button>
+		      	<button type="button" class="layui-btn" lay-submit="" lay-filter="doSubmit" id="doSubmit" >提交</button>
+      			<button type="reset" class="layui-btn ">重置</button>
 		     </div>
  	   </div>
 	</form>
@@ -258,7 +258,7 @@ layui.use(['jquery','form','table','layer'],function(){
 			mainIndex=layer.open({
 				type:1,
 				content:$("#addOrUpdateDiv"),
-				area:['800px','600px'],
+				area:['800px','350px'],
 				title:'添加征订教材',
 				success:function(){
 					$("#dataFrm")[0].reset();
@@ -302,7 +302,7 @@ layui.use(['jquery','form','table','layer'],function(){
 			mainIndex=layer.open({
 				type:1,
 				content:$("#addOrUpdateDiv"),
-				area:['800px','600px'],
+				area:['800px','350px'],
 				title:'修改征订教材',
 				success:function(){
 

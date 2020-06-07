@@ -2,7 +2,6 @@ package com.wm.sys.common;
 
 import cn.hutool.core.io.FileUtil;
 import cn.hutool.core.util.IdUtil;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -18,11 +17,14 @@ import java.util.Properties;
  * @author WOM
  *
  */
+
+
 public class AppFileUtils {
 
 	//文件上传的保存路径
 	public static  String UPLOAD_PATH="D:/upload/";//默认值
-	
+//	public static  String UPLOAD_PATH="/home/ftpuser/www/upload/images";//默认值
+
 	static {
 		//读取配置文件的存储地址
 		InputStream stream = AppFileUtils.class.getClassLoader().getResourceAsStream("application.properties");

@@ -14,7 +14,6 @@ import org.apache.shiro.authc.AuthenticationToken;
 import org.apache.shiro.authc.UsernamePasswordToken;
 import org.apache.shiro.subject.Subject;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -61,7 +60,7 @@ public class LoginController {
 		CircleCaptcha captcha = CaptchaUtil.createCircleCaptcha(116, 36, 4, 5);
 		//得到code
 		String code = captcha.getCode();
-		System.out.println(code);
+//		System.out.println(code);
 		//放到session
 		session.setAttribute("code", code);
 		ServletOutputStream outputStream = resp.getOutputStream();
