@@ -68,9 +68,8 @@ public class AllotmentController {
         queryWrapper.eq(null!=allotmentVo.getDeptId(), "dept_id", allotmentVo.getDeptId());
         queryWrapper.like(null!=allotmentVo.getStatus(), "status", allotmentVo.getStatus());
         queryWrapper.like(StringUtils.isNotBlank(allotmentVo.getGrade()), "grade", allotmentVo.getGrade());
-
-
-        List<Allotment> allotmentList = this.allotmentService.list(queryWrapper);
+        this.allotmentService.page(page, queryWrapper);
+        List<Allotment> allotmentList = page.getRecords();
         for (Allotment allotment : allotmentList) {
             Book book = this.bookService.getById(allotment.getBookId());
             if(null!=book) {
@@ -96,6 +95,8 @@ public class AllotmentController {
     @RequestMapping("loadAllotmentWithOrderId")
     public DataGridView loadAllotment(AllotmentVo allotmentVo) {
         IPage<Allotment> page = new Page<>(allotmentVo.getPage(), allotmentVo.getLimit());
+
+
         List<Allotment> allotmentList = this.subscriptionService.getSubscriptionForAllotment(allotmentVo.getOrderId());
         for (Allotment allotment : allotmentList) {
             Book book = this.bookService.getById(allotment.getBookId());

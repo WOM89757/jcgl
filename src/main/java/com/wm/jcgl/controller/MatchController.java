@@ -209,6 +209,7 @@ public class MatchController {
                         result.setBookId(l_info.getBookId());
                         result.setNumber(b_info.getNumber()-remainNum);
                         resultsList.add(result);
+                        l_info.setNumber(0);
                         lIterator.remove();
                         b_info.setNumber(remainNum);
                         if(remainNum==0){	bIterator.remove(); } //移除数量为零的退货信息
@@ -231,15 +232,18 @@ public class MatchController {
             }
             // 没有可以匹配的退货信息 缺货信息加入缺货单
             if(!bIterator.hasNext()){
-                Lack lack = new Lack();
-                lack.setBookId(l_info.getBookId());
-                lack.setOrderId(l_info.getOrderId());
-                lack.setDeptId(l_info.getDeptId());
-                lack.setNumber(l_info.getNumber());
-                lack.setOperName(user.getName());
-                lack.setCreateTime(new Date());
-                lList.add(lack);
-                lIterator.remove();
+                if(l_info.getNumber()>0){
+                    Lack lack = new Lack();
+                    lack.setBookId(l_info.getBookId());
+                    lack.setOrderId(l_info.getOrderId());
+                    lack.setDeptId(l_info.getDeptId());
+                    lack.setNumber(l_info.getNumber());
+                    lack.setOperName(user.getName());
+                    lack.setCreateTime(new Date());
+                    lList.add(lack);
+                    lIterator.remove();
+                }
+
             }
         }
         if(bMatchList.size()>0) {

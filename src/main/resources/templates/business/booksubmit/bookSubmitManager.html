@@ -40,7 +40,12 @@
 		    <div class="layui-inline">
 		      <label class="layui-form-label">年级</label>
 		      <div class="layui-input-inline">
-		        <input type="text" name="grade"  autocomplete="off" class="layui-input">
+				  <select name="grade"  >
+					  <option value="">请选择年级</option>
+					  <option value="一年级">一年级</option><option value="二年级">二年级</option><option value="三年级">三年级</option><option value="四年级">四年级</option>
+					  <option value="五年级">五年级</option><option value="六年级">六年级</option><option value="七年级">七年级</option><option value="八年级">八年级</option>
+					  <option value="九年级">九年级</option>
+				  </select>
 		      </div>
 				<div class="layui-input-inline" style="text-align: center;">
 					<button type="button" class="layui-btn" lay-submit="" lay-filter="doSearch"><span class="layui-icon layui-icon-search"></span>查询</button>
@@ -243,7 +248,7 @@ layui.use(['jquery','form','table','layer'],function(){
 						,cols: [ [
 							{type:'checkbox',align:'center'}
 							,{field:'ordername', title:'期号名称',align:'center',width:'150'}
-							,{field:'bookname', title:'书名',align:'center',width:'120'}
+							,{field:'bookname', title:'书名',align:'center',width:'253'}
 							,{field:'grade', title:'年级',align:'center',width:'150'}
 							,{field:'sumordNum', title:'征订数量',align:'center',width:'150'}
 
