@@ -25,22 +25,21 @@
 		<div class="layui-form-item">
 
 				<label class="layui-form-label">征订期号</label>
-				<div class="layui-input-block">
+				<div class="layui-input-inline" style="    width: 400px;">
 					<select name="orderId" id="search_orderid"  lay-verify="required">
 						<option value="">请选择征订期号</option>
 					</select>
 				</div>
 
+			<div class="layui-input-inline" style="text-align: center;">
+				<button type="button" class="layui-btn" lay-submit="" lay-filter="doSearch"><span class="layui-icon layui-icon-search"></span>查询</button>
+				<button type="reset" class="layui-btn "><span class="layui-icon layui-icon-refresh-1"></span>重置</button>
+			</div>
 
 		</div>
-		<div class="layui-form-item">
-		</div>
-		  <div class="layui-form-item">
-		  	 <div class="layui-input-block" style="text-align: center;">
-		       	<button type="button" class="layui-btn" lay-submit="" lay-filter="doSearch"><span class="layui-icon layui-icon-search"></span>查询</button>
-      			<button type="reset" class="layui-btn "><span class="layui-icon layui-icon-refresh-1"></span>重置</button>
-		      </div>
-		  </div>
+
+
+
 	</form>
 </blockquote>
 <!-- 查询条件结束-->

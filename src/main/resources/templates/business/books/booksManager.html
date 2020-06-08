@@ -1,5 +1,6 @@
 <!DOCTYPE html>
-<html>
+<html xmlns:th="http://www.thymeleaf.org"
+	  xmlns:shiro="http://www.pollix.at/thymeleaf/shiro">
 <head>
 <meta charset="UTF-8">
 <title>书目管理</title>
@@ -82,14 +83,14 @@
 <div>
 	<table class="layui-hide" id="bookTable" lay-filter="bookTable"></table>
 	<div id="bookToolBar" style="display: none;">
-		<button type="button" lay-event="add" class="layui-btn layui-btn-sm"><span class="layui-icon layui-icon-add-1"></span>添加书目</button>
-		<button type="button" lay-event="batchDelete" class="layui-btn layui-btn-sm "><span class="layui-icon layui-icon-delete"></span>批量删除</button>
+		<button type="button" lay-event="add"  shiro:hasPermission="books:create" class="layui-btn layui-btn-sm"><span class="layui-icon layui-icon-add-1"></span>添加书目</button>
+		<button type="button" lay-event="batchDelete"  shiro:hasPermission="books:delete" class="layui-btn layui-btn-sm "><span class="layui-icon layui-icon-delete"></span>批量删除</button>
 
 	</div>
 	
 	<div id="bookRowBar" style="display: none;">
-		<button type="button" lay-event="update" class="layui-btn layui-btn-sm"><span class="layui-icon layui-icon-edit"></span>更新</button>
-		<button type="button" lay-event="delete" class="layui-btn layui-btn-sm "><span class="layui-icon layui-icon-delete"></span>删除</button>
+		<button type="button" lay-event="update" shiro:hasPermission="books:update" class="layui-btn layui-btn-sm"><span class="layui-icon layui-icon-edit"></span>更新</button>
+		<button type="button" lay-event="delete" shiro:hasPermission="books:delete" class="layui-btn layui-btn-sm "><span class="layui-icon layui-icon-delete"></span>删除</button>
 	</div>
 </div>
 
@@ -119,7 +120,12 @@
 					<div class="layui-form-item">
 						<label class="layui-form-label">年级</label>
 						<div class="layui-input-block">
-							<input type="text" class="layui-input" name="grade" lay-verify="required" placeholder="请输入年级">
+							<select name="grade" lay-verify="required" >
+								<option value="">请选择年级</option>
+								<option value="一年级">一年级</option><option value="二年级">二年级</option><option value="三年级">三年级</option><option value="四年级">四年级</option>
+								<option value="五年级">五年级</option><option value="六年级">六年级</option><option value="七年级">七年级</option><option value="八年级">八年级</option>
+								<option value="九年级">九年级</option>
+							</select>
 						</div>
 					</div>
 				</div>
@@ -132,12 +138,12 @@
 						<input type="text" class="layui-input" name="price" lay-verify="" placeholder="请输入定价">
 				   </div>
 				</div>
-				<div class="layui-inline">
-				    <label class="layui-form-label">书号</label>
-					<div class="layui-input-inline">
-						<input type="text" class="layui-input" name="bookNum" lay-verify="" placeholder="请输入书号">
-				   </div>
-				</div>
+<!--				<div class="layui-inline">-->
+<!--				    <label class="layui-form-label">书号</label>-->
+<!--					<div class="layui-input-inline">-->
+<!--						<input type="text" class="layui-input" name="bookNum" lay-verify="" placeholder="请输入书号">-->
+<!--				   </div>-->
+<!--				</div>-->
 				<div class="layui-inline">
 				    <label class="layui-form-label">版别</label>
 					<div class="layui-input-inline">
@@ -154,7 +160,10 @@
 				<div class="layui-inline">
 				    <label class="layui-form-label">分类</label>
 					<div class="layui-input-inline">
-						<input type="text" class="layui-input" name="variety" lay-verify="" placeholder="请输入分类号">
+						<select name="variety" lay-verify="required" >
+							<option value="">请选择分类</option>
+							<option value="小学">小学</option><option value="初中">初中</option>
+						</select>
 				   </div>
 				</div>
 
@@ -199,12 +208,12 @@ layui.use(['jquery','form','table','layer','upload'],function(){
 		    ,cols: [ [
 		    		{type:'checkbox',align:'center'}
 				  ,{field:'id', title:'ID',align:'center' ,width:'80'}
-				  ,{field:'name', title:'书名',align:'center',width:'150'}
-				  ,{field:'providername', title:'供应商',align:'center',width:'120'}
+				  ,{field:'name', title:'书名',align:'center',width:'253'}
+				  ,{field:'providername', title:'供应商',align:'center',width:'217'}
 				  ,{field:'grade', title:'年级',align:'center',width:'120',sort:true}
 				  ,{field:'price', title:'定价',align:'center',width:'120'}
-				 ,{field:'discount', title:'折扣',align:'center',width:'120'}
-				  ,{field:'bookNum', title:'书号',align:'center',width:'120'}
+				 // ,{field:'discount', title:'折扣',align:'center',width:'120'}
+				 //  ,{field:'bookNum', title:'书号',align:'center',width:'120'}
 				  ,{field:'edition', title:'版别',align:'center',width:'100'}
 				  ,{field:'variety', title:'分类',align:'center',width:'120'}
 				  ,{field:'opername', title:'操作员',align:'center',width:'100'}

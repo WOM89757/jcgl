@@ -40,14 +40,14 @@
 		       <div class="layui-input-inline">
 		        <input type="text" name="opername"  autocomplete="off" class="layui-input">
 		      </div>
-		    </div>
-		  </div>
-		  <div class="layui-form-item">
-		  	 <div class="layui-input-block" style="text-align: center;">
-		       	<button type="button" class="layui-btn" lay-submit="" lay-filter="doSearch"><span class="layui-icon layui-icon-search"></span>查询</button>
-      			<button type="reset" class="layui-btn "><span class="layui-icon layui-icon-refresh-1"></span>重置</button>
-		      </div>
-		  </div>
+				<div class="layui-input-inline" style="text-align: center;">
+					<button type="button" class="layui-btn" lay-submit="" lay-filter="doSearch"><span class="layui-icon layui-icon-search"></span>查询</button>
+					<button type="reset" class="layui-btn "><span class="layui-icon layui-icon-refresh-1"></span>重置</button>
+				</div>
+			</div>
+		</div>
+
+
 	</form>
 </blockquote>
 <!-- 查询条件结束-->
@@ -192,8 +192,8 @@ layui.use(['jquery','form','table','layer'],function(){
 			,cols: [ [
 				{type:'checkbox',align:'center'}
 				,{field:'id', title:'ID',align:'center' ,width:'80'}
-				,{field:'name', title:'书名',align:'center',width:'150'}
-				,{field:'providername', title:'供应商',align:'center',width:'120'}
+				,{field:'name', title:'书名',align:'center',width:'253'}
+				,{field:'providername', title:'供应商',align:'center',width:'230'}
 				,{field:'grade', title:'年级',align:'center',width:'120'}
 				,{field:'price', title:'定价',align:'center',width:'120'}
 				,{field:'discount', title:'折扣',align:'center',width:'120'}
@@ -291,8 +291,8 @@ layui.use(['jquery','form','table','layer'],function(){
 		,cols: [ [
 			{type:'checkbox',align:'center'}
 			,{field:'id', title:'ID',align:'center' ,width:'80'}
-			,{field:'name', title:'书名',align:'center',width:'150'}
-			,{field:'providername', title:'供应商',align:'center',width:'120'}
+			,{field:'name', title:'书名',align:'center',width:'253'}
+			,{field:'providername', title:'供应商',align:'center',width:'230'}
 			,{field:'grade', title:'年级',align:'center',width:'120'}
 			,{field:'price', title:'定价',align:'center',width:'120'}
 			,{field:'discount', title:'折扣',align:'center',width:'120'}
