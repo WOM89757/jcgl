@@ -35,7 +35,14 @@ public class LoginController {
 	private LoginfoService loginfoService;
 
 	@RequestMapping("login")
-	public ResultObj login(String loginname,String pwd) {
+	public ResultObj login(String loginname,String pwd,String code) {
+		//获得存储在session中的验证码
+
+		String sessionCheckCode = (String) WebUtils.getSession().getAttribute("code");
+		//判断验证码是否正确
+		if (code==null || !sessionCheckCode.equals(code) || code==""){
+			return ResultObj.LOGIN_ERROR_CODE;
+		}
 		Subject subject = SecurityUtils.getSubject();
 		AuthenticationToken token=new UsernamePasswordToken(loginname, pwd);
 		try {
