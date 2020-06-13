@@ -211,8 +211,8 @@ function bar(data) {
         yAxisIndex: 0,
         data: lNum,
         itemStyle: {
-          color: "#777e96",
-          borderColor: "#fff",
+          color: "#FF0000",
+          borderColor: "#FF0000",
           opacity:0.45,
           borderWidth: 3,
           barBorderRadius: 15
@@ -235,7 +235,7 @@ function bar(data) {
         barWidth: 10,
         // 显示柱子内的文字
         label: {
-          show: false,
+          show: true,
           position: "inside",
           // {c} 会自动的解析为 数据  data里面的数据
           formatter: "{c}"

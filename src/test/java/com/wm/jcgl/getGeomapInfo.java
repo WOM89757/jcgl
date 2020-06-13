@@ -42,7 +42,7 @@ public class getGeomapInfo {
                 JSONArray content = JSON.parseArray(objects.getString("content"));
 
                 //拿到经纬度
-                JSONObject jsonObject = content.getJSONObject( 0);
+                JSONObject jsonObject = content.getJSONObject(0);
                 String x = jsonObject.getString("navi_x");
                 String y = jsonObject.getString("navi_y");
 
