@@ -1,5 +1,6 @@
 <!DOCTYPE html>
-<html>
+<html xmlns:th="http://www.thymeleaf.org"
+	  xmlns:shiro="http://www.pollix.at/thymeleaf/shiro">
 <head>
 <meta charset="UTF-8">
 <title>书目匹配管理</title>
@@ -48,15 +49,14 @@
 		       <div class="layui-input-inline">
 		        <input type="text" name="grade"  autocomplete="off" class="layui-input">
 		      </div>
-		    </div>
-		  </div>
-		  <div class="layui-form-item">
-		  	 <div class="layui-input-block" style="text-align: center;">
-		       	<button type="button" class="layui-btn" lay-submit="" lay-filter="doSearch"><span class="layui-icon layui-icon-search"></span>查询</button>
-      			<button type="reset" class="layui-btn "><span class="layui-icon layui-icon-refresh-1"></span>重置</button>
-		      </div>
-		  </div>
-	</form>
+				<div class="layui-input-inline" style="text-align: center;">
+					<button type="button" class="layui-btn" lay-submit="" lay-filter="doSearch"><span class="layui-icon layui-icon-search"></span>查询</button>
+					<button type="reset" class="layui-btn "><span class="layui-icon layui-icon-refresh-1"></span>重置</button>
+				</div>
+			</div>
+		</div>
+
+		  </div>	</form>
 </blockquote>
 <!-- 查询条件结束-->
 
@@ -65,16 +65,16 @@
 <div>
 	<table class="layui-hide" id="matchTable" lay-filter="matchTable"></table>
 	<div id="matchToolBar" style="display: none;">
-		<button type="button" lay-event="add" class="layui-btn layui-btn-sm">添加匹配信息</button>
-		<button type="button" lay-event="batchSubmit" class="layui-btn layui-btn-sm ">批量确认</button>
-		<button type="button" lay-event="batchDelete" class="layui-btn layui-btn-sm ">批量删除</button>
+		<button type="button" lay-event="add" shiro:hasPermission="match:create" class="layui-btn layui-btn-sm">添加匹配信息</button>
+		<button type="button" lay-event="batchSubmit" shiro:hasPermission="match:submit" class="layui-btn layui-btn-sm ">批量确认</button>
+		<button type="button" lay-event="batchDelete" shiro:hasPermission="match:delete" class="layui-btn layui-btn-sm ">批量删除</button>
 	</div>
 	
 	<div id="matchRowBar" style="display: none;">
-		<button type="button" lay-event="update" class="layui-btn layui-btn-sm">更新</button>
-		<button type="button" lay-event="submit" class="layui-btn layui-btn-sm ">提交</button>
-		<button type="button" lay-event="resubmit" class="layui-btn layui-btn-sm ">重置提交</button>
-		<button type="button" lay-event="delete" class="layui-btn layui-btn-sm ">删除</button>
+		<button type="button" lay-event="update" shiro:hasPermission="match:update" class="layui-btn layui-btn-sm">更新</button>
+		<button type="button" lay-event="submit" shiro:hasPermission="match:submit" class="layui-btn layui-btn-sm ">提交</button>
+		<button type="button" lay-event="resubmit" shiro:hasPermission="match:resubmit" class="layui-btn layui-btn-sm ">重置提交</button>
+		<button type="button" lay-event="delete" shiro:hasPermission="match:delete" class="layui-btn layui-btn-sm ">删除</button>
 	</div>
 </div>
 
