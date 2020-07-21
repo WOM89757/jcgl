@@ -319,6 +319,12 @@ function line(data) {
         // formatter:function(val){
         //   return val.split("").join("\n");
         // }//代表逆时针旋转90度
+        // formatter:function(value){
+        //   if(value.length > 4){
+        //     return `${value.slice(0,4)}...`;
+        //   }
+        //   return value;
+        // }
       },
 
       axisLine: {
